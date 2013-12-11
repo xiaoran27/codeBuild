@@ -1,0 +1,218 @@
+#parse("TagCommon.vm")
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-14 20:36
+*   create
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.lj.${protocol}.${msgforamt}.handle.test;
+
+import java.util.*;
+import junit.framework.TestCase;
+
+import com.lj.message.*;
+import com.lj.utils.*;
+import com.lj.${protocol}.${msgforamt}.handle.${Tag0}Handle;
+
+#if ( $msgforamt == "msgc")
+import ${protocol}.msg.${protocol0}Message;
+import ${protocol}.msg.${protocol0}${Tag0}Req;
+import ${protocol}.msg.${protocol0}${Tag0}Rsp;
+#else
+import  com.lj.${protocol}.${msgforamt}.msg.${Tag0}MessageReq;
+import  com.lj.${protocol}.${msgforamt}.msg.${Tag0}MessageRsp;
+#end
+#set ($table1=$Tables.get($tagId))
+#if($table1!="")
+#set ($splits=$strings.split($table1,";"))
+#foreach ($split in $splits)
+#set($table0= $split)
+#set($table= $table0.toLowerCase())
+#set($TABLE = $table0.toUpperCase())
+#set($Table = $strings.capitalizeFirstLetter($table))
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+import com.xiaoran27.db.entity.pojo.${Table};
+import com.xiaoran27.db.entity.manager.${Table}Manager;
+#end
+#end
+
+/**
+ * ${Descript0}
+ *
+ * @author Xiaoran27 $author: $
+ * @version $Revision: 1.9 $
+ * @ID $Id: TagHandleTest.vm,v 1.9 2007/04/17 13:25:11 xiaoran27 Exp $
+  */
+public class ${Tag0}HandleTest extends TestCase {
+
+  private ${Tag0}Handle ${tag}Handle = null;
+#if ( $msgforamt == "msgc")
+  private ${protocol0}${Tag0}Req req = null;
+  private ${protocol0}${Tag0}Rsp rsp = null;
+  private ${protocol0}Message msg = null;
+#else
+  private ${Tag0}MessageReq req = null;
+  private ${Tag0}MessageRsp rsp = null;
+  private IMessageBytes msg = null;
+#end
+#set ($table1=$Tables.get($tagId))
+#if($table1!="")
+#set ($splits=$strings.split($table1,";"))
+#foreach ($split in $splits)
+#set($table0= $split)
+#set($table= $table0.toLowerCase())
+#set($TABLE = $table0.toUpperCase())
+#set($Table = $strings.capitalizeFirstLetter($table))
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+  private ${Table}Manager ${table}Manager = null;
+  private ${Table} ${table}POJO = null;
+#end
+#end
+
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(${Tag0}HandleTest.class);
+    System.exit(0);
+  }
+
+  protected void setUp() throws Exception {
+    super.setUp();
+    ${tag}Handle = new ${Tag0}Handle();
+#if ( $msgforamt == "msgc")
+    req = new ${protocol0}${Tag0}Req();
+    rsp = new ${protocol0}${Tag0}Rsp();
+    msg = new ${protocol0}Message();
+#else
+    req = new ${Tag0}MessageReq();
+    rsp = new ${Tag0}MessageRsp();
+#end
+#set ($table1=$Tables.get($tagId))
+#if($table1!="")
+#set ($splits=$strings.split($table1,";"))
+#foreach ($split in $splits)
+#set($table0= $split)
+#set($table= $table0.toLowerCase())
+#set($TABLE = $table0.toUpperCase())
+#set($Table = $strings.capitalizeFirstLetter($table))
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+    ${table}Manager = new ${Table}Manager();
+    ${table}POJO = new ${Table}();
+#end
+#end
+  }
+
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    ${tag}Handle = null;
+    req = null;
+    rsp = null;
+    msg = null;
+#set ($table1=$Tables.get($tagId))
+#if($table1!="")
+#set ($splits=$strings.split($table1,";"))
+#foreach ($split in $splits)
+#set($table0= $split)
+#set($table= $table0.toLowerCase())
+#set($TABLE = $table0.toUpperCase())
+#set($Table = $strings.capitalizeFirstLetter($table))
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+    ${table}Manager = null;
+    ${table}POJO = null;
+#end
+#end
+  }
+
+  /*
+   * Test method for 'com.lj.${protocol}.${msgformat}.handle.${Tag0}Handle.handleReq(byte[])'
+   */
+  public void testHandleReq() {
+    //SEE testHandleRsp()
+  }
+
+  /*
+   * Test method for 'com.lj.${protocol}.${msgformat}.handle.${Tag0}Handle.handleRsp(byte[])'
+   */
+  public void testHandleRsp() {
+
+    req.setSeq((int)(System.currentTimeMillis()&0x0000ffff));
+
+    /*
+#set ($table1=$Tables.get($tagId))
+#if($table1!="")
+#set ($splits=$strings.split($table1,";"))
+#foreach ($split in $splits)
+#set($table0= $split)
+#set($table= $table0.toLowerCase())
+#set($TABLE = $table0.toUpperCase())
+#set($Table = $strings.capitalizeFirstLetter($table))
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+#parse("CommonTemplate.vm")
+#foreach($allUniqueKey0 in $TableINXS)
+    map = new LinkedHashMap();
+#set($i =0)#foreach($indexColumn0 in $ColumnCodes)#set($indexcolumn = $indexColumn0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($allUniqueKey0.indexOf($indexColumn0)>=0)
+    map.put("${indexColumn0}",#if($ColumnType0=="int")new Integer(1)#elseif($ColumnType0=="long")new Long(1)#elseif($ColumnType0=="float")new Float(1)#elseif($ColumnType0=="double")new Double(1)#else new ${ColumnType}()#end);
+#end #set($i = $i +1)#end
+    try{
+      ${table}POJO = (${Table})${table}Manager.queryByUniqueIndex(map);
+      ${table}Manager.closeSession();//此句必须,否则不能更新数据.
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+#end
+#end
+#end
+    */
+
+    //TODO: write your code to here
+    //req.setXxx(XXX);
+    System.out.println("send req object:" + req);
+
+#if ( $msgforamt == "msgc")
+    msg = new ${protocol0}Message(req);
+    byte[] sndbuf = new byte[81920];
+    int sndlen = 0;
+    try{
+      sndlen = msg.encode(sndbuf);
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+    byte[] sndBuf = new byte[sndlen];
+    System.arraycopy(sndbuf,0,sndBuf,0,sndlen);
+    System.out.println("send req bytes:" + HexUtil.byteToHex(sndBuf));
+    byte[] rcvbuf = new byte[81920];
+    try{
+      ${tag}Handle.parseMessage(sndBuf, true);
+      rcvbuf=${tag}Handle.handleReq();
+      System.out.println("receive rsp bytes:" + HexUtil.byteToHex(rcvbuf));
+      try{
+        msg = new ${protocol0}Message();
+        msg.decode(rcvbuf);
+        rsp = (${protocol0}${Tag0}Rsp)msg.getParameter();
+      }catch(Exception e){
+          e.printStackTrace();
+      }
+      System.out.println("receive rsp object:" + rsp);
+      ${tag}Handle.parseMessage(rcvbuf, true);
+      Object obj = ${tag}Handle.handleRsp();
+      System.out.println("object:" + obj);
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+#else
+    byte[] sndBuf = req.toBytes();
+    System.out.println("send req bytes:" + HexUtil.byteToHex(sndBuf));
+    ${tag}Handle.parseMessage(sndBuf, true);
+    byte[] rcvbuf = ${tag}Handle.handleReq();
+    System.out.println("receive rsp bytes:" + HexUtil.byteToHex(rcvbuf));
+    rsp.fromBytes(rcvbuf);
+    System.out.println("receive rsp object:" + rsp);
+    ${tag}Handle.parseMessage(rcvbuf, true);
+    Object obj = ${tag}Handle.handleRsp();
+    System.out.println("object:" + obj);
+#end
+    
+  }
+  
+}

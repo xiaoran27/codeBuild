@@ -1,0 +1,127 @@
+#set ($table_=$strings.sub($table_,"-","_"))
+#set ($splits=$strings.split($table_,"_"))
+#set($table0= "")
+#foreach ($split in $splits)
+  #set($Split=$strings.capitalizeFirstLetter($split))
+  #set($table0= $table0.concat($Split))
+#end
+#set($table=$table0.toLowerCase())
+#set($Table=$strings.capitalizeFirstLetter($table)) 
+#set($TABLE=$table_.toUpperCase())
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+#parse("CommonTemplate.vm")
+##set($Comment=$strings.capitalizeFirstLetter($comment0))
+#set($Comment=$comment0)
+#set($comment=$comment0.toLowerCase())
+#set($COMMENT=$comment0.toUpperCase())
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-14 20:36
+*   create
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.xiaoran27.db.entity.pojo;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang.builder.CompareToBuilder;
+
+/**
+ * ${comment0}
+ *
+ * @author Xiaoran27 $author$
+ * @version $Revision: 1.4 $
+  */
+public class ${Table0} implements Serializable, Comparable {
+
+		
+
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i))
+    //${ColumnComment0}
+    private ${ColumnType0} ${ColumnCode0} = #if($columntype=="int" || $columntype=="long" || $columntype=="float" || $columntype=="double" ) -1 #else null #end;
+  
+  
+  
+#set($i=$i+1)#end
+
+    public ${Table0}(){
+    }
+    
+#if ($TablePKS.size()>0)  
+    public ${Table0}(#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i))#if($TablePKS.contains($ColumnCode0)) ${ColumnType0} ${ColumnCode0}#if($j+1<$TablePKS.size()), #end#set($j=$j+1)#end#set($i=$i+1)#end) {
+#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i))#if($TablePKS.contains($ColumnCode0)) 
+      this.${ColumnCode0} = ${ColumnCode0};
+#set($j=$j+1)#end#set($i=$i+1)#end
+    }
+#end
+    
+    public ${Table0}(#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i)) ${ColumnType0} ${ColumnCode0}#if($i+1<$ColumnCodes.size()), #end#set($i=$i+1)#end) {
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i))
+      this.${ColumnCode0} = ${ColumnCode0};
+#set($i=$i+1)#end
+    }
+
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i))
+    //get ${ColumnCode0}
+    public ${ColumnType0} get${ColumnCode}(){
+      return ${ColumnCode0};
+    }
+    
+    //set ${ColumnCode0}
+    public void set${ColumnCode}(${ColumnType0} ${ColumnCode0} ){
+      this.${ColumnCode0} = ${ColumnCode0};
+    }
+#set($i=$i+1)#end
+
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i))
+            .append("${ColumnCode0}", get${ColumnCode}())
+#set($i=$i+1)#end
+            .toString();
+    }
+    
+    public String toLogging() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i))
+            .append("${ColumnCode0}", get${ColumnCode}())
+            //.append("${ColumnComment0}", get${ColumnCode}())
+#set($i=$i+1)#end
+            .toString().split("[\\[\\]]")[1];
+    }
+
+    public boolean equals(Object other) {
+        if ( (this == other ) ) return true;
+        if ( !(other instanceof ${Table0}) ) return false;
+        ${Table0} castOther = (${Table0}) other;
+        return new EqualsBuilder()
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i))
+            .append(this.get${ColumnCode}(), castOther.get${ColumnCode}())
+#set($i=$i+1)#end
+            .isEquals();
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder()
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i))
+            .append(get${ColumnCode}())
+#set($i=$i+1)#end
+            .toHashCode();
+    }
+    
+	public int compareTo(Object object) {
+		${Table0} myClass = (${Table0}) object;
+		return new CompareToBuilder()
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i))
+            .append(this.get${ColumnCode}(), myClass.get${ColumnCode}())
+#set($i=$i+1)#end
+            .toComparison();
+	}
+  
+}

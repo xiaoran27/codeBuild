@@ -1,0 +1,37 @@
+Buildfile: build.xml
+
+db2src.all:
+
+init:
+
+conf.init:
+
+pdm2db:
+
+db2list:
+
+db2src.pre:
+
+db2src:
+   [delete] Deleting 9 files from F:\wwwsite\exam\build\src\conf\out\vm
+    [texen] Generating to file F:\wwwsite\exam\build\src\conf\out\vm\generation.report
+
+db2src.all:
+
+cp2generated:
+
+md.package:
+
+md.jspDir:
+
+cp2Dir:
+     [copy] Copying 1 file to F:\wwwsite\exam\build\src\conf\out\vm\sql\mpusql
+     [copy] Copying 1 file to F:\wwwsite\exam\build\src\conf\out\vm\com\comstars\exam\kaowu\database\test
+     [copy] Copying 6 files to F:\wwwsite\exam\build\src\conf\out\vm\com\comstars\exam\kaowu\database\kwspelldefine
+
+cp2generated:
+   [delete] Deleting 7 files from F:\wwwsite\exam\build\src\generated\com\comstars\exam\kaowu
+     [copy] Copying 7 files to F:\wwwsite\exam\build\src\generated\com\comstars\exam\kaowu
+
+BUILD SUCCESSFUL
+Total time: 12 seconds

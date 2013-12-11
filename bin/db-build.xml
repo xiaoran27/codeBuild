@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="antprettybuild.xsl"?>
+<!DOCTYPE project [
+    <!ENTITY build-share SYSTEM "share-build.xml.ent">
+]>
+
+<project name="db" default="db.init" basedir="..">
+
+	&build-share;
+	<property name="db.script.dir" value="${conf.dir}/db/script"/>
+	<property name="db.init.script" value="dbinit.sql"/>
+	<property name="db.initdata.script" value="data.sql"/>
+
+	<property name="db.testdata.script" value="test.sql"/>
+
+	<property name="db.dumpdata.file" value="dump.sql"/>
+
+	<property name="db.name" value="mydb"/>
+	
+	<property name="dba.username" value="sa"/>
+	<property name="dba.password" value="sa"/>
+
+	<property name="app.username" value="admin"/>
+	<property name="app.password" value="admin"/>
+
+	<property name="db.bin.dir" value="C:/Program Files/Microsoft SQL Server/80/Tools/binn"/>
+
+	<property name="db.exec.default" value="${db.bin.dir}/isql.exe"/>
+
+	<target name="db.init">
+		<available file="${db.bin.dir}" property="db.bin.present"/>
+		<fail unless="db.bin.present" >${db.bin.dir} is not exist.</fail>
+	</target>
+
+	<target name="db.create" depends="db.init" description="create database">
+		<exec dir="${db.script.dir}" executable="${db.exec.default}" failonerror="true">
+			<arg line="-U ${dba.username} -P ${dba.password} -S localhost -Q 'create database ${db.name}'"/>
+		</exec>
+		<exec dir="${db.script.dir}" executable="${db.exec.default}" failonerror="true">
+			<arg line="-U ${dba.username} -P ${dba.password} -S localhost -Q 'use ${db.name};exec sp_adduser '${app.username}','${app.username}', 'db_owner';exec sp_defaultdb '${app.username}', '${db.name}''"/>
+		</exec>
+	</target>
+
+	<target name="dbuser.create" depends="" description="create user">
+	</target>
+
+	<target name="table.create" depends="db.init" description="create tables">
+		<exec dir="${db.script.dir}" executable="${db.exec.default}" failonerror="true">
+			<arg line="-U ${app.username} -P ${app.password} -S localhost -d ${db.name} -i ${db.init.script}"/>
+		</exec>
+	</target>
+
+	<target name="data.create" depends="db.init" description="insert init data">
+	</target>
+
+	<target name="data.test" depends="db.init" description="insert test data">
+	</target>
+
+	<target name="data.export" depends="db.init" description="export data">
+	</target>
+
+	<target name="data.import" description="import data">
+		<available file="${db.script.dir}/${db.dumpdata.file}" property="db.import.present"/>
+		<fail unless="db.import.present">Not found ${db.dumpdata.file} in directory(${db.script.dir})</fail>
+		<antcall target="table.reset" />
+	</target>
+
+	<target name="data.import.direct" description="import data directly">
+		<available file="${db.script.dir}/${db.dumpdata.file}" property="db.import.present"/>
+		<fail unless="db.import.present">Not found ${db.dumpdata.file} in directory(${db.script.dir})</fail>
+	</target>
+
+	<target name="table.reset" depends="db.clean, db.create, table.create" description="clean data"/>
+
+	<target name="db.clean" depends="db.init" description="drop database">
+		<exec dir="${db.script.dir}" executable="${db.exec.default}" failonerror="true">
+			<arg line="-U ${dba.username} -P ${dba.password} -S localhost -Q &quot;if db_id('${db.name}') is not null  drop database ${db.name} &quot;"/>
+		</exec>
+	</target>
+
+	<target name="initdb" depends="db.clean, db.create, table.create, data.create, data.test"
+		description="First Init Database FOR DEVELOPMENT"/>
+
+	<target name="upgradedb" depends="data.export, db.clean, db.create, table.create, data.import.direct"
+		description="Upgrade Tables FOR DEVELOPMENT"/>
+
+	<target name="restoredb" depends="db.clean, db.create, table.create, data.import.direct"
+		description="Restore Tables FOR DEVELOPMENT"/>
+</project>

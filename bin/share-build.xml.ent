@@ -1,0 +1,99 @@
+	<!-- property for environment -->
+	<property environment="env"/>
+
+	<!-- include user level application build properties -->
+	<!-- <property file="${user.home}/crm.build.properties"/>-->
+
+	<!-- include user level common build properties -->
+
+	<property file="${user.home}/build.properties"/>
+
+
+	<!-- include application common build properties -->
+	<property file="bin/build.properties"/>
+
+	<!-- define the shared properties -->
+	<property name="base.dir" value="."/>
+	<property name="current.dir" value="bin"/>
+	
+	<!-- root locations for all-->
+	<property name="lib.dir" value="lib"/>
+	<property name="source.dir" value="src"/>
+	<property name="build.dir" value="build"/>
+	<property name="deploy.dir" value="deploy"/>
+	<property name="dist.dir" value="dist"/>
+	<property name="release.dir" value="release"/>
+	
+	<!-- webapp name-->
+	<property name="webapp.name" value="webApp"/>
+
+	<!-- generated location -->
+	<property name="generate.source.dir" value="${source.dir}/generated"/>
+
+	<!-- java related properties -->
+	<property name="java.source.dir" value="${source.dir}/java"/>
+	<property name="java.build.dir" value="${build.dir}/classes"/>
+	<path id="java.classpath.ref">
+		<fileset dir="${base.dir}">
+			<include name="${lib.dir}/common.*/**/*.jar"/>
+			<include name="${lib.dir}/compile.*/**/*.jar"/>
+			<include name="${build.dir}/**/**/*"/>
+		</fileset>
+	</path>
+	<property name="java.build.jardir" value="${build.dir}/jar"/>
+	<property name="java.jar.file" value="${webapp.name}.jar"/>
+
+	<!-- compile properties -->
+	<property name="build.optimize" value="on"/>
+	<property name="build.debug" value="on"/>
+	<property name="build.deprecation" value="off"/>
+	<property name="build.depcache.dir" value="${build.dir}/depcache"/>
+
+	<!-- web application related properties -->
+	<property name="web.source.dir" value="${source.dir}/webapp"/>
+	<property name="web.deploy.dir" value="${deploy.dir}/${webapp.name}"/>
+	<property name="web.war.dir" value="${deploy.dir}/war"/>
+	<fileset id="web.libdir.ref" dir="${lib.dir}">
+		<include name="common.*/**/*.jar"/>
+		<include name="*.jar"/>
+	</fileset>
+	<property name="web.war.file" value="${webapp.name}.war"/>
+
+	<!-- test properties -->
+	<property name="test.source.dir" value="${source.dir}/test"/>
+	<property name="test.build.dir" value="${build.dir}/test"/>
+	<path id="test.classpath.ref">
+		<path refid="java.classpath.ref"/>
+		<pathelement path="${java.build.dir}"/>
+	</path>
+
+	<!-- config properties -->
+	<property name="conf.dir" value="${source.dir}/conf"/>
+	<property name="conf.workflow.dir" value="${conf.dir}/workflow"/>
+
+	<!-- tomcat properties -->
+	<property name="tomcat.home.40" value="${env.TOMCAT_HOME}"/>
+	<!-- web tomcat root -->
+	<property name="web.tomcat.root" value="${tomcat.home.40}"/>
+
+	<!-- eclipse build properties -->
+	<property name="eclipse.build.classes" value="${web.source.dir}/WEB-INF/classes"/>
+	<property name="eclipse.work.dir" value="${web.source.dir}/work"/>
+
+	<!-- build properties -->
+<!--	<property name="deploy.dir" value="../deploy"/>
+	<property name="deploy.build" value="${deploy.dir}/webapp"/>
+	<property name="deploy.war" value="${deploy.dir}/war"/>
+	<property name="war.file" value="${project.name}.war"/>
+	-->
+
+
+
+<!-- Following is the common target for all build file -->
+
+
+<!-- ================================================= -->
+<!-- Init target                                -->
+<!-- ================================================= -->
+<target name="init" description="Shared Init target">
+</target>

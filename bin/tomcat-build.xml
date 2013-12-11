@@ -1,0 +1,54 @@
+<?xml-stylesheet type="text/xsl" href="antprettybuild.xsl"?>
+<project name="tomcat" default="tomcat.run" basedir=".">
+	<property environment="env"/>
+	<property file="${user.home}/build.tomcat.properties"/>
+	<property file="build.properties"/>	
+
+	<property name="tomcat.home.40" location="${env.TOMCAT_HOME}"/>
+	<property name="tomcat.startup.dir" value="${tomcat.home.40}/bin"/>
+	<property name="tomcat.shutdown.dir" value="${tomcat.home.40}/bin"/>
+	<property name="test.port" value="8080"/>
+	<property name="check_url" value="http://localhost:${test.port}/"/>
+
+
+	<!-- ====================================================================== -->
+	<!-- Tomcat Start/Stop                                                      -->
+	<!-- ====================================================================== -->
+	<target name="tomcat.checkStart" >
+		<waitfor maxwait="3" maxwaitunit="second" checkevery="1" checkeveryunit="second" timeoutproperty="start_cannot">
+			<not>
+		    	<http url="${check_url}"/>
+		    </not>
+		</waitfor>
+		<sleep seconds="0"/>
+	</target>
+
+	<target name="tomcat.start" depends="tomcat.checkStart" unless="start_cannot"
+		description="--> start tomcat server">
+		<exec executable="rundll32.exe" dir="${tomcat.startup.dir}">
+			<arg line=" url.dll,FileProtocolHandler file:startup.bat"/>
+		</exec>
+	</target>
+
+	<target name="tomcat.checkStop" >
+		<condition property="stop_can">
+		    <http url="${check_url}"/>
+		</condition>
+	</target>
+
+	<target name="tomcat.stop" depends="tomcat.checkStop" if="stop_can"
+		description="--> stop tomcat server">
+		<exec executable="cmd.exe" dir="${tomcat.shutdown.dir}" >
+			<arg line="/c shutdown.bat"/>
+		</exec>
+	</target>
+
+	<target name="tomcat.run" depends="deploy, tomcat.start" description="--> run web application under tomcat server"/>
+	
+	<target name="deploy">
+		<ant antfile="build.xml" target="web.deploy" >
+			<property name="deploy.dir" value="${tomcat.home.40}/webapps"/>
+		</ant>
+	</target>
+		
+</project>

@@ -1,0 +1,148 @@
+#parse("ModuleCommon.vm")
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-11-6
+*   create
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.atlascopco.cic.service.${module};
+
+import java.util.*;
+
+import com.atlascopco.cic.entity.*;
+import com.atlascopco.framework.dao.DataList;
+import com.atlascopco.framework.dao.hibernate.IHibernate;
+
+/**
+ * ${ModuleComment} Service接口
+ *
+ * @author Xiaoran27 $author$
+ * @version $Revision: 1.2 $
+  */
+public interface I${Module}Service extends IHibernate {
+
+#set($i =0)#foreach($table0 in $Tables)#set($Table0 = $strings.capitalizeFirstLetter($table0))#set($table = $table0.toLowerCase())#set($Table = $strings.capitalizeFirstLetter($table))#set($TABLE = $table0.toUpperCase())#set($TableComment0 = $TableComments.get($i))
+
+  //${Table0} manager
+  /**
+   * 说明：查询${Table0}信息列表
+   *
+   * @param theForm ${Table0}
+   * @param pageSize int
+   * @param pageNo int
+   *
+   * @return DataList
+   */
+  public DataList query${Table0}DataList(${Table0} theForm,int pageSize,int pageNo);
+
+    /**
+   * 说明：查询${Table0}信息列表,获取关联数据
+   *
+   * @param theForm ${Table0}
+   * @param pageSize int
+   * @param pageNo int
+   * @param children String[]
+   *
+   * @return DataList
+   */
+  public DataList query${Table0}DataList(${Table0} theForm,int pageSize,int pageNo, String[] children);
+
+    /**
+   * 说明：据条件Map<String,Object>查询${Table0}信息列表,获取关联数据
+   *
+   * @param theForm ${Table0}
+   * @param where String sample: 'where filed operate ${key}'
+   * @param params Map<String,Object>
+   * @param pageSize int
+   * @param pageNo int
+   * @param children String[]
+   *
+   * @return DataList
+   */
+  public DataList query${Table0}DataList(String where, Map<String,Object> params, int pageSize,int pageNo, String[] children);
+
+    /**
+   * 说明：据条件Object[]查询${Table0}信息列表,获取关联数据
+   *
+   * @param theForm ${Table0}
+   * @param where String sample: 'where filed operate ?'
+   * @param params Object[]
+   * @param pageSize int
+   * @param pageNo int
+   * @param children String[]
+   *
+   * @return DataList
+   */
+  public DataList query${Table0}DataList(String where, Object[] params, int pageSize,int pageNo, String[] children);
+
+  /**
+   * 说明：查询${Table0}列表
+   *
+   * @param theForm ${Table0}
+   *
+   * @return List
+   */
+  public List query${Table0}List(${Table0} theForm);
+
+  /**
+   * 说明：查询${Table0}列表,获取关联数据
+   *
+   * @param theForm ${Table0}
+   * @param children String[]
+   *
+   * @return List
+   */
+  public List query${Table0}List(${Table0} theForm, String[] children);
+
+  /**
+   * 说明：新增${Table0}信息
+   *
+   * @param theForm ${Table0}
+   */
+  public void add${Table0}(${Table0} theForm);
+
+  /**
+   * 说明：根据ID查询${Table0}信息
+   *
+   * @param id Long
+   *
+   * @return ${Table0}
+   */
+  public ${Table0} query${Table0}ById(Long id);
+
+    /**
+   * 说明：根据ID查询${Table0}信息,获取关联数据
+   *
+   * @param id Long
+   * @param children String[]
+   *
+   * @return ${Table0}
+   */
+  public ${Table0} query${Table0}ById(Long id, String[] children);
+
+  /**
+   * 说明：更新资格信息
+   *
+   * @param theForm ${Table0}
+   */
+  public void update${Table0}(${Table0} theForm);
+
+  /**
+   * 说明：根据ID删除${Table0}
+   *
+   * @param id Long
+   */
+  public void del${Table0}(Long id);
+
+  /*================${Table0}提供的特殊接口=====start===============*\
+
+  \*================${Table0}提供的特殊接口===== end ===============*/
+
+#set($i=$i+1)#end
+  /*================${module}提供的特殊接口=====start===============*\
+
+  \*================${module}提供的特殊接口===== end ===============*/
+}

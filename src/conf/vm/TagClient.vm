@@ -1,0 +1,145 @@
+#parse("TagCommon.vm")
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-14 20:36
+*   create
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2012-7-14
+* + //用于保证REQ和RSP的seq或tid匹配
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.lj.${protocol}.${msgforamt}.socket;
+
+import java.util.*;
+
+import org.apache.log4j.Logger;
+
+import com.lj.message.*;
+import com.lj.utils.*;
+import com.lj.comm.handle.*;
+import com.lj.comm.socket.*;
+#if ( $msgforamt == "msgc")
+import ${protocol}.msg.*;
+#else
+import com.lj.${protocol}.${msgforamt}.msg.*;
+#end
+
+
+/**
+ * ${Descript0}
+ *
+ * @author Xiaoran27 $author: $
+ * @version $Revision: 1.6 $
+ * @ID $Id: TagClient.vm,v 1.6 2007/04/17 13:25:11 xiaoran27 Exp $
+  */
+public class ${Tag0}Client extends AClientMessage {
+
+  private static final Logger log = Logger.getLogger( ${Tag0}Client.class );
+  
+  private long seq = -1;  //用于保证REQ和RSP的seq或tid匹配
+  
+
+  /**
+   *
+   */
+  public ${Tag0}Client(){
+    super();
+  }
+
+  /**
+   * @param proFile
+   */
+  public ${Tag0}Client(String proFile) {
+    super(proFile);
+  }
+
+  /**
+   * @param ip
+   * @param port
+   */
+  public ${Tag0}Client(String ip, int port) {
+    super(ip, port);
+  }
+
+   /**
+   * 字节码转换为时间对象
+   *
+   * @param data 某个对象字节码
+   *
+   * @return 时间对象
+   *
+   * @throws Exception
+   */
+  public Object bytes2object(byte[] data) throws Exception{
+#if ( $msgforamt == "msgc")
+    ${protocol0}Message rcvmsg = new ${protocol0}Message();
+    rcvmsg.decode(data);
+
+    Object obj = null;
+    try {
+        obj = (${protocol0}${Tag0}Rsp)rcvmsg.getParameter();
+        if (seq != -1 && seq != ((${protocol0}${Tag0}Rsp)obj).getSeq()){
+        	throw new ClassCastException("REQ.seq="+seq+",RSP.seq="+((${protocol0}${Tag0}Rsp)obj).getSeq());
+        }
+    } catch (ClassCastException e) {
+        obj = (${protocol0}${Tag0}Req)rcvmsg.getParameter();
+        seq = ((${protocol0}${Tag0}Req)obj).getSeq();
+    }
+    
+    return obj;
+#elseif ( $msgforamt == "mpm")
+    IMessageBytes iMsgBytes = new ${Tag0}MessageRsp();
+
+    return iMsgBytes.fromBytes(data);
+#else
+    IMessageBytes iMsgBytes = new ${Tag0}MessageReq();
+
+    return iMsgBytes.fromBytes(data);
+#end
+  }
+
+  /**
+   * 对象转换为字节码
+   *
+   * @param obj 实际对象
+   *
+   * @return 对象的字节码
+   *
+   * @throws Exception
+   */
+  public byte[] object2bytes(Object obj) throws Exception{
+#if ( $msgforamt == "msgc")
+    ${protocol0}Message sndmsg = null;
+    if (obj instanceof ${protocol0}${Tag0}Req){
+      sndmsg = new ${protocol0}Message((${protocol0}${Tag0}Req)obj);
+      seq = ((${protocol0}${Tag0}Req)obj).getSeq();
+    }else if (obj instanceof ${protocol0}${Tag0}Rsp){
+      sndmsg = new ${protocol0}Message((${protocol0}${Tag0}Rsp)obj);
+    }else{
+      return null;
+    }
+    byte[] sndbuf = new byte[IMessage.SOCKET_BUFFER_MAX];
+    int sndlen = sndmsg.encode(sndbuf);
+    byte[] sndb = new byte[sndlen];
+    System.arraycopy(sndbuf,0,sndb,0,sndlen);
+
+    return sndb;
+#else
+    if (obj instanceof IMessageBytes){
+      return ((IMessageBytes)obj).toBytes();
+    }
+    return null;
+#end
+  }
+
+  /**
+   * @param args
+   */
+  public static void main(String[] args) {
+    // TODO Auto-generated method stub
+  }
+
+}

@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+#set($protocol=$protocol0.toLowerCase())
+
+  <!--
+  说明:
+    1. data struct在testcase完成后不在需要;
+    2. 测试顺序依赖于req.seq的值(升序),建议使用100倍数;
+    3. req/rsp的seq不检查一致性;
+    4. rsp仅检查返回状态,具体值不检查; 若测试失败,必须人工分析其原因.
+  -->
+
+#set($Tags = ["ping","add-rnmoshow","del-rnmoshow","change-rnmoshow-status","query-rnmoshowInfo","add-rnmishow","del-rnmishow","change-rnmishow-status","query-rnmishowInfo","query-crcode-by-msisdn1","query-rnmInfo","set-no7TransInfo","get-no7TransInfo","delete-no7TransInfo","update-location","lock-msrn-for-imsi","unlock-msrn-for-imsi","is-carrier-location","verify-msrn-for-imsi","set-imsimsc","get-imsimsc","set-smsc","get-smsc","set-hlr","generate-ltid","get-mtfsmbegin","store-mtfsmcontinue","get-mtfsmcontinue","clear-no7TransInfo","login","logout","query-user","add-user","del-user","modify-user","query-roler","add-roler","del-roler","modify-roler","query-dict","add-dict","del-dict","modify-dict","query-configure","add-configure","del-configure","modify-configure","query-logging","query-vmsrn","add-vmsrn","del-vmsrn","query-vmsisdn","add-vmsisdn","del-vmsisdn","query-vlr","add-vlr","del-vlr","modify-vlr","query-rnmivlr","add-rnmivlr","del-rnmivlr","modify-rnmivlr","query-msrn","add-msrn","del-msrn","modify-msrn","query-rnmimsrn","add-rnmimsrn","del-rnmimsrn","modify-rnmimsrn","query-some-rnmoshowInfo","query-some-rnmishowInfo","query-msisdnreg","add-msisdnreg","del-msisdnreg","query-countrycrcode","add-countrycrcode","del-countrycrcode","query-stat-simn","trace"])
+#set($TagReqFields = ["seq;0","seq;0,loggingPart;1,rnmoshowInfo;0","seq;0,loggingPart;1,uid;0,imsi;1,msisdn0;1,msisdn1;1","seq;0,loggingPart;1,uid;0,imsi;1,msisdn0;1,msisdn1;1,status1;0","seq;0,loggingPart;1,imsi;1,msisdn0;0,state;1,city;1","seq;0,loggingPart;1,rnmishowInfo;0","seq;0,loggingPart;1,uid;0,imsi;1,msisdn0;1,msisdn1;1","seq;0,loggingPart;1,uid;0,imsi;1,msisdn0;1,msisdn1;1,status1;0","seq;0,loggingPart;1,imsi;1,msisdn0;0","seq;0,loggingPart;1,msisdn1;0","seq;0,loggingPart;1,identity,;0,flag;0","seq;0,loggingPart;1,no7TransInfo;0","seq;0,loggingPart;1,tid;0","seq;0,loggingPart;1,tid;0","seq;0,loggingPart;1,imsi;0,mscid;1,vlrid;1","seq;0,loggingPart;1,imsi;0","seq;0,loggingPart;1,msrn;0","seq;0,loggingPart;1,imsi;0,msrn;0","seq;0,loggingPart;1,msrn;0","seq;0,loggingPart;1,imsi;0,mscid;0","seq;0,loggingPart;1,imsi;0","seq;0,loggingPart;1,msisdn1;0,sc;0","seq;0,loggingPart;1,msisdn0;0,smscid;0","seq;0,loggingPart;1,imsi;0,hlrid;0","seq;0,loggingPart;1,mtFsmInfo;0","seq;0,loggingPart;1,tid;0","seq;0,loggingPart;1,mtFsmInfo;0","seq;0,loggingPart;1,tid;0,rtid;0","seq;0,loggingPart;1,no7TransInfo;0","seq;0,loggingPart;0,userid;0,passwd;1","seq;0,loggingPart;0,userid;0,passwd;1","seq;0,loggingPart;1,uid;1,userid;1,roleid;1,start;1,count;1","seq;0,loggingPart;0,userInfo;0","seq;0,loggingPart;0,userInfo;0","seq;0,loggingPart;0,userInfo;0","seq;0,loggingPart;1,uid;1,roleid;1,start;1,count;1","seq;0,loggingPart;0,roleInfo;0","seq;0,loggingPart;0,roleInfo;0","seq;0,loggingPart;0,roleInfo;0","seq;0,loggingPart;1,uid;1,dtype;1,dcode;1,start;1,count;1","seq;0,loggingPart;0,dictInfo;0","seq;0,loggingPart;0,dictInfo;0","seq;0,loggingPart;0,dictInfo;0","seq;0,loggingPart;1,uid;1,flag;1,start;1,count;1","seq;0,loggingPart;0,configureInfo;0","seq;0,loggingPart;0,configureInfo;0","seq;0,loggingPart;0,configureInfo;0","seq;0,loggingPart;1,userid;1,starttime;1,endtime;1,start;1,count;1","seq;0,loggingPart;1,uid;1,crcodestate;1,msrn;1,start;1,count;1","seq;0,loggingPart;0,vmsrnInfo;0","seq;0,loggingPart;0,vmsrnInfo;0","seq;0,loggingPart;1,uid;1,crcodestate;1,msisdn1;1,start;1,count;1","seq;0,loggingPart;0,vmsisdnInfo;0","seq;0,loggingPart;0,vmsisdnInfo;0","seq;0,loggingPart;1,uid;1,crcode;1,vlrid;1,start;1,count;1","seq;0,loggingPart;0,vlrInfo;0","seq;0,loggingPart;0,vlrInfo;0","seq;0,loggingPart;0,vlrInfo;0","seq;0,loggingPart;1,uid;1,state;1,vlrid;1,start;1,count;1","seq;0,loggingPart;0,rnmivlrInfo;0","seq;0,loggingPart;0,rnmivlrInfo;0","seq;0,loggingPart;0,rnmivlrInfo;0","seq;0,loggingPart;1,uid;1,crcode;1,msrn;1,start;1,count;1","seq;0,loggingPart;0,msrnInfo;0","seq;0,loggingPart;0,msrnInfo;0","seq;0,loggingPart;0,msrnInfo;0","seq;0,loggingPart;1,uid;1,state;1,msrn;1,start;1,count;1","seq;0,loggingPart;0,rnmimsrnInfo;0","seq;0,loggingPart;0,rnmimsrnInfo;0","seq;0,loggingPart;0,rnmimsrnInfo;0","seq;0,loggingPart;1,uid;1,state;1,city;1,identity;1,cc;1,crcode;1,start;1,count;1","seq;0,loggingPart;1,uid;1,crcode;1,identity;1,start;1,count;1","seq;0,loggingPart;1,uid;1,crcodestate;1,msisdn1;1,start;1,count;1","seq;0,loggingPart;0,msisdnregInfo;0","seq;0,loggingPart;0,msisdnregInfo;0","seq;0,loggingPart;1,uid;1,country;1,crcode;1,start;1,count;1","seq;0,loggingPart;0,countrycrcodeInfo;0","seq;0,loggingPart;0,countrycrcodeInfo;0","seq;0,crcode;1,state;1,simntype;0,starttime;0,endtime;0","seq;0,cmd;0,args;0"])
+#set($TagRspFields = ["seq;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,rnmoshowInfo;1,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,rnmishowInfo;1,res-common;0","seq;0,crcode;1,msisdn1;1,res-common;0","seq;0,rnmInfo,;0,res-common;0","seq;0,res-common;0","seq;0,no7TransInfo;1,res-common;0","seq;0,res-common;0","seq;0,vlrid;1,res-common;0","seq;0,msrn;1,res-common;0","seq;0,res-common;0","seq;0,flag,;0,res-common;0","seq;0,msrn;1,res-common;0","seq;0,res-common;0","seq;0,mscid;1,res-common;0","seq;0,smscInfo;1,res-common;0","seq;0,smscInfo;1,res-common;0","seq;0,res-common;0","seq;0,res-common;0,ltid;1","seq;0,res-common;0,mtFsmInfo;1","seq;0,res-common;0","seq;0,res-common;0,mtFsmInfo;1","seq;0,res-common;0","seq;0,userInfo;1,res-common;0","seq;0,res-common;0","seq;0,userInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,roleInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,dictInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,configureInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,loggingInfo;1,rowCount;0,res-common;0","seq;0,vmsrnInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,vmsisdnInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,vlrInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,rnmivlrInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,msrnInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,rnmimsrnInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,rnmoshowInfo;1,rowCount;0,res-common;0","seq;0,rnmishowInfo;1,rowCount;0,res-common;0","seq;0,msisdnregInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,countrycrcodeInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,statSimnInfo;1,res-common;0","seq;0,rsinfo;0,res-common;0"])
+#set($Descripts = ["测试消息","一卡多号出访开户","一卡多号出访销户","一卡多号出访改副msisdn状态","一卡多号查询某个主msisdn相关的出访业务数据","一卡多号来访开户","一卡多号来访销户","一卡多号来访改副msisdn状态","一卡多号查询某个主msisdn相关的来访业务数据","据一卡多号副号码查询sp计费代码","据imsi或msisdn(主/副)号或msrn,获取相关信息","存事务相关信息","据事务id,获取相关信息","据事务id,删除相关信息","位置更新","给imsi分配一个msrn","释放IMSI占用的msrn","据IMSI,msrn查询是否在合作区域(出访:合作方网络;来访:开通业务的区域)","校验给imsi分配的msrn","保存imsi使用的mscid","获取imsi使用的mscid","保存smsc数据","获取smsc数据","更新imsi的hlr","得到localtid","根据tid查询临时存储的BEGINMT_FSMMSU","临时存储ContinueMT_FSM","根据tid查询临时存储的ContinueMT_FSMMSU","清除事务相关信息","登录","安全退出","查询用户","增加用户","删除用户","修改用户","查询角色","增加角色","删除角色","修改角色","查询数据字典","增加数据字典","删除数据字典","修改数据字典","查询系统配置","增加系统配置","删除系统配置","修改系统配置","查询日志","查询移动用户漫游号码段","增加移动用户漫游号码段","删除移动用户漫游号码段","查询副号码段","增加副号码段","删除副号码段","查询访问地","增加访问地","删除访问地","修改访问地","查询开通来访业务区域的vlr","增加开通来访业务区域的vlr","删除开通来访业务区域的vlr","修改开通来访业务区域的vlr","查询移动漫游号码","增加移动漫游号码","删除移动漫游号码","修改移动漫游号码","查询开通来访业务区域的msrn","增加开通来访业务区域的msrn","删除开通来访业务区域的msrn","修改开通来访业务区域的msrn","查询出访一卡多号","查询来访一卡多号","查询副号码段(检测合法性用)","增加副号码段(检测合法性用)","删除副号码段(检测合法性用)","查询国家合作方","增加国家合作方","删除国家合作方","运营统计","trace"])
+#set($Tables = ["","rnmoshow","rnmoshow","rnmoshow","rnmoshow","rnmishow","rnmishow","rnmishow","rnmishow","rnmoshow","rnmoshow;rnmishow","no7tran","no7tran","no7tran","rnmoshow;vlr;rnmishow;rnmivlr","rnmoshow;rnmishow;vmsrnnum","vmsrnnum","rnmoshow;msrn;rnmishow;rnmimsrn","vmsrnnum","imsimsc","imsimsc","rnmoshow;rnmishow;smsc","smsc","rnmoshow;rnmishow","mtfsm;no7tran","mtfsm","mtfsm","mtfsm","no7tran","userinfo","userinfo","userinfo","userinfo","userinfo","userinfo","roler","roler","roler","roler","dict","dict","dict","dict","configure","configure","configure","configure","logging","vmsrn","vmsrn","vmsrn","vmsisdn","vmsisdn","vmsisdn","vlr","vlr","vlr","vlr","rnmivlr","rnmivlr","rnmivlr","rnmivlr","msrn","msrn","msrn","msrn","rnmimsrn","rnmimsrn","rnmimsrn","rnmimsrn","rnmoshow","rnmishow","msisdnreg","msisdnreg","msisdnreg","countrycrcode","countrycrcode","countrycrcode","rnmoshow;rnmishow;imsitrace",""])
+#set($Depends = ["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","query-roler","query-roler","","query-roler","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""])
+#set($Jspdoes = ["","add","del","mod","qry","add","del","mod","","","","","","","","","","","","","","","","","","","","","","","","qry","add","del","mod","qry","add","del","mod","qry","add","del","mod","qry","add","del","mod","qry","qry","add","del","qry","add","del","qry","add","del","mod","qry","add","del","mod","qry","add","del","mod","qry","add","del","mod","qry","qry","qry","add","del","qry","add","del","qry","qry"])
+#set($Handles = ["","insert","delete","update","query","insert","delete","update","query","query","query","insert","query","delete","update","update","update","query","update","insert","query","insert","query","update","insert","query","insert","query","update","update","update","query","insert","delete","update","query","insert","delete","update","query","insert","delete","update","query","insert","delete","update","query","query","insert","delete","query","insert","delete","query","insert","delete","update","query","insert","delete","update","query","insert","delete","update","query","insert","delete","update","query","query","query","insert","delete","query","insert","delete","query","query"])
+#set($Models = ["","boss","boss","boss","boss","boss","boss","boss","boss","boss","","","","","","","","","","","","","","bz","","","","","","","","system","system","system","system","system","system","system","system","system","system","system","system","system","system","system","system","log","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","stat","log"])
+#set($Structs = ["res-common","rnmoshowInfo","rnmishowInfo","rnmInfo","no7TransInfo","smscInfo","mtFsmInfo","rnmoshownInfo","userInfo","roleInfo","dictInfo","configureInfo","loggingInfo","loggingPart","vmsrnInfo","vmsisdnInfo","vlrInfo","rnmivlrInfo","msrnInfo","rnmimsrnInfo","msisdnregInfo","countrycrcodeInfo","statSimnInfo"])
+#set($StructFields = ["errtype;0,errcode;0,errstr;1","uuid;0,imsi;0,servtype;0,msisdn0;0,state;1,city;1,daylmtfee;0,sumlmtfee;0,msisdn1;0,cc1;0,crcode1;0,vlddtb1;1,vlddte1;1,reserve1;1,status1;0,mscid;1,vlrid;1,hlrid;1,status;0,creator;1,ctime;1,modificator;1,mtime;1,rnmoshownInfo;1","uuid;0,imsi;0,servtype;0,msisdn0;0,cc;0,crcode;0,daylmtfee;0,sumlmtfee;0,msisdn1;0,state1;1,city1;1,vlddtb1;1,vlddte1;1,reserve1;1,status1;0,mscid;1,vlrid;1,hlrid;1,status;0,creator;1,ctime;1,modificator;1,mtime;1","identity;0,mscid;1,vlrid;1,hlrid;1","tid;0,identity;0","uid;0,imsi;0,msisdn0;0,msisdn1;0,smscid;0,sc;0,status;0,creator;1,ctime;1,modificator;1,mtime;1","tid;0,msu;0","uuid;0,rosuuid;0,servtype;0,daylmtfee;0,sumlmtfee;0,msisdn1;0,cc1;0,crcode1;0,vlddtb1;1,vlddte1;1,reserve1;1,status1;0,mscid;1,vlrid;1,hlrid;1,status;0,creator;1,ctime;1,modificator;1,mtime;1","uid;0,userid;0,username;0,passwd;0,ruid;0,roleInfo;1,privilege;0,email;1,allowip;0,validdtb;1,validdte;1,logintimeb;0,logintimee;0,pwdinvdt;1,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,roleid;0,rolename;0,privilege;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,dtype;0,dcode;0,dname;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,flag;0,value;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,username;0,optype;0,descript;0,status;0,creator;1,ctime;0,modificator;1,mtime;1","username,;0,ip;1","uid;0,crcodestate;0,msrnb;0,msrne;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,crcodestate;0,msisdnb;0,msisdne;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,crcode;0,vlrpre;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,state;0,vlrpre;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,crcode;0,msrnpre;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,state;0,msrnpre;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,crcodestate;0,msisdnb;0,msisdne;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,country;0,crcode;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","total;0,incre;0,pureincre;0,percent;0,average;0"])
+
+  <!--==========data structure  begin==========-->
+
+#set($i=0)
+#foreach ($struct_ in $Structs)
+  #set ($struct_=$strings.sub($struct_,"-","_"))
+  #set ($splits=$strings.split($struct_,"_"))
+  #set($struct0= "")
+  #set($ii=0)
+  #foreach ($split in $splits)
+    #set($Split=$strings.capitalizeFirstLetter($split))
+    #if($ii>0)
+    #set($struct0= $struct0.concat($Split))
+    #else
+    #set($struct0= $struct0.concat($split))
+    #end
+    #set($ii=$ii+1)
+  #end
+  #set($struct0=$strings.capitalizeFirstLetter($struct0))
+  #set($struct=$struct0.toLowerCase())
+  #set($STRUCT=$struct0.toUpperCase())
+  #set($struct=$strings.capitalizeFirstLetter($struct))
+  #set($STRUCT_=$struct_.toUpperCase())
+
+  <!--==========${protocol0}${struct0} structure begin==========-->
+  <bean id="${protocol0}${struct0}_struct"	class="${protocol}.msg.${protocol0}${struct0}" >
+#set($structFields=$StructFields.get($i))
+#set($structFieldAndOptionals=$strings.split($structFields,","))
+#foreach ($structFieldAndOptional in $structFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($structFieldAndOptional,";"))
+  #set($aField=$structFieldAndOptional.get(0))  #*can't get value?*#
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  <property name="${aField}">
+  #if($aOptional=="0")
+     #if($afield!=$aField)<ref local="${protocol0}${AField}" />#else<value>${aField}Value</value>#end
+  #else
+     <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}" />-->#end
+  #end
+
+    </property>
+#end
+  </bean>
+  <!--==========${protocol0}${struct0} structure end==========-->
+  #set($i=$i+1)
+#end
+
+  <!--==========data structure  end==========-->
+
+  <!--==========common  data   begin==========-->
+
+  <bean id="timestamp"	class="java.sql.Timestamp" >
+    <constructor-arg><value>0</value></constructor-arg>
+  </bean>
+
+  <bean id="requiredException"	class="java.lang.Exception" >
+    <constructor-arg><value>the testcase is error , because some values is required.</value></constructor-arg>
+  </bean>
+
+  <!-- ${protocol0}LoggingPart-->
+  <bean id="${protocol0}LoggingPart"	class="${protocol}.msg.${protocol0}LoggingPart" >
+      <property name="username" >
+        <value>${protocol}</value>
+      </property>
+      <property name="ip">
+        <value>127.0.0.1</value>
+      </property>
+  </bean>
+
+  <!--${protocol0}ResCommon-->
+  <bean id="${protocol0}ResCommon0"	class="${protocol}.msg.${protocol0}ResCommon" >
+      <property name="errtype" >
+        <value>0</value>
+      </property>
+      <property name="errcode">
+        <value>0</value>
+      </property>
+      <property name="errstr">
+        <value>RC_OK</value>
+      </property>
+  </bean>
+  <bean id="${protocol0}ResCommon100"	class="${protocol}.msg.${protocol0}ResCommon" >
+      <property name="errtype" >
+        <value>0</value>
+      </property>
+      <property name="errcode">
+        <value>100</value>
+      </property>
+      <property name="errstr">
+        <value>RC_NOT_FOUND</value>
+      </property>
+  </bean>
+  <bean id="${protocol0}ResCommon101"	class="${protocol}.msg.${protocol0}ResCommon" >
+      <property name="errtype" >
+        <value>0</value>
+      </property>
+      <property name="errcode">
+        <value>101</value>
+      </property>
+      <property name="errstr">
+        <value>RC_ALREADY</value>
+      </property>
+  </bean>
+  <bean id="${protocol0}ResCommon-1"	class="${protocol}.msg.${protocol0}ResCommon" >
+      <property name="errtype" >
+        <value>0</value>
+      </property>
+      <property name="errcode">
+        <value>-1</value>
+      </property>
+      <property name="errstr">
+        <value>RC_FAILED</value>
+      </property>
+  </bean>
+  <bean id="${protocol0}ResCommon-2"	class="${protocol}.msg.${protocol0}ResCommon" >
+      <property name="errtype" >
+        <value>0</value>
+      </property>
+      <property name="errcode">
+        <value>-2</value>
+      </property>
+      <property name="errstr">
+        <value>RC_DBFAILED</value>
+      </property>
+  </bean>
+  <bean id="${protocol0}ResCommon999"	class="${protocol}.msg.${protocol0}ResCommon" >
+      <property name="errtype" >
+        <value>0</value>
+      </property>
+      <property name="errcode">
+        <value>999</value>
+      </property>
+      <property name="errstr">
+        <value>RC_OTHER</value>
+      </property>
+  </bean>
+
+  <!-- another ${protocol0}ResCommon define-->
+  <!--
+  <bean id="${protocol0}ResCommonXxx"	class="${protocol}.msg.${protocol0}ResCommon" >
+      <property name="errtype" >
+        <value>0</value>
+      </property>
+      <property name="errcode">
+        <value>Xxx</value>
+      </property>
+  </bean>
+  -->
+
+  <!--==========common  data   end==========-->
+
+#set($i=0)
+#foreach ($tag_ in $Tags)
+  #set ($tag_=$strings.sub($tag_,"-","_"))
+  #set ($splits=$strings.split($tag_,"_"))
+  #set($tag0= "")
+  #set($ii=0)
+  #foreach ($split in $splits)
+    #set($Split=$strings.capitalizeFirstLetter($split))
+    #if($ii>0)
+    #set($tag0= $tag0.concat($Split))
+    #else
+    #set($tag0= $tag0.concat($split))
+    #end
+    #set($ii=$ii+1)
+  #end
+  #set($Tag0=$strings.capitalizeFirstLetter($tag0))
+  #set($tag=$tag0.toLowerCase())
+  #set($TAG=$tag0.toUpperCase())
+  #set($Tag=$strings.capitalizeFirstLetter($tag))
+  #set($TAG_=$tag_.toUpperCase())
+  #set ($Descript0=$Descripts.get($i))
+
+  <!--==========${protocol0}${Tag0}  begin==========-->
+
+  <!-- some data defines for ${Tag0} -->
+  <!--
+  <bean id="${${protocol0}${Tag0}}_Data_00"	parent="${${protocol0}${Tag0}}_ref_struct" >
+      <property name="fieldX1">
+        <value>valueX</value>
+      </property>
+      <property name="FilldX2">
+        <null />
+      </property>
+       <property name="FilldX3" >
+        <ref local="anotherBeanId"></ref>
+      </property>
+      <property name="FilldX3" >
+        <list>
+          <value>valueX3_1</value>
+          <ref local="anotherBeanId" />
+        </list>
+      </property>
+  </bean>
+  -->
+
+  <!-- some testcase defines for ${Tag0} -->
+
+  <bean id="${protocol0}${Tag0}Req_00_Des"	class="java.lang.String" >
+    <constructor-arg>
+      <value>${Descript0}. ${protocol0}${Tag0}Req中必须输入项一定赋值,可选项不赋值,返回成功(0)</value>
+    </constructor-arg>
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Req_00"	class="${protocol}.msg.${protocol0}${Tag0}Req" >
+    <property name="seq">
+      <value>0</value><!--TODO-->
+    </property>
+    <property name="loggingPart">
+      <ref local="${protocol0}LoggingPart"/>
+    </property>
+#set($tagReqFields=$TagReqFields.get($i))
+#set($tagReqFieldAndOptionals=$strings.split($tagReqFields,","))
+#foreach ($tagReqFieldAndOptional in $tagReqFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($tagReqFieldAndOptional,";"))
+  #set($aField=$tagReqFieldAndOptional.get(0))  #*can't get value?*#
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="loggingPart")
+
+    <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_00" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_00" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Rsp_00" class="${protocol}.msg.${protocol0}${Tag0}Rsp" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="resCommon">
+        <ref local="${protocol0}ResCommon0"/>
+      </property>
+#set($TagRspFields=$TagRspFields.get($i))
+#set($TagRspFieldAndOptionals=$strings.split($TagRspFields,","))
+#foreach ($TagRspFieldAndOptional in $TagRspFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($TagRspFieldAndOptional,";"))
+  #set($aField=$TagRspFieldAndOptional.get(0))
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="res-common")
+
+  <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_00" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_00" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+
+  <bean id="${protocol0}${Tag0}Req_01_Des"	class="java.lang.String" >
+    <constructor-arg>
+      <value>${Descript0}. ${protocol0}${Tag0}Req中必须输入项一定赋值,可选项不赋值,返回没找到错误(100)</value>
+    </constructor-arg>
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Req_01"	class="${protocol}.msg.${protocol0}${Tag0}Req" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="loggingPart">
+        <ref local="${protocol0}LoggingPart"/>
+      </property>
+#set($tagReqFields=$TagReqFields.get($i))
+#set($tagReqFieldAndOptionals=$strings.split($tagReqFields,","))
+#foreach ($tagReqFieldAndOptional in $tagReqFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($tagReqFieldAndOptional,";"))
+  #set($aField=$tagReqFieldAndOptional.get(0))  #*can't get value?*#
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="loggingPart")
+
+    <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_01" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_01" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Rsp_01" class="${protocol}.msg.${protocol0}${Tag0}Rsp" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="resCommon">
+        <ref local="${protocol0}ResCommon100"/>
+      </property>
+#set($TagRspFields=$TagRspFields.get($i))
+#set($TagRspFieldAndOptionals=$strings.split($TagRspFields,","))
+#foreach ($TagRspFieldAndOptional in $TagRspFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($TagRspFieldAndOptional,";"))
+  #set($aField=$TagRspFieldAndOptional.get(0))
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="res-common")
+
+  <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_01" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_01" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+
+  <bean id="${protocol0}${Tag0}Req_02_Des"	class="java.lang.String" >
+    <constructor-arg>
+      <value>${Descript0}. ${protocol0}${Tag0}Req中必须输入项一定赋值,可选项不赋值,返回某种操作引起错误(-1)</value>
+    </constructor-arg>
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Req_02"	class="${protocol}.msg.${protocol0}${Tag0}Req" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="loggingPart">
+        <ref local="${protocol0}LoggingPart"/>
+      </property>
+#set($tagReqFields=$TagReqFields.get($i))
+#set($tagReqFieldAndOptionals=$strings.split($tagReqFields,","))
+#foreach ($tagReqFieldAndOptional in $tagReqFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($tagReqFieldAndOptional,";"))
+  #set($aField=$tagReqFieldAndOptional.get(0))  #*can't get value?*#
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="loggingPart")
+
+    <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_02" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_02" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Rsp_02" class="${protocol}.msg.${protocol0}${Tag0}Rsp" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="resCommon">
+        <ref local="${protocol0}ResCommon0"/>
+      </property>
+#set($TagRspFields=$TagRspFields.get($i))
+#set($TagRspFieldAndOptionals=$strings.split($TagRspFields,","))
+#foreach ($TagRspFieldAndOptional in $TagRspFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($TagRspFieldAndOptional,";"))
+  #set($aField=$TagRspFieldAndOptional.get(0))
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="res-common")
+
+  <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_02" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_02" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+
+  <bean id="${protocol0}${Tag0}Req_50_Des"	class="java.lang.String" >
+    <constructor-arg>
+      <value>${Descript0}. ${protocol0}${Tag0}Req中必须输入项一定赋值,可选项也全赋值,返回成功(0)</value>
+    </constructor-arg>
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Req_50"	class="${protocol}.msg.${protocol0}${Tag0}Req" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="loggingPart">
+        <ref local="${protocol0}LoggingPart"/>
+      </property>
+#set($tagReqFields=$TagReqFields.get($i))
+#set($tagReqFieldAndOptionals=$strings.split($tagReqFields,","))
+#foreach ($tagReqFieldAndOptional in $tagReqFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($tagReqFieldAndOptional,";"))
+  #set($aField=$tagReqFieldAndOptional.get(0))  #*can't get value?*#
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="loggingPart")
+
+    <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_50" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_50" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Rsp_50" class="${protocol}.msg.${protocol0}${Tag0}Rsp" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="resCommon">
+        <ref local="${protocol0}ResCommon0"/>
+      </property>
+#set($TagRspFields=$TagRspFields.get($i))
+#set($TagRspFieldAndOptionals=$strings.split($TagRspFields,","))
+#foreach ($TagRspFieldAndOptional in $TagRspFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($TagRspFieldAndOptional,";"))
+  #set($aField=$TagRspFieldAndOptional.get(0))
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="res-common")
+
+  <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_50" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_50" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+
+  <bean id="${protocol0}${Tag0}Req_51_Des"	class="java.lang.String" >
+    <constructor-arg>
+      <value>${Descript0}. ${protocol0}${Tag0}Req中必须输入项一定赋值,可选项也全赋值,返回没找到错误(100)</value>
+    </constructor-arg>
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Req_51"	class="${protocol}.msg.${protocol0}${Tag0}Req" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="loggingPart">
+        <ref local="${protocol0}LoggingPart"/>
+      </property>
+#set($tagReqFields=$TagReqFields.get($i))
+#set($tagReqFieldAndOptionals=$strings.split($tagReqFields,","))
+#foreach ($tagReqFieldAndOptional in $tagReqFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($tagReqFieldAndOptional,";"))
+  #set($aField=$tagReqFieldAndOptional.get(0))  #*can't get value?*#
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="loggingPart")
+
+    <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_51" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_51" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Rsp_51" class="${protocol}.msg.${protocol0}${Tag0}Rsp" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="resCommon">
+        <ref local="${protocol0}ResCommon100"/>
+      </property>
+#set($TagRspFields=$TagRspFields.get($i))
+#set($TagRspFieldAndOptionals=$strings.split($TagRspFields,","))
+#foreach ($TagRspFieldAndOptional in $TagRspFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($TagRspFieldAndOptional,";"))
+  #set($aField=$TagRspFieldAndOptional.get(0))
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="res-common")
+
+  <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_51" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_51" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Req_52_Des"	class="java.lang.String" >
+    <constructor-arg>
+      <value>${Descript0}. ${protocol0}${Tag0}Req中必须输入项一定赋值,可选项也全赋值,返回某种操作引起错误(-1)</value>
+    </constructor-arg>
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Req_52"	class="${protocol}.msg.${protocol0}${Tag0}Req" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="loggingPart">
+        <ref local="${protocol0}LoggingPart"/>
+      </property>
+#set($tagReqFields=$TagReqFields.get($i))
+#set($tagReqFieldAndOptionals=$strings.split($tagReqFields,","))
+#foreach ($tagReqFieldAndOptional in $tagReqFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($tagReqFieldAndOptional,";"))
+  #set($aField=$tagReqFieldAndOptional.get(0))  #*can't get value?*#
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="loggingPart")
+
+    <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_52" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_52" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Rsp_52" class="${protocol}.msg.${protocol0}${Tag0}Rsp" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="resCommon">
+        <ref local="${protocol0}ResCommon0"/>
+      </property>
+#set($TagRspFields=$TagRspFields.get($i))
+#set($TagRspFieldAndOptionals=$strings.split($TagRspFields,","))
+#foreach ($TagRspFieldAndOptional in $TagRspFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($TagRspFieldAndOptional,";"))
+  #set($aField=$TagRspFieldAndOptional.get(0))
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="res-common")
+
+  <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_52" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_52" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+
+  <bean id="${protocol0}${Tag0}Req_99_Des"	class="java.lang.String" >
+    <constructor-arg>
+      <value>${Descript0}. ${protocol0}${Tag0}Req中必须输入项的某一项不赋值,返回错误(requiredException)</value>
+    </constructor-arg>
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Req_90"	class="${protocol}.msg.${protocol0}${Tag0}Req" >
+      <property name="seq">
+        <value>0</value><!--TODO-->
+      </property>
+      <property name="loggingPart">
+        <ref local="${protocol0}LoggingPart"/>
+      </property>
+#set($tagReqFields=$TagReqFields.get($i))
+#set($tagReqFieldAndOptionals=$strings.split($tagReqFields,","))
+#foreach ($tagReqFieldAndOptional in $tagReqFieldAndOptionals)
+  #set($aFieldAndOptional=$strings.split($tagReqFieldAndOptional,";"))
+  #set($aField=$tagReqFieldAndOptional.get(0))  #*can't get value?*#
+  #set($aOptional=$aFieldAndOptional.get(1))
+  #set($t=0)#foreach ($element in $aFieldAndOptional)#if($t==0)#set($aField=$element)#elseif($t==1)#set($aOptional=$element)#end#set($t=$t+1)#end
+  #set($afield=$aField.toLowerCase())
+  #set($AField=$strings.capitalizeFirstLetter($aField))
+  #if($aField!="seq" && $aField!="loggingPart")
+
+    <property name="${aField}">
+    #if($aOptional=="0")
+       #if($afield!=$aField)<ref local="${protocol0}${AField}_Data_99" />#else<value>${aField}Value</value>#end
+    #else
+       <null /> #if($afield!=$aField)<!--<ref local="${protocol0}${AField}_Data_99" />-->#end
+    #end
+
+    </property>
+  #end
+#end
+
+  </bean>
+
+  <bean id="${protocol0}${Tag0}Rsp_90" parent="requiredException" >
+  </bean>
+
+  <!--==========${protocol0}${Tag0}  end==========-->
+  #set($i=$i+1)
+#end
+
+</beans>
+
+

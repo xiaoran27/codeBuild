@@ -1,0 +1,404 @@
+#parse("TagCommon.vm")
+package com.lj.comm.handle;
+
+import java.util.*;
+
+import org.apache.log4j.Logger;
+
+import com.lj.packet.ByteCodecRawMsg;
+import com.lj.util.*;
+
+import ${protocol}.msg.*;
+
+import org.hibernate.Transaction;
+import com.xiaoran27.db.entity.pojo.*;
+import com.xiaoran27.db.entity.manager.*;
+import com.xiaoran27.db.entity.manager.comm.*;
+
+public class ClientHandle{
+
+	private static final Logger log = Logger.getLogger( ClientHandle.class );
+
+	/**
+	 * @param rcvbuf - byte[]. recieve message bytes.
+	 * @return Object - String or byte[]. null is unkonw. String(for rsp): "" is OK, other is ERROR; byte[](for req): response message bytes.
+	 * @throws Exception 
+	 */
+	static public Object handle(byte[] rcvbuf) throws Exception {
+	    ${protocol0}Message rcvmsg = new ${protocol0}Message();
+	    rcvmsg.decode(rcvbuf);
+	    
+	    return handle(rcvmsg);
+	}
+
+    /**
+	 * @param msg - byte[]. message bytes.
+	 * @return String.
+	 * @throws Exception 
+	 */
+	static public String parseMessage(byte[] msg){
+		${protocol0}Message rcvmsg = new ${protocol0}Message();
+		try{
+			rcvmsg.decode(msg);
+		}catch(Exception e){
+			System.out.println("Failure in Exception: " + e);
+			log.error("Failure in Exception: " + e,e);
+			
+			return "UNKNOWN";
+		}
+
+        switch (rcvmsg.getType()) {
+#set($i=0)
+#foreach ($table_ in $Tags)
+#set ($tag_=$Tags.get($i))
+#set($TAG_=$tag_.toUpperCase())
+#set ($tag_=$strings.sub($tag_,"-","_"))
+#set ($splits=$strings.split($tag_,"_"))
+#set($tag0= "")
+#foreach ($split in $splits)
+	#set($Split=$strings.capitalizeFirstLetter($split))
+	#set($tag0= $tag0.concat($Split))
+#end
+#set($Tag0=$strings.capitalizeFirstLetter($tag0)) 
+#set($tag=$tag0.toLowerCase())
+#set($TAG=$tag0.toUpperCase())
+#set($Tag=$strings.capitalizeFirstLetter($tag))
+#set($TAG_=$tag_.toUpperCase())
+#set ($Descript0=$Descripts.get($i))
+
+			//REQ: ${Descript0}
+			case ${protocol0}Message.${PROTOCOL}_${TAG_}_REQ:
+				return "REQ";
+			
+			//RSP: ${Descript0}
+			case ${protocol0}Message.${PROTOCOL}_${TAG_}_RSP:
+				return "RSP";
+#set($i=$i+1)
+#end
+
+			default:
+				return "UNKNOWN";
+		}
+	}
+
+    /**
+	 * @param reqb - byte[]. request message bytes.
+	 * @return byte[]. response message bytes.
+	 * @throws Exception 
+	 */
+	static public byte[] handleReq(byte[] reqb) throws Exception {
+	    if (log.isDebugEnabled()){
+   			log.debug("REQ bytes : "+ new String(reqb,0,reqb.length));
+   			log.debug("REQ bytes(HEX): "+ByteCodecRawMsg.byteToHex(reqb,reqb.length));
+   		}
+	    
+		${protocol0}Message rcvmsg = new ${protocol0}Message();
+		rcvmsg.decode(reqb);
+		
+		${protocol0}Message sndmsg = (${protocol0}Message)handle(rcvmsg);
+		
+		byte[] sndbuf = new byte[81920];  //80K
+		int sndlen = sndmsg.encode(sndbuf);
+		byte[] rspb = new byte[sndlen];
+		System.arraycopy(sndbuf,0,rspb,0,sndlen);
+		
+		if (log.isDebugEnabled()){
+   			log.debug("RSP bytes: "+ new String(rspb,0,rspb.length));
+   			log.debug("RSP bytes(HEX): "+ByteCodecRawMsg.byteToHex(rspb,rspb.length));
+   		}
+   		
+		return rspb;
+	}
+	
+	/**
+	 * @param rspb - byte[]. response message bytes.
+	 * @return String. "" is OK, other is ERROR.
+	 * @throws Exception 
+	 */
+	static public String handleRsp(byte[] rspb) throws Exception {
+	    if (log.isDebugEnabled()){
+   			log.debug("RSP bytes : "+ new String(rspb,0,rspb.length));
+   			log.debug("RSP bytes(HEX): "+ByteCodecRawMsg.byteToHex(rspb,rspb.length));
+   		}
+	    
+		${protocol0}Message rcvmsg = new ${protocol0}Message();
+		rcvmsg.decode(rspb);
+   		
+		return (String)handle(rcvmsg);
+	}
+
+	/**
+	 * @param rcvmsg - ${protocol0}Message. recieve message object.
+	 * @return Object - String or ${protocol0}Message. null is unkonw. String(for rsp): "" is OK, other is ERROR; ${protocol0}Message(for req): response message object.
+	 * @throws Exception 
+	 */
+	static private Object handle(${protocol0}Message rcvmsg) throws Exception {
+		switch (rcvmsg.getType()) {
+#set($i=0)
+#foreach ($table_ in $Tags)
+#set ($tag_=$Tags.get($i))
+#set($TAG_=$tag_.toUpperCase())
+#set ($tag_=$strings.sub($tag_,"-","_"))
+#set ($splits=$strings.split($tag_,"_"))
+#set($tag0= "")
+#foreach ($split in $splits)
+	#set($Split=$strings.capitalizeFirstLetter($split))
+	#set($tag0= $tag0.concat($Split))
+#end
+#set($Tag0=$strings.capitalizeFirstLetter($tag0)) 
+#set($tag=$tag0.toLowerCase())
+#set($TAG=$tag0.toUpperCase())
+#set($Tag=$strings.capitalizeFirstLetter($tag))
+#set($TAG_=$tag_.toUpperCase())
+#set ($Descript0=$Descripts.get($i))
+
+			//REQ handle: ${Descript0}
+			case ${protocol0}Message.${PROTOCOL}_${TAG_}_REQ:
+				return handleRequest((${protocol0}${Tag0}Req)rcvmsg.getParameter());
+			
+			//RSP handle: ${Descript0}
+			case ${protocol0}Message.${PROTOCOL}_${TAG_}_RSP:
+				return handleResponse((${protocol0}${Tag0}Rsp)rcvmsg.getParameter());
+#set($i=$i+1)
+#end
+
+			default:
+				return handleOther(rcvmsg);
+		}
+	}
+#set($ii=0)
+#foreach ($table_ in $Tags)
+#set ($tag_=$Tags.get($ii))
+#set ($tag_=$strings.sub($tag_,"-","_"))
+#set ($splits=$strings.split($tag_,"_"))
+#set($tag0= "")
+#foreach ($split in $splits)
+	#set($Split=$strings.capitalizeFirstLetter($split))
+	#set($tag0= $tag0.concat($Split))
+#end
+#set($Tag0=$strings.capitalizeFirstLetter($tag0))
+#set($tag=$tag0.toLowerCase())
+#set($TAG=$tag0.toUpperCase())
+#set($Tag=$strings.capitalizeFirstLetter($tag))
+#set($TAG_=$tag_.toUpperCase())
+#set ($Descript0=$Descripts.get($ii))
+
+	//REQ handle: ${Descript0}
+	static private ${protocol0}Message handleRequest(${protocol0}${Tag0}Req req) throws Exception {
+		/*handle request*/
+		if (log.isInfoEnabled()){
+   			log.info("REQ obj: "+ req);
+   		}
+        
+        ${protocol0}${Tag0}Rsp rsp = new ${protocol0}${Tag0}Rsp();
+		rsp.setSeq(req.getSeq());
+#if($tag!="ping" && $tag!="heart")
+		${protocol0}ResCommon resCommon = new ${protocol0}ResCommon();
+		resCommon.setErrcode(${protocol0}Answer.RC_OK);
+		resCommon.setErrstr("");
+		//rsp.setAns(${protocol0}Answer.RC_OK);
+		//rsp.setXxx(req.getXxx()); //TODO: set common here 		
+		
+		Map map = new LinkedHashMap();
+		boolean isReturn = false;		
+				
+		//logical handle
+		//TODO: write your code to here
+
+#set ($table1=$Tables.get($ii)) 
+#if($table1!="")
+		IDaoManager iDaoManager = null;
+		Transaction trans = null;
+		
+#set ($splits=$strings.split($table1,";"))
+#foreach ($split in $splits)
+#set($table0= $split)
+#set($table= $table0.toLowerCase())
+#set($TABLE = $table0.toUpperCase())
+#set($Table = $strings.capitalizeFirstLetter($table))
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+#parse("CommonTemplate.vm")
+		if (!isReturn){
+		
+#foreach($allUniqueKey0 in $TableINXS)
+			map = new LinkedHashMap();
+			//map.put("indexColumn",Object); //TODO: put UniqueIndex to map			
+#set($i =0)#foreach($indexColumn0 in $ColumnCodes)#set($indexcolumn = $indexColumn0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($allUniqueKey0.indexOf($indexColumn0)>=0)
+			//map.put("${indexColumn0}",(#if($ColumnType0=="int")Integer#elseif($ColumnType0=="long")Long#elseif($ColumnType0=="float")Float#elseif($ColumnType0=="double")Double#else${ColumnType}#end)req.getXXX()); //TODO: change to your value
+#end #set($i = $i +1)#end
+
+			try{
+				iDaoManager = new ${Table}Manager();
+				//trans = iDaoManager.beginTrans();
+				Object obj = iDaoManager.queryByUniqueIndex(map);
+			   		
+				if (null==obj){
+					resCommon.setErrcode(${protocol0}Answer.RC_NOT_FOUND);
+					resCommon.setErrstr("no record!");
+					//rsp.setAns(${protocol0}Answer.RC_NOT_FOUND);
+					isReturn = true;
+				}else{
+					com.xiaoran27.db.entity.pojo.${Table} ${table}POJO = (com.xiaoran27.db.entity.pojo.${Table})obj;
+					
+    				if (log.isDebugEnabled()){
+    					log.debug("obj : " + obj );
+    					log.debug("Error info(queryByUniqueIndex) : " + iDaoManager.getErrorInfo());
+    		   		}
+				}
+			}catch(Exception e){
+				System.out.println("Failure in Exception: " + e);
+				System.out.println("Error info : " + iDaoManager.getErrorInfo());
+				log.error("Failure in Exception: " + e,e);
+		   		log.error("Error info : " + iDaoManager.getErrorInfo());
+
+		   		resCommon.setErrcode(${protocol0}Answer.RC_FAILED);
+				resCommon.setErrstr(iDaoManager.getErrorInfo()+e);
+				//rsp.setAns(${protocol0}Answer.RC_FAILED);
+				isReturn = true;
+			}
+		
+			if (!isReturn){
+#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($Columncode = $strings.capitalizeFirstLetter($columncode))
+				//rsp.setXxx(${table}POJO.get${Columncode}());
+#end
+			}
+#end
+		}
+#end
+
+		try{
+			if (trans!=null){
+				if (!isReturn){
+					trans.commit();
+				}else{
+					trans.rollback();
+				}
+			}
+	
+			if (iDaoManager!=null){
+				iDaoManager.closeSession();//此句必须,否则不能更新数据.
+			}
+		}catch(Exception e){
+			System.out.println("Failure in Exception: " + e);
+			System.out.println("Error info : commit failure or close session error.");
+			log.error("Failure in Exception: " + e,e);
+   			log.error("Error info : commit failure or close session error.");
+
+	   		resCommon.setErrcode(${protocol0}Answer.RC_FAILED);
+			resCommon.setErrstr("commit failure or close session error."+e);
+			//rsp.setAns(${protocol0}Answer.RC_FAILED);
+			isReturn = true;
+		}
+
+		if (!isReturn){
+			resCommon.setErrcode(${protocol0}Answer.RC_OK);
+			resCommon.setErrstr("");
+			//rsp.setAns(${protocol0}Answer.RC_OK);
+		}
+#end
+
+        rsp.setResCommon(resCommon);
+#end
+
+		if (log.isInfoEnabled()){
+   			log.info("RSP obj: "+ rsp);
+   		}
+		
+		return new ${protocol0}Message(rsp);
+	}
+	
+    //RSP handle: ${Descript0}
+	static private String handleResponse(${protocol0}${Tag0}Rsp rsp) throws Exception {
+		/*handle request*/
+		if (log.isInfoEnabled()){
+   			log.info("RSP obj: "+ rsp);
+   		}
+        
+        String err="";	
+#if($tag!="ping" && $tag!="heart" )
+
+		//logical handle
+		//TODO: write your code to here
+
+#set ($table1=$Tables.get($ii))  
+#if($table1!="")
+		IDaoManager iDaoManager = null;
+		Transaction trans = null;
+		
+#set ($splits=$strings.split($table1,";"))
+#foreach ($split in $splits)
+#set($table0= $split)
+#set($table= $table0.toLowerCase())
+#set($TABLE = $table0.toUpperCase())
+#set($Table = $strings.capitalizeFirstLetter($table))
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+#parse("CommonTemplate.vm")
+		if (err.length()<1){
+		
+			try{
+			    
+			    com.xiaoran27.db.entity.pojo.${Table} ${table}POJO = null;
+#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($Columncode = $strings.capitalizeFirstLetter($columncode))
+				//${table}POJO.set${Columncode}(rsp.get${Columncode}());
+#end
+			    if (log.isDebugEnabled()){
+					log.debug("${table}POJO : " + ${table}POJO );
+		   		}
+    		   		
+				iDaoManager = new ${Table}Manager();
+				//trans = iDaoManager.beginTrans();
+				int rtn = iDaoManager.update(${table}POJO,true);
+			   		
+				if (rtn<0){
+					err = iDaoManager.getErrorInfo();
+				}
+			}catch(Exception e){
+				System.out.println("Failure in Exception: " + e);
+				System.out.println("Error info : " + iDaoManager.getErrorInfo());
+				log.error("Failure in Exception: " + e,e);
+		   		log.error("Error info : " + iDaoManager.getErrorInfo());
+
+				err = iDaoManager.getErrorInfo()+e;
+			}
+		}
+#end
+
+		try{
+			if (trans!=null){
+				if (err.length()<1){
+					trans.commit();
+				}else{
+					trans.rollback();
+				}
+			}
+	
+			if (iDaoManager!=null){
+				iDaoManager.closeSession();//此句必须,否则不能更新数据.
+			}
+		}catch(Exception e){
+			System.out.println("Failure in Exception: " + e);
+			System.out.println("Error info : commit failure or close session error.");
+			log.error("Failure in Exception: " + e,e);
+   			log.error("Error info : commit failure or close session error.");
+
+			err = "commit failure or close session error."+e;
+		}
+
+#end
+#end		
+		if (log.isInfoEnabled()){
+   			log.info("RSP result: "+ err);
+   		}
+   		
+   		return err;
+   	}
+#set($ii=$ii+1)
+#end	
+
+
+
+	static private Object handleOther(${protocol0}Message rcvmsg) {
+		return null;
+	}
+
+}

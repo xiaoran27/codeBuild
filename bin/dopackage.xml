@@ -1,0 +1,2335 @@
+<?xml version="1.0" encoding="GBK"?>
+
+<!DOCTYPE project [
+    <!ENTITY build-share SYSTEM "share-build.xml.ent">
+]>
+<?xml-stylesheet type="text/xsl" href="antprettybuild.xsl"?>
+<project name="doFiles" default="cp.package" basedir=".">
+
+  <description>
+    do Files. md;cp;del etc.
+  </description>
+  
+  <property name="vm.out.dir" value="../src/conf/out/vm"/>
+  <property name="kaowuPackage" value="com/comstars/exam/kaowu"/>
+  <property name="database" value="${vm.out.dir}/${kaowuPackage}/database"/>
+  <property name="business" value="${vm.out.dir}/${kaowuPackage}/business"/>
+  <property name="kwutil" value="${vm.out.dir}/${kaowuPackage}/util"/>
+  <property name="generated.src" value="../src/generated"/>
+  <property name="baseJSP" value="${vm.out.dir}/kaowu"/>
+  <property name="baseSQL" value="${vm.out.dir}/sql"/>
+  <property name="mpuSQL" value="${baseSQL}/mpusql"/>
+
+	<!--===============================================-->
+	<!-- package to  ${generated.src}                  -->
+	<!--===============================================-->
+	<target name="cp2generated" depends="cp2Dir" ><!-- depends="cp2Dir" -->
+		<!--<deltree dir="${generated.src}/${kaowuPackage}"/>-->
+		<mkdir dir="${generated.src}/${kaowuPackage}"/>
+		<!--<copydir dest="${generated.src}/${kaowuPackage}" src="${vm.out.dir}/${kaowuPackage}" includeEmptyDirs="true" />-->
+		<delete>
+			<fileset dir="${generated.src}/${kaowuPackage}">
+				<include name="**/**/**/**/**"/>
+			</fileset>
+		</delete>
+		<copy todir="${generated.src}/${kaowuPackage}" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/${kaowuPackage}"> 
+		  </fileset>
+    </copy>
+  </target>
+
+	<!--===============================================-->
+	<!-- files to Dir                              -->
+	<!--===============================================-->
+	<target name="cp2Dir" depends="md.package,md.jspDir" >
+    <!--mpu SQL files-->
+	  <delete>
+			<fileset dir="${mpuSQL}">
+				<include name="**/*"/>
+				<exclude name="kaowuMPU.sql"/>
+			</fileset>
+		</delete>
+		<copy todir="${mpuSQL}" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*MPU.sql"/> 
+		  </fileset>
+    </copy>
+    
+    <!--codeConvert.java files-->
+	  <delete>
+			<fileset dir="${kwutil}">
+				<include name="**/*"/>
+			</fileset>
+		</delete>
+		<copy todir="${kwutil}" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="codeConvert.java"/> 
+		  </fileset>
+    </copy>    
+    
+    <!--database java files-->
+	  <delete>
+			<fileset dir="${database}/test">
+				<include name="**/*"/>
+			</fileset>
+		</delete>
+		<copy todir="${database}/test" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Test.java"/> 
+		    <!--<exclude name="*.java"/>-->
+		  </fileset>
+    </copy>
+<!--
+	  <delete>
+			<fileset dir="${database}/code">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/code" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Code*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		    <exclude name="*Codetype*.java"/>
+		  </fileset>
+    </copy>  
+    <delete>
+			<fileset dir="${database}/codetype">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/codetype" preservelastmodified="true"> 		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Codetype*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+-->    
+    <delete>
+			<fileset dir="${database}/kwadjudgmentinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwadjudgmentinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwadjudgmentinfo*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangecondition">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangecondition" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangecondition*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangeexaminee">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangeexaminee" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeexaminee*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		    <exclude name="*Kwarrangeexamineeinfo*.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangeexamineeinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangeexamineeinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeexamineeinfo*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangeinvigilate">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangeinvigilate" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeinvigilate*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${database}/kwarrangeitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangeitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeitem*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		    <exclude name="*Kwarrangeitemacross*.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangeitemacross">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangeitemacross" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeitemacross*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangejudge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangejudge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangejudge*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangeother">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangeother" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeother*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangepaper">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangepaper" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangepaper*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${database}/kwarrangepatrol">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangepatrol" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangepatrol*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangeplace">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangeplace" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeplace*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangereader">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangereader" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangereader*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangeregulate">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangeregulate" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeregulate*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwarrangeroom">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangeroom" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeroom*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${database}/kwarrangespell">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwarrangespell" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangespell*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwcertificateinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwcertificateinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificateinfo*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwcertificatemanage">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwcertificatemanage" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificatemanage*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwcertificateregulate">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwcertificateregulate" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificateregulate*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwcertificatevarcharge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwcertificatevarcharge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificatevarcharge*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		    <exclude name="*Kwcertificatevarchargeitem*.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${database}/kwcertificatevarchargeitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwcertificatevarchargeitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificatevarchargeitem*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwdeclareinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwdeclareinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdeclareinfo*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwdefaultinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwdefaultinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdefaultinfo*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwdefinecontent">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwdefinecontent" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdefinecontent*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwdisobeydisposal">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwdisobeydisposal" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdisobeydisposal*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${database}/kwdisobeynote">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwdisobeynote" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdisobeynote*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwdocument">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwdocument" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdocument*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwexambrief">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexambrief" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexambrief*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwexamdefine">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexamdefine" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamdefine*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwexamgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexamgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamgrade*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${database}/kwexamineeinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexamineeinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamineeinfo*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwexaminfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexaminfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexaminfo*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwexamplan">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexamplan" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamplan*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwexamsubject">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexamsubject" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsubject*.java"/> 
+		    <exclude name="*Kwexamsubjectgrade*.java"/>
+		    <exclude name="*Kwexamsubjectfinalgrade*.java"/>
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwexamsummarize">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexamsummarize" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsummarize*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${database}/kwexamvarcharge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexamvarcharge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamvarcharge*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwinvigilatedefine">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwinvigilatedefine" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwinvigilatedefine*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwinvigilateinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwinvigilateinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwinvigilateinfo*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwmakeupitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwmakeupitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwmakeupitem*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${database}/kwplaceinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwplaceinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwplaceinfo*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwplanschedule">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwplanschedule" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwplanschedule*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwpropositionrequire">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwpropositionrequire" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwpropositionrequire*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwregisterinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwregisterinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregisterinfo*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwregisterrequire">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwregisterrequire" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregisterrequire*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${database}/kwregistervarcharge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwregistervarcharge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregistervarcharge*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		    <exclude name="*Kwregistervarchargeitem*.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwregistervarchargeitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwregistervarchargeitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregistervarchargeitem*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwroominfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwroominfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwroominfo*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwspelldefine">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwspelldefine" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwspelldefine*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwexamfinalgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexamfinalgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamfinalgrade*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>   
+    <delete>
+			<fileset dir="${database}/kwexamsubjectgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexamsubjectgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsubjectgrade*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${database}/kwexamsubjectfinalgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/kwexamsubjectfinalgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsubjectfinalgrade*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+        
+    <!--报表-->
+    <delete>
+			<fileset dir="${database}/vcertificatelist">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vcertificatelist" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vcertificatelist*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>    
+    <delete>
+			<fileset dir="${database}/vexamgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vexamgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vexamgrade*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vexamsubjectgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vexamsubjectgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vexamsubjectgrade*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vexamineelist">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vexamineelist" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vexamineelist*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vitemexaminees">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vitemexaminees" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vitemexaminees*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vkwarrangeexaminee">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vkwarrangeexaminee" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vkwarrangeexaminee*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vpaperlist">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vpaperlist" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vpaperlist*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vpaperout">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vpaperout" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vpaperout*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vpaperread">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vpaperread" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vpaperread*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vpaperbaglist">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vpaperbaglist" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vpaperbaglist*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vroominvigilatelist">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vroominvigilatelist" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vroominvigilatelist*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vroomlable">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vroomlable" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vroomlable*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vroomspellexaminees">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vroomspellexaminees" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vroomspellexaminees*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vroomspellitemexaminees">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vroomspellitemexaminees" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vroomspellitemexaminees*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vseatlable">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vseatlable" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vseatlable*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vtestlist">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vtestlist" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vtestlist*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vtesttell">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vtesttell" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vtesttell*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${database}/vunitexaminee">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/vunitexaminee" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Vunitexaminee*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+
+               
+<!-- 
+   <delete>
+			<fileset dir="${database}/syscoderule">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${database}/syscoderule" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Syscoderule*.java"/> 
+		    <exclude name="*Test.java"/>
+		    <exclude name="*Action.java"/>
+		  </fileset>
+    </copy>
+-->
+
+    <!--business java files-->
+	  <delete>
+			<fileset dir="${business}">
+				<include name="**/*"/>
+			</fileset>
+		</delete>
+		<copy todir="${business}" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="ArrangeAccessAction.java"/> 
+		    <include name="DataAccessAction.java"/> 
+		    <include name="ExaminationAccessAction.java"/> 
+		    <include name="ExamineeAccessAction.java"/> 
+		    <include name="FinanceAccessAction.java"/> 
+		    <include name="PlanAccessAction.java"/> 
+		    <include name="ResourceAccessAction.java"/> 
+		  </fileset>
+    </copy>
+<!--
+	  <delete>
+			<fileset dir="${business}/code">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/code" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Code*Action.java"/> 
+		    <exclude name="*Codetype*Action.java"/>
+		  </fileset>
+    </copy>  
+    <delete>
+			<fileset dir="${business}/codetype">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/codetype" preservelastmodified="true"> 		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Codetype*Action.java"/> 
+		  </fileset>
+    </copy> 
+-->    
+    <delete>
+			<fileset dir="${business}/kwadjudgmentinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwadjudgmentinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwadjudgmentinfo*Action.java"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangecondition">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangecondition" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangecondition*Action.java"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangeexaminee">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangeexaminee" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeexaminee*Action.java"/>
+		    <exclude name="*Kwarrangeexamineeinfo*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangeexamineeinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangeexamineeinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeexamineeinfo*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangeinvigilate">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangeinvigilate" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeinvigilate*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${business}/kwarrangeitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangeitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeitem*Action.java"/>
+		    <exclude name="Kwarrangeitemacross*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangeitemacross">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangeitemacross" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeitemacross*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangejudge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangejudge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangejudge*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangeother">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangeother" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeother*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangepaper">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangepaper" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangepaper*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${business}/kwarrangepatrol">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangepatrol" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangepatrol*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangeplace">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangeplace" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeplace*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangereader">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangereader" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangereader*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangeregulate">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangeregulate" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeregulate*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwarrangeroom">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangeroom" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeroom*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${business}/kwarrangespell">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwarrangespell" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangespell*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwcertificateinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwcertificateinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificateinfo*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwcertificatemanage">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwcertificatemanage" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificatemanage*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwcertificateregulate">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwcertificateregulate" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificateregulate*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwcertificatevarcharge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwcertificatevarcharge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificatevarcharge*Action.java"/>
+		    <exclude name="*Kwcertificatevarchargeitem*.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${business}/kwcertificatevarchargeitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwcertificatevarchargeitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificatevarchargeitem*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwdeclareinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwdeclareinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdeclareinfo*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwdefaultinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwdefaultinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdefaultinfo*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwdefinecontent">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwdefinecontent" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdefinecontent*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwdisobeydisposal">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwdisobeydisposal" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdisobeydisposal*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${business}/kwdisobeynote">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwdisobeynote" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdisobeynote*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwdocument">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwdocument" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdocument*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwexambrief">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexambrief" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexambrief*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwexamdefine">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexamdefine" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamdefine*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwexamgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexamgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamgrade*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${business}/kwexamineeinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexamineeinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamineeinfo*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwexaminfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexaminfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexaminfo*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwexamplan">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexamplan" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamplan*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwexamsubject">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexamsubject" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsubject*Action.java"/>
+		    <exclude name="*Kwexamsubjectgrade*Action.java"/>
+		    <exclude name="*Kwexamsubjectfinalgrade*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwexamsummarize">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexamsummarize" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsummarize*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${business}/kwexamvarcharge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexamvarcharge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamvarcharge*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwinvigilatedefine">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwinvigilatedefine" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwinvigilatedefine*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwinvigilateinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwinvigilateinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwinvigilateinfo*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwmakeupitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwmakeupitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwmakeupitem*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${business}/kwplaceinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwplaceinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwplaceinfo*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwplanschedule">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwplanschedule" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwplanschedule*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwpropositionrequire">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwpropositionrequire" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwpropositionrequire*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwregisterinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwregisterinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregisterinfo*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwregisterrequire">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwregisterrequire" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregisterrequire*Action.java"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${business}/kwregistervarcharge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwregistervarcharge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregistervarcharge*Action.java"/>
+		    <exclude name="Kwregistervarchargeitem*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwregistervarchargeitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwregistervarchargeitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregistervarchargeitem*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwroominfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwroominfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwroominfo*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwspelldefine">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwspelldefine" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwspelldefine*Action.java"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${business}/kwexamfinalgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexamfinalgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamfinalgrade*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${business}/kwexamsubjectgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexamsubjectgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsubjectgrade*Action.java"/>
+		  </fileset>
+    </copy>
+    <delete>
+			<fileset dir="${business}/kwexamsubjectfinalgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwexamsubjectfinalgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsubjectfinalgrade*Action.java"/>
+		  </fileset>
+    </copy>     
+    
+    <delete>
+			<fileset dir="${business}/kwreport">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/kwreport" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*V*Action.java"/>
+		  </fileset>
+    </copy>             
+<!-- 
+   <delete>
+			<fileset dir="${business}/syscoderule">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${business}/syscoderule" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Syscoderule*Action.java"/>
+		  </fileset>
+    </copy>
+-->
+
+    <!--baseJSP files-->
+<!--
+	  <delete>
+			<fileset dir="${baseJSP}/test">
+				<include name="**/*"/>
+			</fileset>
+		</delete>
+		<copy todir="${baseJSP}/test" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Test.jsp"/> 
+		  </fileset>
+    </copy>
+-->
+<!--
+	  <delete>
+			<fileset dir="${baseJSP}/code">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/code" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Code*.jsp"/> 
+		    <exclude name="*Codetype*.jsp"/>
+		  </fileset>
+    </copy>  
+    <delete>
+			<fileset dir="${baseJSP}/codetype">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/codetype" preservelastmodified="true"> 		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Codetype*.jsp"/> 
+		  </fileset>
+    </copy> 
+-->    
+    <delete>
+			<fileset dir="${baseJSP}/kwadjudgmentinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwadjudgmentinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwadjudgmentinfo*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangecondition">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangecondition" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangecondition*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangeexaminee">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangeexaminee" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeexaminee*.jsp"/> 
+		    <exclude name="*Kwarrangeexamineeinfo*.jsp"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangeexamineeinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangeexamineeinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeexamineeinfo*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangeinvigilate">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangeinvigilate" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeinvigilate*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangeitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangeitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeitem*.jsp"/> 
+		    <exclude name="*Kwarrangeitemacross*.jsp"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangeitemacross">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangeitemacross" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeitemacross*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangejudge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangejudge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangejudge*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangeother">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangeother" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeother*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangepaper">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangepaper" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangepaper*.jsp"/> 
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${baseJSP}/kwarrangepatrol">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangepatrol" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangepatrol*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangeplace">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangeplace" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeplace*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangereader">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangereader" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangereader*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangeregulate">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangeregulate" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeregulate*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwarrangeroom">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangeroom" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangeroom*.jsp"/> 
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${baseJSP}/kwarrangespell">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwarrangespell" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwarrangespell*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwcertificateinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwcertificateinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificateinfo*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwcertificatemanage">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwcertificatemanage" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificatemanage*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwcertificateregulate">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwcertificateregulate" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificateregulate*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwcertificatevarcharge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwcertificatevarcharge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificatevarcharge*.jsp"/> 
+		    <exclude name="*Kwcertificatevarchargeitem*.jsp"/>
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${baseJSP}/kwcertificatevarchargeitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwcertificatevarchargeitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwcertificatevarchargeitem*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwdeclareinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwdeclareinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdeclareinfo*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwdefaultinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwdefaultinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdefaultinfo*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwdefinecontent">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwdefinecontent" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdefinecontent*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwdisobeydisposal">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwdisobeydisposal" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdisobeydisposal*.jsp"/> 
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${baseJSP}/kwdisobeynote">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwdisobeynote" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdisobeynote*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwdocument">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwdocument" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwdocument*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwexambrief">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexambrief" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexambrief*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwexamdefine">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexamdefine" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamdefine*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwexamgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexamgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamgrade*.jsp"/> 
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${baseJSP}/kwexamineeinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexamineeinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamineeinfo*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwexaminfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexaminfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexaminfo*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwexamplan">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexamplan" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamplan*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwexamsubject">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexamsubject" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsubject*.jsp"/> 
+        <exclude name="*Kwexamsubjectgrade*.jsp"/>
+		    <exclude name="*Kwexamsubjectfinalgrade*.jsp"/>		    
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwexamsummarize">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexamsummarize" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsummarize*.jsp"/> 
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${baseJSP}/kwexamvarcharge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexamvarcharge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamvarcharge*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwinvigilatedefine">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwinvigilatedefine" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwinvigilatedefine*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwinvigilateinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwinvigilateinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwinvigilateinfo*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwmakeupitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwmakeupitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwmakeupitem*.jsp"/> 
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${baseJSP}/kwplaceinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwplaceinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwplaceinfo*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwplanschedule">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwplanschedule" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwplanschedule*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwpropositionrequire">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwpropositionrequire" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwpropositionrequire*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwregisterinfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwregisterinfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregisterinfo*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwregisterrequire">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwregisterrequire" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregisterrequire*.jsp"/> 
+		  </fileset>
+    </copy> 
+        <delete>
+			<fileset dir="${baseJSP}/kwregistervarcharge">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwregistervarcharge" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregistervarcharge*.jsp"/> 
+		    <exclude name="*Kwregistervarchargeitem*.jsp"/>
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwregistervarchargeitem">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwregistervarchargeitem" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwregistervarchargeitem*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwroominfo">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwroominfo" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwroominfo*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwspelldefine">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwspelldefine" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwspelldefine*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwexamfinalgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexamfinalgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamfinalgrade*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwexamsubjectgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexamsubjectgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsubjectgrade*.jsp"/> 
+		  </fileset>
+    </copy> 
+    <delete>
+			<fileset dir="${baseJSP}/kwexamsubjectfinalgrade">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwexamsubjectfinalgrade" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Kwexamsubjectfinalgrade*.jsp"/> 
+		  </fileset>
+    </copy>    
+    
+    <delete>
+			<fileset dir="${baseJSP}/kwreport">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/kwreport" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*V*.jsp"/> 
+		  </fileset>
+    </copy>              
+<!-- 
+   <delete>
+			<fileset dir="${baseJSP}/syscoderule">
+				<include name="**/*"/>
+			</fileset>
+		</delete>    
+		<copy todir="${baseJSP}/syscoderule" preservelastmodified="true"> 
+		  <fileset dir="${vm.out.dir}/"> 
+		    <include name="*Syscoderule*.jsp"/> 
+		  </fileset>
+    </copy>
+-->
+    
+        
+  </target>
+
+
+	<!--===============================================-->
+	<!-- md package                                    -->
+	<!--===============================================-->	
+  <target name="md.package" >
+    <mkdir dir="${baseSQL}"/>
+    <mkdir dir="${mpuSQL}"/><!--SQL--> 
+    
+    <mkdir dir="${kwutil}"/><!--kaowu util--> 
+     
+    <mkdir dir="${database}"/>
+    <mkdir dir="${database}/test"/><!--测试包-->
+		<!--建包目录-->
+		<mkdir dir="${database}/code"/>
+		<mkdir dir="${database}/codetype"/>
+		<mkdir dir="${database}/kwadjudgmentinfo"/>
+		<mkdir dir="${database}/kwarrangecondition"/>
+		<mkdir dir="${database}/kwarrangeexaminee"/>
+		<mkdir dir="${database}/kwarrangeexamineeinfo"/>
+		<mkdir dir="${database}/kwarrangeinvigilate"/>
+		<mkdir dir="${database}/kwarrangeitem"/>
+		<mkdir dir="${database}/kwarrangeitemacross"/>
+		<mkdir dir="${database}/kwarrangejudge"/>
+		<mkdir dir="${database}/kwarrangeother"/>
+		<mkdir dir="${database}/kwarrangepaper"/>
+		<mkdir dir="${database}/kwarrangepatrol"/>
+		<mkdir dir="${database}/kwarrangeplace"/>
+		<mkdir dir="${database}/kwarrangereader"/>
+		<mkdir dir="${database}/kwarrangeregulate"/>
+		<mkdir dir="${database}/kwarrangeroom"/>
+		<mkdir dir="${database}/kwarrangespell"/>
+		<mkdir dir="${database}/kwcertificateinfo"/>
+		<mkdir dir="${database}/kwcertificatemanage"/>
+		<mkdir dir="${database}/kwcertificateregulate"/>
+		<mkdir dir="${database}/kwcertificatevarcharge"/>
+		<mkdir dir="${database}/kwcertificatevarchargeitem"/>
+		<mkdir dir="${database}/kwdeclareinfo"/>
+		<mkdir dir="${database}/kwdefaultinfo"/>
+		<mkdir dir="${database}/kwdefinecontent"/>
+		<mkdir dir="${database}/kwdisobeydisposal"/>
+		<mkdir dir="${database}/kwdisobeynote"/>
+		<mkdir dir="${database}/kwdocument"/>
+		<mkdir dir="${database}/kwexambrief"/>
+		<mkdir dir="${database}/kwexamdefine"/>
+		<mkdir dir="${database}/kwexamgrade"/>
+		<mkdir dir="${database}/kwexamineeinfo"/>
+		<mkdir dir="${database}/kwexaminfo"/>
+		<mkdir dir="${database}/kwexamplan"/>
+		<mkdir dir="${database}/kwexamsubject"/>
+		<mkdir dir="${database}/kwexamsummarize"/>
+		<mkdir dir="${database}/kwexamvarcharge"/>
+		<mkdir dir="${database}/kwinvigilatedefine"/>
+		<mkdir dir="${database}/kwinvigilateinfo"/>
+		<mkdir dir="${database}/kwmakeupitem"/>
+		<mkdir dir="${database}/kwplaceinfo"/>
+		<mkdir dir="${database}/kwplanschedule"/>
+		<mkdir dir="${database}/kwpropositionrequire"/>
+		<mkdir dir="${database}/kwregisterinfo"/>
+		<mkdir dir="${database}/kwregisterrequire"/>
+		<mkdir dir="${database}/kwregistervarcharge"/>
+		<mkdir dir="${database}/kwregistervarchargeitem"/>
+		<mkdir dir="${database}/kwroominfo"/>
+		<mkdir dir="${database}/kwspelldefine"/>
+		<mkdir dir="${database}/syscoderule"/>
+		<mkdir dir="${database}/kwexamfinalgrade"/>
+		<mkdir dir="${database}/kwexamsubjectgrade"/>
+		<mkdir dir="${database}/kwexamsubjectfinalgrade"/>
+		
+    <mkdir dir="${database}/vcertificatelist"/>
+    <mkdir dir="${database}/vexamgrade"/>
+    <mkdir dir="${database}/vexamsubjectgrade"/>
+    <mkdir dir="${database}/vexamineelist"/>
+    <mkdir dir="${database}/vitemexaminees"/>
+    <mkdir dir="${database}/vkwarrangeexaminee"/>
+    <mkdir dir="${database}/vpaperlist"/>
+    <mkdir dir="${database}/vpaperout"/>
+    <mkdir dir="${database}/vpaperread"/>
+    <mkdir dir="${database}/vpaperbaglist"/>
+    <mkdir dir="${database}/vroominvigilatelist"/>
+    <mkdir dir="${database}/vroomlable"/>
+    <mkdir dir="${database}/vroomspellexaminees"/>
+    <mkdir dir="${database}/vroomspellitemexaminees"/>
+    <mkdir dir="${database}/vseatlable"/>
+    <mkdir dir="${database}/vsysinfo"/>
+    <mkdir dir="${database}/vtestlist"/>
+    <mkdir dir="${database}/vtesttell"/>
+    <mkdir dir="${database}/vunitexaminee"/>
+
+
+    <mkdir dir="${business}"/>
+    <mkdir dir="${business}/test"/><!--测试包-->
+		<!--建包目录-->
+		<mkdir dir="${business}/code"/>
+		<mkdir dir="${business}/codetype"/>
+		<mkdir dir="${business}/kwadjudgmentinfo"/>
+		<mkdir dir="${business}/kwarrangecondition"/>
+		<mkdir dir="${business}/kwarrangeexaminee"/>
+		<mkdir dir="${business}/kwarrangeexamineeinfo"/>
+		<mkdir dir="${business}/kwarrangeinvigilate"/>
+		<mkdir dir="${business}/kwarrangeitem"/>
+		<mkdir dir="${business}/kwarrangeitemacross"/>
+		<mkdir dir="${business}/kwarrangejudge"/>
+		<mkdir dir="${business}/kwarrangeother"/>
+		<mkdir dir="${business}/kwarrangepaper"/>
+		<mkdir dir="${business}/kwarrangepatrol"/>
+		<mkdir dir="${business}/kwarrangeplace"/>
+		<mkdir dir="${business}/kwarrangereader"/>
+		<mkdir dir="${business}/kwarrangeregulate"/>
+		<mkdir dir="${business}/kwarrangeroom"/>
+		<mkdir dir="${business}/kwarrangespell"/>
+		<mkdir dir="${business}/kwcertificateinfo"/>
+		<mkdir dir="${business}/kwcertificatemanage"/>
+		<mkdir dir="${business}/kwcertificateregulate"/>
+		<mkdir dir="${business}/kwcertificatevarcharge"/>
+		<mkdir dir="${business}/kwcertificatevarchargeitem"/>
+		<mkdir dir="${business}/kwdeclareinfo"/>
+		<mkdir dir="${business}/kwdefaultinfo"/>
+		<mkdir dir="${business}/kwdefinecontent"/>
+		<mkdir dir="${business}/kwdisobeydisposal"/>
+		<mkdir dir="${business}/kwdisobeynote"/>
+		<mkdir dir="${business}/kwdocument"/>
+		<mkdir dir="${business}/kwexambrief"/>
+		<mkdir dir="${business}/kwexamdefine"/>
+		<mkdir dir="${business}/kwexamgrade"/>
+		<mkdir dir="${business}/kwexamineeinfo"/>
+		<mkdir dir="${business}/kwexaminfo"/>
+		<mkdir dir="${business}/kwexamplan"/>
+		<mkdir dir="${business}/kwexamsubject"/>
+		<mkdir dir="${business}/kwexamsummarize"/>
+		<mkdir dir="${business}/kwexamvarcharge"/>
+		<mkdir dir="${business}/kwinvigilatedefine"/>
+		<mkdir dir="${business}/kwinvigilateinfo"/>
+		<mkdir dir="${business}/kwmakeupitem"/>
+		<mkdir dir="${business}/kwplaceinfo"/>
+		<mkdir dir="${business}/kwplanschedule"/>
+		<mkdir dir="${business}/kwpropositionrequire"/>
+		<mkdir dir="${business}/kwregisterinfo"/>
+		<mkdir dir="${business}/kwregisterrequire"/>
+		<mkdir dir="${business}/kwregistervarcharge"/>
+		<mkdir dir="${business}/kwregistervarchargeitem"/>
+		<mkdir dir="${business}/kwroominfo"/>
+		<mkdir dir="${business}/kwspelldefine"/>
+		<mkdir dir="${business}/syscoderule"/>
+		<mkdir dir="${business}/kwexamfinalgrade"/>
+		<mkdir dir="${business}/kwexamsubjectgrade"/>
+		<mkdir dir="${business}/kwexamsubjectfinalgrade"/>		
+
+    <mkdir dir="${business}/kwreport"/>
+
+	</target>	
+
+  <!--===============================================-->
+	<!-- md JSP dir                                    -->
+	<!--===============================================-->	
+  <target name="md.jspDir" >
+    <mkdir dir="${baseJSP}"/>
+    <mkdir dir="${baseJSP}/test"/><!--测试目录-->
+		<!--建目录-->
+		<mkdir dir="${baseJSP}/code"/>
+		<mkdir dir="${baseJSP}/codetype"/>
+		<mkdir dir="${baseJSP}/kwadjudgmentinfo"/>
+		<mkdir dir="${baseJSP}/kwarrangecondition"/>
+		<mkdir dir="${baseJSP}/kwarrangeexaminee"/>
+		<mkdir dir="${baseJSP}/kwarrangeexamineeinfo"/>
+		<mkdir dir="${baseJSP}/kwarrangeinvigilate"/>
+		<mkdir dir="${baseJSP}/kwarrangeitem"/>
+		<mkdir dir="${baseJSP}/kwarrangeitemacross"/>
+		<mkdir dir="${baseJSP}/kwarrangejudge"/>
+		<mkdir dir="${baseJSP}/kwarrangeother"/>
+		<mkdir dir="${baseJSP}/kwarrangepaper"/>
+		<mkdir dir="${baseJSP}/kwarrangepatrol"/>
+		<mkdir dir="${baseJSP}/kwarrangeplace"/>
+		<mkdir dir="${baseJSP}/kwarrangereader"/>
+		<mkdir dir="${baseJSP}/kwarrangeregulate"/>
+		<mkdir dir="${baseJSP}/kwarrangeroom"/>
+		<mkdir dir="${baseJSP}/kwarrangespell"/>
+		<mkdir dir="${baseJSP}/kwcertificateinfo"/>
+		<mkdir dir="${baseJSP}/kwcertificatemanage"/>
+		<mkdir dir="${baseJSP}/kwcertificateregulate"/>
+		<mkdir dir="${baseJSP}/kwcertificatevarcharge"/>
+		<mkdir dir="${baseJSP}/kwcertificatevarchargeitem"/>
+		<mkdir dir="${baseJSP}/kwdeclareinfo"/>
+		<mkdir dir="${baseJSP}/kwdefaultinfo"/>
+		<mkdir dir="${baseJSP}/kwdefinecontent"/>
+		<mkdir dir="${baseJSP}/kwdisobeydisposal"/>
+		<mkdir dir="${baseJSP}/kwdisobeynote"/>
+		<mkdir dir="${baseJSP}/kwdocument"/>
+		<mkdir dir="${baseJSP}/kwexambrief"/>
+		<mkdir dir="${baseJSP}/kwexamdefine"/>
+		<mkdir dir="${baseJSP}/kwexamgrade"/>
+		<mkdir dir="${baseJSP}/kwexamineeinfo"/>
+		<mkdir dir="${baseJSP}/kwexaminfo"/>
+		<mkdir dir="${baseJSP}/kwexamplan"/>
+		<mkdir dir="${baseJSP}/kwexamsubject"/>
+		<mkdir dir="${baseJSP}/kwexamsummarize"/>
+		<mkdir dir="${baseJSP}/kwexamvarcharge"/>
+		<mkdir dir="${baseJSP}/kwinvigilatedefine"/>
+		<mkdir dir="${baseJSP}/kwinvigilateinfo"/>
+		<mkdir dir="${baseJSP}/kwmakeupitem"/>
+		<mkdir dir="${baseJSP}/kwplaceinfo"/>
+		<mkdir dir="${baseJSP}/kwplanschedule"/>
+		<mkdir dir="${baseJSP}/kwpropositionrequire"/>
+		<mkdir dir="${baseJSP}/kwregisterinfo"/>
+		<mkdir dir="${baseJSP}/kwregisterrequire"/>
+		<mkdir dir="${baseJSP}/kwregistervarcharge"/>
+		<mkdir dir="${baseJSP}/kwregistervarchargeitem"/>
+		<mkdir dir="${baseJSP}/kwroominfo"/>
+		<mkdir dir="${baseJSP}/kwspelldefine"/>
+		<mkdir dir="${baseJSP}/syscoderule"/>
+		<mkdir dir="${baseJSP}/kwexamfinalgrade"/>
+		<mkdir dir="${baseJSP}/kwexamsubjectgrade"/>
+		<mkdir dir="${baseJSP}/kwexamsubjectfinalgrade"/>		
+		
+    <mkdir dir="${baseJSP}/kwreport"/>
+
+  </target>	
+
+</project>

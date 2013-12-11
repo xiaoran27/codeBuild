@@ -1,0 +1,118 @@
+#parse("TagCommon.vm")
+
+<%@ page contentType="text/html; charset=GBK" language="java"  %>
+
+<html>
+<head>
+<%@ include file="/include/param.jsp" %>
+<%@ include file="/include/header.jsp" %>
+<title><%=appTitle%></title>
+</head>
+
+<%
+String action="${tag0}.action";
+String id="OperatorTable";
+%>
+<body style="overflow-x:hidden;">
+<%@ include file="/include/bodyheader.jsp" %>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr bgcolor="#7691C7">
+    <td width="91%" >
+      <IMG src="images/Page_Arrow1.gif" width="23" height="23" border="0" align="absmiddle">${Descript0}
+    </td>
+    <td width="9%" align="center">
+      <input type="button" name="add" class="btn2" value="增加" onClick="window.location.href='${add}${tag0}.action'">
+    </td>
+  </tr>
+</table>
+
+<form name="pageForm" method="post" action="<%=action%>" >
+  <table width="100%">
+  <tr>
+    <td align="left">每页显示记录条数
+      <input type="text" name="count" size="3" maxlength="3" value="<%=pageInfoExt.getShowRowsPerPage()%>">条&nbsp;
+      <input type="button" value="确定" class="btn2" onClick="checkInput()"> &nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="button" name="Submit" value="删除" class="btn2" onClick="checkSelect()"> &nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="button" name="selectall" value="反选" onclick="javascript: checkAll();" class="btn2" >
+    </td>
+    <td align="right">
+      <c:out value="${sectionInfo}" escapeXml="false" />
+    </td>
+  </tr>
+  </table>
+</form>
+<form name="datalistForm" method="post" action="<%=action%>" >
+  <display:table id="<%=id%>" name="sessionScope.${tag0}List" class="its" pagesize="<%=pageInfoExt.getShowRowsPerPage()%>" requestURI="<%=action%>">
+    <display:column title="" >
+      <input type="checkbox" name="uid" value="<%=((${Table0})pageContext.getAttribute(id)).getUid()%>">
+    </display:column>
+    <display:column property="col1" title="列1" />
+    <display:column property="col2" title="列2" />
+    <display:column maxLength="20" style="width: 30%;word-break:break-all;" title="列3(限制长度)" >
+      <a href="#" title='<c:out value="${OperatorTable.col3}" />'><c:out value="${OperatorTable.col3}" /></a>
+    </display:column>
+    <display:column style="width: 10%;" title="列4(code2name)">
+      <%=com.lj.web.convert.ConstantDisplay.getInstance().displayOfValue("_FLAG",String.valueOf( ((${Table0})pageContext.getAttribute(id)).getCol4() ) ) %>
+    </display:column>
+    <display:column style="width: 10%;" title="操作">
+      <div align="center">
+      <input type="button" name="modify" value="修改" onclick="javascript: location.href='${del}${tag0}.action?uid=<%=((${Table0})pageContext.getAttribute(id)).getUid()%>';" class="btn2" >
+      </div>>
+    </display:column>
+ </display:table>
+</form>
+
+<script language="javascript">
+
+  function checkSelect(){
+     uidlist = document.getElementsByName('uid');
+     var hasSelected = false;
+     for (var i = 0; i < uidlist.length; i++){
+      if(uidlist[i].checked) hasSelected =true;
+     }
+     if(!hasSelected) {
+       alert('请至少选一个您要删除的数据！');
+       return false;
+     }
+     if(confirm('确认要删除?')) {
+       document.datalistForm.action="${del}${tag0}.action";
+       document.datalistForm.submit();
+       return true;
+     }
+  }
+
+  function checkAll(){
+     uidlist = document.getElementsByName('uid');
+     for (var i = 0; i < uidlist.length; i++){
+       uidlist[i].checked = ! uidlist[i].checked;
+     }
+  }
+
+   function checkInput(){
+    var aform=document.pageForm;
+    var num=aform.count.value;
+    var reg=/\D/;
+    if(num==""||num<1||!(num.match(reg)==null)){
+      alert("必须是>0的数字，请检查");
+      form.rowPerPage.focus();
+      return false;
+    }else{
+      location.href='<%=action%>?count='+num+'&page=<%=pageInfoExt.getPageInfo().getPage()%>&<%=request.getAttribute("queryCondition")%>';
+    }
+  }
+
+    <%--
+       据页面某些元素的特征码,决定页面刷新
+       页面load后,自动运行的函数
+      页面必须实现manualRun().
+    --%>
+    function manualRun(){
+      checkInput();
+    }
+
+</script>
+<%@ include file="/include/footer.jsp" %>
+</body>
+
+</html>

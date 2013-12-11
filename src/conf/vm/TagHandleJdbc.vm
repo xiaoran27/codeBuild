@@ -1,0 +1,560 @@
+#parse("TagCommon.vm")
+
+##2-Answer/ErrorInfo; 3-Errtype/Errcode/Errstr
+#set($errCount="3")
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27
+*   create
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+#*
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-14 20:36
+*   create
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-16 10:53
+*   + sql & logging operate
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-23
+* + 据handle操作生产不同代码
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-25
+* M map中put唯一索引代码注释调, uid不重复赋值
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-28
+* M logging 增删改记录日志
+* M 查询模块更改为条件返回对值
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-5-13
+* + loggingPart = new ${Protocol}LoggingPart();
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-5-14 20:31
+* M 支持多唯一索引查询
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-5-28 11:14
+* M 修改req.getXxxInfo()和start/count的问题
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-6-25
+* M 修改iDaoManager是null的问题
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2008-8-1
+* M 使用jdbc实现
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+*#
+
+
+package com.lj.${protocol}.${msgforamt}.handle;
+
+import java.util.*;
+import java.sql.*;
+
+import org.apache.log4j.Logger;
+import java.util.concurrent.*;
+import org.apache.commons.lang.builder.*;
+
+import com.lj.comm.Constant;
+import com.lj.message.*;
+import com.lj.utils.*;
+import com.lj.comm.handle.*;
+import com.lj.main.*;
+import com.lj.${protocol}.comm.*;
+
+#if ( $msgforamt == "msgc")
+import ${protocol}.msg.*;
+#else
+import com.lj.${protocol}.${msgforamt}.msg.*;
+#end
+
+import com.xiaoran27.db.entity.pojo.*;
+import com.xiaoran27.db.entity.pojo.ext.*;
+
+/**
+ * ${Descript0}
+ *
+ * @author Xiaoran27 $author: $
+ * @version $Revision: 1.24 $
+ * @ID $Id: TagHandle.vm,v 1.24 2009/09/10 03:20:12 xiaoran27 Exp $
+  */
+public class ${Tag0}Handle implements IHandle {
+
+  private static final Logger logger = Logger.getLogger( ${Tag0}Handle.class );
+
+  private byte[] oriMsg = null;  //实际数据
+
+  private int msgTag = -1;  //消息标识[0,255]
+
+  private int msgType = -1; //消息类型
+
+  /**
+   *
+   */
+  public ${Tag0}Handle() {
+  }
+
+  /**
+     * 分析待处理的数据包(已解码)
+   * @see com.lj.comm.handle.IHandle#parseMessage(byte[],boolean)
+   */
+  public void parseMessage(byte[] msg, boolean codecIsFF){
+    IMessage iMessage = MessageFactory.createMessage("${msgforamt0}");
+    iMessage.setCodecIsFF(codecIsFF);
+    iMessage.setMessageData(msg);
+
+    this.oriMsg = msg;
+    this.msgTag = iMessage.getMessageId();
+    this.msgType = iMessage.getMessageType();
+  }
+
+  /**
+   * 业务实现
+   * @see com.lj.comm.handle.IHandle#handleMessage()
+   */
+  public byte[] handleMessage()  throws Exception {
+    if (MSGTYPE_REQ == msgType){
+       return handleReq();
+    }else if (MSGTYPE_RSP == msgType){
+       return handleRsp();
+    }
+
+    return null;
+  }
+
+   /**
+   * 处理请求消息
+   * @see com.lj.comm.handle.IHandle#handleReq()
+   */
+  public byte[] handleReq() throws Exception {
+
+    if (logger.isDebugEnabled()){
+      logger.debug("handleReq() - REQ bytes(HEX): "+HexUtil.byteToHex(oriMsg));
+    }
+#if ( $msgforamt == "msgc")
+    ${protocol0}Message rcvmsg = new ${protocol0}Message();
+    rcvmsg.decode(oriMsg);
+
+    /*handle request*/
+    ${protocol0}${Tag0}Rsp rsp = handleRequest((${protocol0}${Tag0}Req)rcvmsg.getParameter());
+
+    ${protocol0}Message sndmsg = new ${protocol0}Message(rsp);
+    byte[] sndbuf = new byte[IMessage.SOCKET_BUFFER_MAX];
+    int sndlen = sndmsg.encode(sndbuf);
+    byte[] rspb = new byte[sndlen];
+    System.arraycopy(sndbuf,0,rspb,0,sndlen);
+#else
+    ${Tag0}MessageReq req = new ${Tag0}MessageReq();
+    if (0 > req.fromBytes(oriMsg)){
+      throw new Exception("${Tag0}MessageReq's format is error: \r\n"+HexUtil.byteToHex(oriMsg));
+    }
+
+    /*handle request*/
+    IMessageBytes rsp = handleRequest(req);
+
+    byte[] rspb = rsp.toBytes();
+#end
+
+    if (logger.isDebugEnabled()){
+      logger.debug("handleReq() - RSP bytes(HEX): "+HexUtil.byteToHex(rspb));
+    }
+
+    return rspb;
+  }
+
+   /**
+   * 处理应答消息
+   * @see com.lj.comm.handle.IHandle#handleRsp()
+   */
+  public byte[] handleRsp() throws Exception {
+
+    if (logger.isDebugEnabled()){
+      logger.debug("handleRsp() - RSP bytes(HEX): "+HexUtil.byteToHex(oriMsg));
+    }
+#if ( $msgforamt == "msgc")
+    ${protocol0}Message rcvmsg = new ${protocol0}Message();
+    rcvmsg.decode(oriMsg);
+
+    /*handle request*/
+    Object obj = handleResponse((${protocol0}${Tag0}Rsp)rcvmsg.getParameter());
+
+    byte[] answerb = toBytes(obj);
+#else
+    ${Tag0}MessageRsp rsp = new ${Tag0}MessageRsp();
+    if (0 > rsp.fromBytes(oriMsg)){
+      throw new Exception("${Tag0}MessageRsp's format is error: \r\n"+HexUtil.byteToHex(oriMsg));
+    }
+
+    /*handle response*/
+    Object obj = handleResponse(rsp);
+
+    byte[] answerb = toBytes(obj);
+#end
+
+    if (logger.isDebugEnabled()){
+      logger.debug("handleRsp() - ANSWER bytes(HEX): "+HexUtil.byteToHex(answerb));
+    }
+
+    return answerb;
+  }
+
+  /**
+   * @param req
+   * @return
+   */
+  private #if($msgforamt == "msgc")${protocol0}${Tag0}Rsp #else ${Tag0}MessageRsp #end handleRequest(#if($msgforamt == "msgc")${protocol0}${Tag0}Req #else ${Tag0}MessageReq #end req) throws Exception {
+
+    if (logger.isInfoEnabled()){
+         logger.info("handleRequest(#if($msgforamt == "msgc")${protocol0}${Tag0}Req #else ${Tag0}MessageReq #end) - REQ Obj: "+ req);
+       }
+    #if($msgforamt == "msgc")${protocol0}${Tag0}Rsp #else ${Tag0}MessageRsp #end rsp = new #if($msgforamt == "msgc")${protocol0}${Tag0}Rsp() #else ${Tag0}MessageRsp() #end;
+    rsp.setSeq(req.getSeq());
+
+#if($tag!="ping" )
+
+    #if($msgforamt == "msgc")${protocol0}ResCommon#else ResCommon #end resCommon = new #if($msgforamt == "msgc")${protocol0}ResCommon()#else ResCommon() #end ;
+#if($errCount == "3")
+    resCommon.setErrcode(RC_OK);
+    resCommon.setErrstr("");
+#else
+    resCommon.setAnswer(RC_OK);
+    resCommon.setErrorInfo("");
+#end
+
+    Map map = new LinkedHashMap();
+    boolean isReturn = false;
+    
+    StringBuffer whereStr = null;
+    ConcurrentMap<String, Object> cacheTableMap = null;
+    Object data = null;
+    ResultSet rs = null;
+
+    //logical handle
+    //TODO: write your code to here
+
+#set ($table1=$Tables.get($tagId))
+#if($table1!="")
+    String[] sql=null;
+    StringBuffer sqlBuffer = null;
+    BlockingQueue<String[]> syncQueue = null;
+    if(MainRunnable.isDb2mem){  //TODO: it's MainRunnable?
+      sqlBuffer = new StringBuffer();
+      syncQueue = MainRunnable.syncQueue;
+    }
+    StringBuffer loggingBuffer = new StringBuffer();
+
+#set ($splits=$strings.split($table1,";"))
+#foreach ($split in $splits)
+#set($table0= $split)
+#set($table= $table0.toLowerCase())
+#set($TABLE = $table0.toUpperCase())
+#set($Table = $strings.capitalizeFirstLetter($table))
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+#parse("CommonTemplate.vm")
+    //check params
+#if ($HANDLE != "QUERY")
+    ${protocol0}${Table0}Info[] infos = req.get${Table0}Info();
+    if (null==infos){
+        resCommon.setErrcode(this.RC_NOT_FOUND);
+        resCommon.setErrstr("no ${Table0}Info!");
+        isReturn = true;
+    }
+#end
+
+    if (!isReturn){
+
+      try{
+        /* 设置唯一索引条件
+#foreach($allUniqueKey0 in $TableINXS)#set($t=",")
+        map = new LinkedHashMap();
+        //map.put("indexColumn",Object); //TODO: put UniqueIndex to map
+#set($i =0)#foreach($indexColumn0 in $ColumnCodes)#set($indexcolumn = $indexColumn0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($t0=$indexColumn0.concat($t))#set($t1=$t.concat($indexColumn0))#if($allUniqueKey0.indexOf($t)<0 && $allUniqueKey0.indexOf($indexColumn0)>=0  || $allUniqueKey0.indexOf($t1)>=0 || $allUniqueKey0.indexOf($t0)>=0)
+        map.put("${indexColumn0}",(#if($ColumnType0=="int")Integer#elseif($ColumnType0=="long")Long#elseif($ColumnType0=="float")Float#elseif($ColumnType0=="double")Double#else${ColumnType}#end)req.getXXX()); //TODO: change to your value
+#end #set($i = $i +1)#end
+#end
+        */
+
+#if ($HANDLE == "QUERY")
+        /*
+        map = new LinkedHashMap();
+        if (null!=req.getCondCol1() &&　req.getCondCol1().trim().length()>0){
+            map.put("condcol1",req.getCondCol1());
+        }
+        */
+        /* 自定义条件使用下面*/
+        StringBuilder sbWhere = new StringBuilder(" select * from ${Table} where 1=1 ");
+        if (null!=req.getCondCol1() &&　req.getCondCol1().trim().length()>0){
+            sbWhere.append(" and condcol1 = '").append(req.getCondCol1()).append("'");
+        }
+        
+
+        int start = null==req.getStart()?0:req.getStart().intValue();
+        start = start<=0 ? 0 : start;
+        int count = null==req.getCount()?0:req.getCount().intValue();
+        count = count<=0 ? Integer.MAX_VALUE : count;
+
+        rs = ProxoolExt.executeQueryLimit(sbWhere.toString(),start,count);
+        //rs to list
+
+          List<#if($msgforamt == "msgc")${protocol0}${Table}Info #else ${Table} #end> list=new ArrayList<#if($msgforamt == "msgc")${protocol0}${Table}Info #else ${Table} #end>();
+          ## #if($msgforamt == "msgc")${protocol0}${Tag0}[] #else ${Tag0}[] #end infos = new #if($msgforamt == "msgc")${protocol0}${Tag0}[list.size()] #else ${Tag0}[list.size()] #end ;
+          while(rs.next()){
+            ## ${Table} pojo = new #if($msgforamt == "msgc")${protocol0}${Tag0}() #else ${Tag0}() #end ;
+              #if($msgforamt == "msgc")${protocol0}${Table}Info #else ${Table} #end info = new #if($msgforamt == "msgc")${protocol0}${Table}Info #else ${Table} #end();
+#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($Columncode = $strings.capitalizeFirstLetter($columncode))
+              info.set${Columncode}(rs.getString("${columncode}"));  //getXxx(...)
+#end
+            list.add(info);
+          }
+        if (null==list || list.size()<1){
+#if($errCount == "3")
+          resCommon.setErrcode(RC_NOT_FOUND);
+          resCommon.setErrstr("no record!");
+#else
+          resCommon.setAnswer(RC_NOT_FOUND);
+          resCommon.setErrorInfo("no record!");
+#end
+          isReturn = true;
+        }else{
+          if (logger.isDebugEnabled()){
+            logger.debug("handleRequest(#if($msgforamt == "msgc")${protocol0}${Tag0}Req #else ${Tag0}MessageReq #end) - list.size()=" + list.size() );
+          }
+          rsp.set${Table}Info(list.toArray(new #if($msgforamt == "msgc")${protocol0}${Table}Info[0] #else ${Table}[0] #end));
+        }
+#elseif($HANDLE == "INSERT")
+        long uids[]=ProxoolExt.nextUid("${TABLE}",infos.length);
+        int i=0;
+        for(${protocol0}${Table0}Info info: infos){
+          ${Table0} pojo = new ${Table0}();
+          pojo.setUid(uids[i]);
+#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($Columncode = $strings.capitalizeFirstLetter($columncode))
+#if($columncode!="uid")
+          pojo.set${Columncode}(info.get${Columncode}());
+#end
+#end
+          String sqlString=new ${Table0}Ext(pojo).toInsertSql();
+          ProxoolExt.addBatch(sqlString);
+          if (logger.isDebugEnabled()){
+            logger.debug("handleRequest(#if($msgforamt == "msgc")${protocol0}${Tag0}Req #else ${Tag0}MessageReq #end) - pojo=" + pojo );
+          }
+
+          loggingBuffer.append(pojo.toString());
+          if(null!=sqlBuffer){
+            sqlBuffer.append(sqlString+SQLSPLIT);
+          }
+          i++;
+        }
+#else
+
+        for(${protocol0}${Table0}Info info: infos){
+            ${Table0} pojo = new ${Table0}();
+            //TODO
+            long uid = info.getUid();
+            if (uid > 0) {
+              pojo.setUid(uid);
+            } else {
+              if ((info.getIdxcol() != null) &&
+                  info.getIdxcol().length()>0) {
+                  pojo.setIdxcol(info.getIdxcol()); //TODO: change to your value
+              } 
+            }
+
+            if (logger.isDebugEnabled()){
+                logger.debug("handleRequest(#if($msgforamt == "msgc")${protocol0}${Tag0}Req #else ${Tag0}MessageReq #end) - pojo=" + pojo );
+            }
+
+#if ($HANDLE == "DELETE")
+            String sqlString=new ${Table0}Ext(pojo).toDeleteSql();
+#else
+            String sqlString=new ${Table0}Ext(pojo).toUpdateSql();
+#end
+            ProxoolExt.addBatch(sqlString);
+
+            loggingBuffer.append(pojo.toString());
+            if (null != sqlBuffer) {
+              sqlBuffer.append(sqlString + SQLSPLIT);
+            }
+        }
+#end
+
+#if ($HANDLE != "QUERY")
+        //执行批处理看  
+        boolean succ = ProxoolExt.executeBatch();     
+        if (succ) {
+          //clear cahce
+          String key="cache_${table0}";
+          cacheTableMap = Constant.getData(key);
+         if (cacheTableMap!=null){
+             cacheTableMap.clear();
+             logger.warn("handleRequest(#if($msgforamt == "msgc")${protocol0}${Tag0}Req #else ${Tag0}MessageReq #end ) - "+key+" has be changed, clear it.");
+         }
+        } else {
+          resCommon.setErrcode(this.RC_DBFAILED);
+          resCommon.setErrstr("error SQL: " + sqlBuffer);
+          isReturn = true;
+        }
+#end
+      }catch(Exception e){
+        logger.error("handleRequest(#if($msgforamt == "msgc")${protocol0}${Tag0}Req #else ${Tag0}MessageReq #end) - Exception e=" + e,e);
+
+#if($errCount == "3")
+        resCommon.setErrcode(RC_FAILED);
+        resCommon.setErrstr(""+e);
+#else
+        resCommon.setAnswer(RC_FAILED);
+        resCommon.setErrorInfo(""+e);
+#end
+
+        isReturn = true;
+      }
+    }
+#end
+
+    if(!isReturn && null!=sqlBuffer && sqlBuffer.length()>0) {
+      sql = sqlBuffer.toString().split(SQLSPLIT);
+      syncQueue.put(sql);
+      if(logger.isDebugEnabled()) {
+        logger.debug(sqlBuffer.toString());
+      }
+    }
+
+    if (!isReturn){
+#if($errCount == "3")
+      resCommon.setErrcode(RC_OK);
+      resCommon.setErrstr("");
+#else
+      resCommon.setAnswer(RC_OK);
+      resCommon.setErrorInfo("");
+#end
+    }
+#end
+    rsp.setResCommon(resCommon);
+#end
+
+    if (logger.isInfoEnabled()){
+      logger.info("handleRequest(#if($msgforamt == "msgc")${protocol0}${Tag0}Req #else ${Tag0}MessageReq #end) - RSP Obj: "+ rsp);
+    }
+
+#if ($HANDLE != "QUERY")
+    {  //logging
+        #if($msgforamt == "msgc")${protocol}.msg.${protocol0}LoggingPart #else LoggingPart #end loggingPart = req.getLoggingPart();
+
+        if (null == loggingPart) {
+          loggingPart = new #if($msgforamt == "msgc")${protocol}.msg.${protocol0}LoggingPart #else LoggingPart #end();
+          loggingPart.setUsername("UNKNOW");
+          loggingPart.setIp("UNKNOW");
+        }
+
+        Logging loggingPOJO = new Logging();
+        loggingPOJO.setCtime(new Timestamp(System.currentTimeMillis()));
+        loggingPOJO.setDescript("${Descript0}" +
+          (isReturn ? ("失败: " + resCommon.getErrstr()) : "成功."));
+        loggingPOJO.setOptype("${HANDLE}"); //optype{ADD|DEL|MOD|OTHER}
+        loggingPOJO.setOperator(loggingPart.getUsername()+"("+loggingPart.getIp()+")"); //req.getUserid()
+        loggingPOJO.setStatus(isReturn ? "1" : "0"); //0-success,1-failure
+        loggingPOJO.setCreator(""+req.getSeq());
+
+        try {
+          String logging = new LoggingExt(loggingPOJO).toInsertSql();
+          boolean isSuccess = ProxoolExt.executeBatch(logging,false);
+          if (!isSuccess) {
+          }else{
+              //clear cahce
+              String key="cache_logging";
+              cacheTableMap = Constant.getData(key);
+             if (cacheTableMap!=null){
+                 cacheTableMap.clear();
+                 logger.warn("handleRequest(#if($msgforamt == "msgc")${protocol0}${Tag0}Req #else ${Tag0}MessageReq #end ) - "+key+" has be changed, clear it.");
+             }
+
+            if (null != sqlBuffer) {
+              sqlBuffer = new StringBuffer();
+              //syncQueue.put(new String[]{logging});
+            }
+          }
+        } catch (Exception e) {
+          logger.error("handleRequest(#if($msgforamt == "msgc")${protocol0}${Tag0}Req #else ${Tag0}MessageReq #end ) -Add Logging . Exception e=" +
+            e, e);
+        }
+    }
+#end
+
+    com.lj.simn.comm.ProxoolExt.close(); // close connection
+    return rsp;
+  }
+
+
+  /**
+   * @param rsp
+   * @return
+   */
+  private Object handleResponse(#if($msgforamt == "msgc")${protocol0}${Tag0}Rsp #else ${Tag0}MessageRsp #end rsp) throws Exception {
+
+    //TODO: 实现处理response消息
+
+    return null;
+  }
+
+  /**
+   * @param obj
+   * @return
+   */
+  private byte[] toBytes(Object obj){
+    byte[] rtnb = null;
+
+    //TODO: 实现转换字节
+
+    return rtnb;
+  }
+
+  /**
+   * 返回消息的类型
+   *
+   * @see com.lj.comm.handle.IHandle#getMsgType()
+   */
+  public int getMsgType(){
+    return msgType;
+  }
+
+  /**
+   * 返回消息标识
+   *
+   * @see com.lj.comm.handle.IHandle#getMsgTag()
+   */
+  public int getMsgTag(){
+    return msgTag;
+  }
+
+  /**
+   * 返回原始消息
+   *
+   * @see com.lj.comm.handle.IHandle#getOriMsg()
+   */
+  public byte[] getOriMsg(){
+    return oriMsg;
+  }
+
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)
+                .appendSuper(super.toString())
+                .append("msgType", this.msgType).append("msgTag", this.msgTag)
+                .append("oriMsg", HexUtil.byteToHex(this.oriMsg))
+                .toString();
+    }
+
+  /**
+   * @param args
+   */
+  public static void main(String[] args) {
+    // TODO Auto-generated method stub
+
+  }
+
+}

@@ -1,0 +1,35 @@
+#set ($table_=$strings.sub($table_,"-","_"))
+#set ($splits=$strings.split($table_,"_"))
+#set($table0= "")
+#foreach ($split in $splits)
+  #set($Split=$strings.capitalizeFirstLetter($split))
+  #set($table0= $table0.concat($Split))
+#end
+#set($table=$table0.toLowerCase())
+#set($Table=$strings.capitalizeFirstLetter($table)) 
+#set($TABLE=$table_.toUpperCase())
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+#parse("CommonTemplate.vm")
+##set($Comment=$strings.capitalizeFirstLetter($comment0))
+#set($Comment=$comment0)
+#set($comment=$comment0.toLowerCase())
+#set($COMMENT=$comment0.toUpperCase())
+
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mappings PUBLIC "-//DOZER//DTD MAPPINGS//EN" "http://dozer.sourceforge.net/dtd/dozerbeanmapping.dtd">  
+   
+ <mappings>  
+   <mapping>  
+     <class-a>com.xiaoran27.db.entity.pojo.${Table0}</class-a>  
+     <class-b>com.xiaoran27.db.entity.dto.${Table0}Model</class-b>  
+    
+ #set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($ColumnComment0 = $ColumnComments.get($i))
+     <field>  
+       <a>${ColumnCode0}</a>  
+       <b>${ColumnCode0}</b>  
+     </field>  
+     
+#set($i=$i+1)#end
+
+   </mapping>  
+</mappings>  

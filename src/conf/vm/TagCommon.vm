@@ -1,0 +1,278 @@
+#set ($protocol0="Simn")  ##protlcol name
+#set($Protocol0=$strings.capitalizeFirstLetter($protocol0))
+#set($PROTOCOL=$protocol0.toUpperCase())
+#set($protocol=$protocol0.toLowerCase())
+#set($Protocol=$strings.capitalizeFirstLetter($protocol))
+
+## protocol message
+#* ----------upt protocol ----------
+#set($Tags = ["ping","common","operator-login","operator-logout","operator-register","operator-unregister","operator-register-user","operator-get-user","operator-modify-user","operator-remove-user","user-register","user-login","user-logout","get-user-all","set-user-all","get-user-info","set-user-info","get-upt-feecode","set-upt-feecode","get-transmodecfg-tel","set-transmodecfg-tel","set-transmodecfg-atel","set-user-pwd","set-user-pause","set-user-unreg","set-user-restore","set-user-lock","set-user-unlock","get-current-ringmode","set-current-ringmode","get-default-transmode","set-default-transmode","get-transmodecfg","set-transmodecfg","get-atransmodecfg","set-atransmodecfg","get-transmodecfg-tels","set-transmodecfg-tels","get-transmodecfg-ringtime","set-transmodecfg-ringtime","get-current-transmodecfg","get-undisturbed","set-undisturbed","get-calltrans","set-calltrans","get-forcedefaulttransmode","set-forcedefaulttransmode","set-weektransmode-rec","get-currentinfo","get-syscfginfo","get-blacklistinfo","get-dictinfo","get-alloperator","set-operator","get-operator","user-changeid","set-call-fee","get-call-fee","calc-callfee","get-fee-uptcode"])
+#set($Descripts = ["测试消息","公用信息","业务提供商登录: 业务提供商由客户端进行系统登录;","#业务提供商登出: 业务提供商由客户端进行系统登出;","业务提供商注册: 注册新业务提供商","业务提供商注销: 注销业务提供商","业务提供商注册UPT用户: 业务提供商登记新UPT用户. ","业务提供商获取UPT用户: 业务提供商查询UPT用户. ","业务提供商更改UPT用户信息: 业务提供商更改UPT用户注册信息.","业务提供商删除UPT用户: 业务提供商删除UPT用户","用户自注册: 用户本人注册. ","用户登录: 用户由客户端进行系统登录;","#用户登出: 用户由客户端进行系统登出;","#获取用户所有信息: 获取用户所有信息: UPT信息表,星期时间模式设置表,转移模式设置表","#更改用户所有信息: 更改用户所有信息: UPT信息表,星期时间模式设置表,转移模式设置表","获取用户注册信息: 获取用户注册信息","#用户更改注册信息: 用户更改注册信息","获取用户交费号码: 获取用户用于交费的号码,若没有表示使用UPT交费","更改用户交费号码: 更改用户用于交费的号码,若没有表示使用UPT交费","获取用户转移模式绑定号码: 获取用户某个转移模式绑定的号码,最多8个","更改用户转移模式绑定号码: 更改用户某个转移模式绑定的号码,最多8个,前面设定后才可设定后面的,没有号码的为空","更改用户转移模式某个绑定号码: 更改用户转移模式某个绑定的号码","用户更改口令: 用户更改口令","暂停用户: 暂停该用户.","注销用户: 注销该用户.","激活用户: 对于暂停/注销的用户进行恢复到正常使用状态;","锁定用户: 当用户一天登录口令失败指定次数(如100),则对该用户加锁.","解锁用户: 对锁定的用户进行人工解锁. ","获取当前振铃模式: 获取某个用户当前振铃模式. ","更改当前振铃模式: 更改某个用户当前振铃模式. ","获取默认转移模式: 获取某个用户默认转移模式. ","更改默认转移模式: 更改某个用户默认转移模式. ","获取转移模式及振铃时长设置: 获取所有转移模式的号码顺序及振铃时长的设置. ","更改转移模式及振铃时长设置: 更改所有转移模式的号码顺序及振铃时长的设置. ","获取某个转移模式及振铃时长设置: 获取某个转移模式的号码顺序及振铃时长的设置. ","更改某个转移模式及振铃时长设置: 更改某个转移模式的号码顺序及振铃时长的设置.  ","获取某个转移模式及其号码设置: 获取某个转移模式及其号码顺序的设置. ","更改某个转移模式及其号码顺序设置: 更改某个转移模式及其号码顺序顺序的设置. ","获取某个转移模式振铃时长设置: 获取某个转移模式振铃时长的设置.","更改某个转移模式振铃时长设置: 更改某个转移模式振铃时长的设置. ","获取当前转移模式及其号码设置: 获取某个用户当前转移模式及其号码设置. 当关闭强制使用默认转移模式时,先星期时间模式,后默认转移模式;开启时,默认转移模式.","获取免打扰功能设置: 获取是否开启免打扰功能及口令.","更改免打扰功能设置: 重新设置免打扰功能及口令.开启时必须输入口令;关闭时,口令无效. ","获取呼叫转移功能设置: 获取是否开启呼叫转移功能. ","更改呼叫转移功能设置: 重新设置呼叫转移功能.开启时,遇忙转移/关机无信号/掐线等转接下个号码;关闭时,遇到忙/关机无信号/掐线等立即中止呼叫.","获取强制使用默认转移模式: 获取某个用户强制使用默认转移模式.","更改强制使用默认转移模式: 更改某个用户是否开启强制使用默认转移模式. ","更改星期时间段转移设置: 更改某个用户时间段的转移模式设置. ","获取用户当前所有信息: 获取某个用户注册及其功能设置信息. ","获取系统配置信息","获取禁绑定电话","获取字典信息","获取业务所以业务提供商","修改业务提供商信息","获取某个业务提供商信息","UPT用户改号","UPT用户改号","计费","获取计费详细信息","计算通话费用","据callfee获取费用纪录的uptcode"])
+#set($Tables = ["","","operator","operator","operator","operator","operator;transmodecfg;uptinfo","operator;uptinfo","uptinfo","uptinfo","transmodecfg;uptinfo","uptinfo","uptinfo","uptinfo;transmodecfg;weektransmode","uptinfo;transmodecfg;weektransmode","uptinfo","uptinfo","uptinfo","uptinfo","transmodecfg","transmodecfg","transmodecfg","uptinfo","uptinfo","uptinfo","uptinfo","uptinfo","uptinfo;syscfg","uptinfo;","uptinfo","uptinfo","uptinfo","transmodecfg","transmodecfg","transmodecfg","transmodecfg","transmodecfg","transmodecfg","transmodecfg","transmodecfg","uptinfo;weektransmode;transmodecfg","uptinfo","uptinfo","uptinfo","uptinfo","uptinfo","uptinfo","weektransmode","uptinfo;weektransmode;transmodecfg","syscfg","blacklist","dict","operator","operator","operator","uptinfo","fee","fee","fee","fee"])
+*#
+#*
+##2006-6-13 11:00 +
+#set($Tags = ["get-fee-uptcode"])
+#set($Descripts = ["据callfee获取费用纪录的uptcode"])
+#set($Tables = ["fee"])
+*#
+#*
+##2006-02-17 +
+#set($Tags = ["user-changeid"])
+#set($Descripts = ["UPT用户改号"])
+#set($Tables = ["uptinfo"])
+*#
+#*
+##2006-02-24 +
+#set($Tags = ["set-call-fee","get-call-fee"])
+#set($Descripts = ["计费","获取计费详细信息"])
+#set($Tables = ["fee","fee"])
+*#
+#*
+##2006-5-18 10:05 +
+#set($Tags = ["calc-callfee"])
+#set($Descripts = ["计算通话费用"])
+#set($Tables = ["fee"])
+*#
+
+#* ----------TL protocol ----------
+#set($Tags = ["ping","gettime","savetime"])
+#set($Descripts = ["测试消息","获取通话时长","保存通话时长"])
+#set($Tables = ["","whitelist;todaydial","todaydial"])
+*#
+
+#* ----------wac protocol ----------
+#set($Tags = ["heart","ping","common","add-wacuser","del-wacuser","add-wactel","del-wactel","get-wac-tel","wake-service","get-wacallinfo","set-wacallinfo","get-wacallinfo-bz","set-wac-pnbz","get-bzflag","set-bzflag","get-wakeset","set-wakeset","get-inmins-wakeset","operator-add","operator-del","get-alloperator","get-operator","set-operator","get-all-wac","set-wacuser-status","set-operator-status","get-syscfginfo","set-syscfginfo","get-spectelinfo","set-spectelinfo","get-dictinfo","set-dictinfo","call-fee","get-call-fee","get-feerate","set-feerate","get-forbidcalled","set-forbidcalled","wake-service-result","get-feerate_mtime","set-wakeset-bat","change-pwd"])
+#set($Descripts = ["心跳消息","测试消息","公用信息","用户申请WAC业务","用户取消WAC业务","WAC加号码; 若wac群不存在,则增加新wac群","WAC减号码","获取主被叫的长短号及相关业务信息","唤醒服务","获取用户信息","修改用户信息","获取wac所有dn信息","修改wac(或pn)相关业务","获取wac的dn所有业务","设置wac的dn所有业务","获取dn唤醒设置","dn设置唤醒","获取当前时间n分钟内的唤醒设置","运营商注册","运营商注销","获取所有业务提供商","获取运营商信息","运营商修改注册信息","显示所有wac群","设置wac群状态","设置运营商状态","获取系统配置信息","设置系统配置信息","获取特殊电话","设置特殊电话","获取字典信息","设置字典信息","计费: 对主叫拨打外DN时进行计费.","获取计费详细信息","获取wac群的费率","设置wac群的费率","获取wac群的禁止号码","设置wac群的禁止号码","唤醒服务是否成功","获取wac群的费率设置时间","批量唤醒增加/修改/删除","修改口令"])
+#set($Tables = ["","","","wacinfo;wacbusiness","wacinfo;wacbusiness","wacinfo;wacbusiness","wacinfo;wacbusiness","wacbusiness","wakeset","wacinfo","wacinfo","wacbusiness","wacbusiness","wacbusiness","wacbusiness","wakeset","wakeset","wakeset","operator","operator","operator","operator","operator","wacinfo","wacinfo","operator","syscfg","syscfg","spectellist","spectellist","dict","dict","fee","fee","feerate","feerate","forbidcalled","forbidcalled","wakeset","feerate","wakeset","wacinfo;operator"])
+*#
+#*
+##2006-02-07 +
+#set($Tags = ["call-fee","get-call-fee","get-feerate","set-feerate","get-forbidcalled","set-forbidcalled"])
+#set($Descripts = ["计费: 对主叫拨打外DN时进行计费.","获取计费详细信息","获取wac群的费率","设置wac群的费率","获取wac群的禁止号码","设置wac群的禁止号码"])
+#set($Tables = ["fee","fee","feerate","feerate","forbidcalled","forbidcalled"])
+*#
+#*
+##2006-02-16 +
+#set($Tags = ["wake-service-result"])
+#set($Descripts = ["唤醒服务是否成功"])
+#set($Tables = ["wakeset"])
+*#
+#*
+##2006-02-24 M
+#set($Tags = ["get-wac-tel","wake-service"])
+*#
+#*
+##2006-5-11 11:42 +/M
+#set($Tags = ["get-feerate-mtime","set-wakeset-bat","change-pwd"])
+#set($Descripts = ["获取wac群的费率设置时间","批量唤醒增加/修改/删除","修改口令"])
+#set($Tables = ["feerate","wakeset","wacinfo;operator"])
+*#
+#*
+##2006-5-12 10:09 +
+#set($Tags = ["change-pwd"])
+#set($Descripts = ["修改口令"])
+#set($Tables = ["wacinfo;operator"])
+*#
+
+#* ----------mupt protocol ----------
+#set($Tags = ["ping","common","change-pwd","add-user","del-user","modify-user","modify-muptrn","modify-muptid","modify-user-status","get-mupt","modify-rn","modify-rnflag","operator-add","operator-del","get-alloperator","get-operator","set-operator","set-operator-status","get-alluser","login","logout","count-user","count-userchanged","get-logger","get-syscfginfo","set-syscfginfo","get-dictinfo","set-dictinfo","get-blackrn","set-blackrn","get-whitern","set-whitern"])
+#set($Descripts = ["测试消息","公用信息","修改口令","用户申请MUPT业务: 增加新的MUPT信息和业务rn.若id或rn存在会增加不成功.","用户取消mupt业务: 删除整个mupt(包含所有相关数据).","修改用户信息","修改用户rn","修改用户id","修改用户status","获取mupt信息","修改某个rn; muptid必须存在,把原号码改为新号码","修改rn振铃: 修改指定号码的是否振铃","运营商注册","运营商注销","获取所有业务提供商","获取运营商信息","运营商修改注册信息","设置运营商状态","获取用户信息","登录","安全退出","统计时间段内的用户数","统计时间段内的用户数变化情况","获取操作日志","获取系统配置信息","设置系统配置信息","获取字典信息","设置字典信息","获取黑名单","设置黑名单: 重复的不设置","获取白名单","设置白名单: 重复的不设置"])
+#set($Tables = ["","","muptinfo;operator","muptinfo;muptrn","muptinfo;muptrn","muptinfo","muptrn","muptinfo;muptrn","muptinfo","muptinfo;muptrn","muptrn","muptrn","operator","operator","operator","operator","operator","operator","muptinfo;muptrn","muptinfo","muptinfo","muptinfo;muptrn","userchanged","logger","syscfg","syscfg","dict","dict","blackrn","blackrn","whitern","whitern"])
+*#
+#set($msgforamt0="msgc")  ##编解码方式
+#set($Msgforamt0=$strings.capitalizeFirstLetter($msgforamt0))
+#set($MSGFORAMT=$msgforamt0.toUpperCase())
+#set($msgforamt=$msgforamt0.toLowerCase())
+#set($Msgforamt=$strings.capitalizeFirstLetter($msgforamt))
+
+#* ----------snpm<->NGN protocol xml----------
+#set($Tags = ["ping","add-tel","del-tel"])
+#set($Descripts = ["测试消息","开户","销户"])
+#set($Tables = ["","telphone","telphone"])
+*#
+
+#* ----------snpm<->MPM protocol mpm----------
+#set($Tags = ["ping","upload-spc-ngn","download-spc-ngn","upload-area","download-area","upload-stel","download-stel","upload-tel","download-tel"])
+#set($Descripts = ["测试消息","加载点码及NGN呼叫转移号码","查询点码及NGN呼叫转移号码","加载区县(不实现)","查询区县(不实现)","加载特服号","查询特服号","加载用户号码","查询用户号码"])
+#set($Tables = ["","dict","dict","dict","dict","stelphone","stelphone","telphone","telphone"])
+*#
+
+#* ----------snpm<->WEB protocol msgc----------
+#set($Tags = ["ping","common","login","logout","query-user","add-user","del-user","modify-user","query-roler","add-roler","del-roler","modify-roler","query-dict","add-dict","del-dict","modify-dict","query-configure","add-configure","del-configure","modify-configure","query-logging","query-spc-ngn","modify-spc-ngn","query-area","add-area","del-area","modify-area","query-stel","add-stel","del-stel","modify-stel","query-tel","upload-mpm"])
+#set($Descripts = ["测试消息","公用信息","登录","安全退出","查询用户","增加用户","删除用户","修改用户","查询角色","增加角色","删除角色","修改角色","查询数据字典","增加数据字典","删除数据字典","修改数据字典","查询系统配置","增加系统配置","删除系统配置","修改系统配置","查询日志","查询点码及呼叫转移号码","修改点码及呼叫转移号码","查询区县","增加区县","删除区县","修改区县","查询特服号","增加特服号","删除特服号","修改特服号","查询用户号码","向MPM加载数据"])
+#set($Tables = ["","","userinfo","userinfo","userinfo","userinfo","userinfo","userinfo","roler","roler","roler","roler","dict","dict","dict","dict","configure","configure","configure","configure","logging","dict","dict","dict","dict","dict","dict","stelphone","stelphone","stelphone","stelphone","telphone","dict;stelphone;telphone"])
+#set($Depends = ["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""])
+#set($Jspdoes = ["","","","","qry","add","del","mod","qry","add","del","mod","qry","add","del","mod","qry","add","del","mod","qry","qry","mod","qry","add","del","mod","qry","add","del","mod","qry","mod"])
+#set($Handles = ["","","query","update","query","insert","delete","update","query","insert","delete","update","query","insert","delete","update","query","insert","delete","update","query","query","update","query","insert","delete","update","query","insert","delete","update","query","update"])
+#set($Models = ["","","","","system","system","system","system","system","system","system","system","system","system","system","system","system","system","system","system","log","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz"])
+*#
+
+#* ----------simn protocol msgc----------
+#set($Tags = ["ping","add-rnmoshow","del-rnmoshow","change-rnmoshow-status","query-rnmoshowInfo","add-rnmishow","del-rnmishow","change-rnmishow-status","query-rnmishowInfo","query-crcode-by-msisdn1","query-rnmInfo","set-no7TransInfo","get-no7TransInfo","delete-no7TransInfo","update-location","lock-msrn-for-imsi","unlock-msrn-for-imsi","is-carrier-location","verify-msrn-for-imsi","set-imsimsc","get-imsimsc","set-smsc","get-smsc","set-hlr","generate-ltid","get-mtfsmbegin","store-mtfsmcontinue","get-mtfsmcontinue","clear-no7TransInfo","login","logout","query-user","add-user","del-user","modify-user","query-roler","add-roler","del-roler","modify-roler","query-dict","add-dict","del-dict","modify-dict","query-configure","add-configure","del-configure","modify-configure","query-logging","query-vmsrn","add-vmsrn","del-vmsrn","query-vmsisdn","add-vmsisdn","del-vmsisdn","query-vlr","add-vlr","del-vlr","modify-vlr","query-rnmivlr","add-rnmivlr","del-rnmivlr","modify-rnmivlr","query-msrn","add-msrn","del-msrn","modify-msrn","query-rnmimsrn","add-rnmimsrn","del-rnmimsrn","modify-rnmimsrn","query-some-rnmoshowInfo","query-some-rnmishowInfo","query-msisdnreg","add-msisdnreg","del-msisdnreg","query-countrycrcode","add-countrycrcode","del-countrycrcode","query-stat-simn","trace"])
+#set($TagReqFields = ["seq;0","seq;0,loggingPart;1,rnmoshowInfo;0","seq;0,loggingPart;1,uid;0,imsi;1,msisdn0;1,msisdn1;1","seq;0,loggingPart;1,uid;0,imsi;1,msisdn0;1,msisdn1;1,status1;0","seq;0,loggingPart;1,imsi;1,msisdn0;0,state;1,city;1","seq;0,loggingPart;1,rnmishowInfo;0","seq;0,loggingPart;1,uid;0,imsi;1,msisdn0;1,msisdn1;1","seq;0,loggingPart;1,uid;0,imsi;1,msisdn0;1,msisdn1;1,status1;0","seq;0,loggingPart;1,imsi;1,msisdn0;0","seq;0,loggingPart;1,msisdn1;0","seq;0,loggingPart;1,identity,;0,flag;0","seq;0,loggingPart;1,no7TransInfo;0","seq;0,loggingPart;1,tid;0","seq;0,loggingPart;1,tid;0","seq;0,loggingPart;1,imsi;0,mscid;1,vlrid;1","seq;0,loggingPart;1,imsi;0","seq;0,loggingPart;1,msrn;0","seq;0,loggingPart;1,imsi;0,msrn;0","seq;0,loggingPart;1,msrn;0","seq;0,loggingPart;1,imsi;0,mscid;0","seq;0,loggingPart;1,imsi;0","seq;0,loggingPart;1,msisdn1;0,sc;0","seq;0,loggingPart;1,msisdn0;0,smscid;0","seq;0,loggingPart;1,imsi;0,hlrid;0","seq;0,loggingPart;1,mtFsmInfo;0","seq;0,loggingPart;1,tid;0","seq;0,loggingPart;1,mtFsmInfo;0","seq;0,loggingPart;1,tid;0,rtid;0","seq;0,loggingPart;1,no7TransInfo;0","seq;0,loggingPart;0,userid;0,passwd;1","seq;0,loggingPart;0,userid;0,passwd;1","seq;0,loggingPart;1,uid;1,userid;1,roleid;1,start;1,count;1","seq;0,loggingPart;0,userInfo;0","seq;0,loggingPart;0,userInfo;0","seq;0,loggingPart;0,userInfo;0","seq;0,loggingPart;1,uid;1,roleid;1,start;1,count;1","seq;0,loggingPart;0,roleInfo;0","seq;0,loggingPart;0,roleInfo;0","seq;0,loggingPart;0,roleInfo;0","seq;0,loggingPart;1,uid;1,dtype;1,dcode;1,start;1,count;1","seq;0,loggingPart;0,dictInfo;0","seq;0,loggingPart;0,dictInfo;0","seq;0,loggingPart;0,dictInfo;0","seq;0,loggingPart;1,uid;1,flag;1,start;1,count;1","seq;0,loggingPart;0,configureInfo;0","seq;0,loggingPart;0,configureInfo;0","seq;0,loggingPart;0,configureInfo;0","seq;0,loggingPart;1,userid;1,starttime;1,endtime;1,start;1,count;1","seq;0,loggingPart;1,uid;1,crcodestate;1,msrn;1,start;1,count;1","seq;0,loggingPart;0,vmsrnInfo;0","seq;0,loggingPart;0,vmsrnInfo;0","seq;0,loggingPart;1,uid;1,crcodestate;1,msisdn1;1,start;1,count;1","seq;0,loggingPart;0,vmsisdnInfo;0","seq;0,loggingPart;0,vmsisdnInfo;0","seq;0,loggingPart;1,uid;1,crcode;1,vlrid;1,start;1,count;1","seq;0,loggingPart;0,vlrInfo;0","seq;0,loggingPart;0,vlrInfo;0","seq;0,loggingPart;0,vlrInfo;0","seq;0,loggingPart;1,uid;1,state;1,vlrid;1,start;1,count;1","seq;0,loggingPart;0,rnmivlrInfo;0","seq;0,loggingPart;0,rnmivlrInfo;0","seq;0,loggingPart;0,rnmivlrInfo;0","seq;0,loggingPart;1,uid;1,crcode;1,msrn;1,start;1,count;1","seq;0,loggingPart;0,msrnInfo;0","seq;0,loggingPart;0,msrnInfo;0","seq;0,loggingPart;0,msrnInfo;0","seq;0,loggingPart;1,uid;1,state;1,msrn;1,start;1,count;1","seq;0,loggingPart;0,rnmimsrnInfo;0","seq;0,loggingPart;0,rnmimsrnInfo;0","seq;0,loggingPart;0,rnmimsrnInfo;0","seq;0,loggingPart;1,uid;1,state;1,city;1,identity;1,cc;1,crcode;1,start;1,count;1","seq;0,loggingPart;1,uid;1,crcode;1,identity;1,start;1,count;1","seq;0,loggingPart;1,uid;1,crcodestate;1,msisdn1;1,start;1,count;1","seq;0,loggingPart;0,msisdnregInfo;0","seq;0,loggingPart;0,msisdnregInfo;0","seq;0,loggingPart;1,uid;1,country;1,crcode;1,start;1,count;1","seq;0,loggingPart;0,countrycrcodeInfo;0","seq;0,loggingPart;0,countrycrcodeInfo;0","seq;0,crcode;1,state;1,simntype;0,starttime;0,endtime;0","seq;0,cmd;0,args;0"])
+#set($TagRspFields = ["seq;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,rnmoshowInfo;1,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,rnmishowInfo;1,res-common;0","seq;0,crcode;1,msisdn1;1,res-common;0","seq;0,rnmInfo,;0,res-common;0","seq;0,res-common;0","seq;0,no7TransInfo;1,res-common;0","seq;0,res-common;0","seq;0,vlrid;1,res-common;0","seq;0,msrn;1,res-common;0","seq;0,res-common;0","seq;0,flag,;0,res-common;0","seq;0,msrn;1,res-common;0","seq;0,res-common;0","seq;0,mscid;1,res-common;0","seq;0,smscInfo;1,res-common;0","seq;0,smscInfo;1,res-common;0","seq;0,res-common;0","seq;0,res-common;0,ltid;1","seq;0,res-common;0,mtFsmInfo;1","seq;0,res-common;0","seq;0,res-common;0,mtFsmInfo;1","seq;0,res-common;0","seq;0,userInfo;1,res-common;0","seq;0,res-common;0","seq;0,userInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,roleInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,dictInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,configureInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,loggingInfo;1,rowCount;0,res-common;0","seq;0,vmsrnInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,vmsisdnInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,vlrInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,rnmivlrInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,msrnInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,rnmimsrnInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,rnmoshowInfo;1,rowCount;0,res-common;0","seq;0,rnmishowInfo;1,rowCount;0,res-common;0","seq;0,msisdnregInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,countrycrcodeInfo;1,rowCount;0,res-common;0","seq;0,res-common;0","seq;0,res-common;0","seq;0,statSimnInfo;1,res-common;0","seq;0,rsinfo;0,res-common;0"])
+#set($Descripts = ["测试消息","一卡多号出访开户","一卡多号出访销户","一卡多号出访改副msisdn状态","一卡多号查询某个主msisdn相关的出访业务数据","一卡多号来访开户","一卡多号来访销户","一卡多号来访改副msisdn状态","一卡多号查询某个主msisdn相关的来访业务数据","据一卡多号副号码查询sp计费代码","据imsi或msisdn(主/副)号或msrn,获取相关信息","存事务相关信息","据事务id,获取相关信息","据事务id,删除相关信息","位置更新","给imsi分配一个msrn","释放IMSI占用的msrn","据IMSI,msrn查询是否在合作区域(出访:合作方网络;来访:开通业务的区域)","校验给imsi分配的msrn","保存imsi使用的mscid","获取imsi使用的mscid","保存smsc数据","获取smsc数据","更新imsi的hlr","得到localtid","根据tid查询临时存储的BEGINMT_FSMMSU","临时存储ContinueMT_FSM","根据tid查询临时存储的ContinueMT_FSMMSU","清除事务相关信息","登录","安全退出","查询用户","增加用户","删除用户","修改用户","查询角色","增加角色","删除角色","修改角色","查询数据字典","增加数据字典","删除数据字典","修改数据字典","查询系统配置","增加系统配置","删除系统配置","修改系统配置","查询日志","查询移动用户漫游号码段","增加移动用户漫游号码段","删除移动用户漫游号码段","查询副号码段","增加副号码段","删除副号码段","查询访问地","增加访问地","删除访问地","修改访问地","查询开通来访业务区域的vlr","增加开通来访业务区域的vlr","删除开通来访业务区域的vlr","修改开通来访业务区域的vlr","查询移动漫游号码","增加移动漫游号码","删除移动漫游号码","修改移动漫游号码","查询开通来访业务区域的msrn","增加开通来访业务区域的msrn","删除开通来访业务区域的msrn","修改开通来访业务区域的msrn","查询出访一卡多号","查询来访一卡多号","查询副号码段(检测合法性用)","增加副号码段(检测合法性用)","删除副号码段(检测合法性用)","查询国家合作方","增加国家合作方","删除国家合作方","运营统计","trace"])
+#set($Tables = ["","rnmoshow","rnmoshow","rnmoshow","rnmoshow","rnmishow","rnmishow","rnmishow","rnmishow","rnmoshow","rnmoshow;rnmishow","no7tran","no7tran","no7tran","rnmoshow;vlr;rnmishow;rnmivlr","rnmoshow;rnmishow;vmsrnnum","vmsrnnum","rnmoshow;msrn;rnmishow;rnmimsrn","vmsrnnum","imsimsc","imsimsc","rnmoshow;rnmishow;smsc","smsc","rnmoshow;rnmishow","mtfsm;no7tran","mtfsm","mtfsm","mtfsm","no7tran","userinfo","userinfo","userinfo","userinfo","userinfo","userinfo","roler","roler","roler","roler","dict","dict","dict","dict","configure","configure","configure","configure","logging","vmsrn","vmsrn","vmsrn","vmsisdn","vmsisdn","vmsisdn","vlr","vlr","vlr","vlr","rnmivlr","rnmivlr","rnmivlr","rnmivlr","msrn","msrn","msrn","msrn","rnmimsrn","rnmimsrn","rnmimsrn","rnmimsrn","rnmoshow","rnmishow","msisdnreg","msisdnreg","msisdnreg","countrycrcode","countrycrcode","countrycrcode","rnmoshow;rnmishow;imsitrace",""])
+#set($Depends = ["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","query-roler","query-roler","","query-roler","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""])
+#set($Jspdoes = ["","add","del","mod","qry","add","del","mod","","","","","","","","","","","","","","","","","","","","","","","","qry","add","del","mod","qry","add","del","mod","qry","add","del","mod","qry","add","del","mod","qry","qry","add","del","qry","add","del","qry","add","del","mod","qry","add","del","mod","qry","add","del","mod","qry","add","del","mod","qry","qry","qry","add","del","qry","add","del","qry","qry"])
+#set($Handles = ["","insert","delete","update","query","insert","delete","update","query","query","query","insert","query","delete","update","update","update","query","update","insert","query","insert","query","update","insert","query","insert","query","update","update","update","query","insert","delete","update","query","insert","delete","update","query","insert","delete","update","query","insert","delete","update","query","query","insert","delete","query","insert","delete","query","insert","delete","update","query","insert","delete","update","query","insert","delete","update","query","insert","delete","update","query","query","query","insert","delete","query","insert","delete","query","query"])
+#set($Models = ["","boss","boss","boss","boss","boss","boss","boss","boss","boss","","","","","","","","","","","","","","bz","","","","","","","","system","system","system","system","system","system","system","system","system","system","system","system","system","system","system","system","log","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","bz","stat","log"])
+#set($Structs = ["res-common","rnmoshowInfo","rnmishowInfo","rnmInfo","no7TransInfo","smscInfo","mtFsmInfo","rnmoshownInfo","userInfo","roleInfo","dictInfo","configureInfo","loggingInfo","loggingPart","vmsrnInfo","vmsisdnInfo","vlrInfo","rnmivlrInfo","msrnInfo","rnmimsrnInfo","msisdnregInfo","countrycrcodeInfo","statSimnInfo"])
+#set($StructFields = ["errtype;0,errcode;0,errstr;1","uuid;0,imsi;0,servtype;0,msisdn0;0,state;1,city;1,daylmtfee;0,sumlmtfee;0,msisdn1;0,cc1;0,crcode1;0,vlddtb1;1,vlddte1;1,reserve1;1,status1;0,mscid;1,vlrid;1,hlrid;1,status;0,creator;1,ctime;1,modificator;1,mtime;1,rnmoshownInfo;1","uuid;0,imsi;0,servtype;0,msisdn0;0,cc;0,crcode;0,daylmtfee;0,sumlmtfee;0,msisdn1;0,state1;1,city1;1,vlddtb1;1,vlddte1;1,reserve1;1,status1;0,mscid;1,vlrid;1,hlrid;1,status;0,creator;1,ctime;1,modificator;1,mtime;1","identity;0,mscid;1,vlrid;1,hlrid;1","tid;0,identity;0","uid;0,imsi;0,msisdn0;0,msisdn1;0,smscid;0,sc;0,status;0,creator;1,ctime;1,modificator;1,mtime;1","tid;0,msu;0","uuid;0,rosuuid;0,servtype;0,daylmtfee;0,sumlmtfee;0,msisdn1;0,cc1;0,crcode1;0,vlddtb1;1,vlddte1;1,reserve1;1,status1;0,mscid;1,vlrid;1,hlrid;1,status;0,creator;1,ctime;1,modificator;1,mtime;1","uid;0,userid;0,username;0,passwd;0,ruid;0,roleInfo;1,privilege;0,email;1,allowip;0,validdtb;1,validdte;1,logintimeb;0,logintimee;0,pwdinvdt;1,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,roleid;0,rolename;0,privilege;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,dtype;0,dcode;0,dname;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,flag;0,value;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,username;0,optype;0,descript;0,status;0,creator;1,ctime;0,modificator;1,mtime;1","username,;0,ip;1","uid;0,crcodestate;0,msrnb;0,msrne;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,crcodestate;0,msisdnb;0,msisdne;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,crcode;0,vlrpre;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,state;0,vlrpre;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,crcode;0,msrnpre;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,state;0,msrnpre;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,crcodestate;0,msisdnb;0,msisdne;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","uid;0,country;0,crcode;0,status;0,creator;1,ctime;1,modificator;1,mtime;1,notes;1","total;0,incre;0,pureincre;0,percent;0,average;0"])
+*#
+#*2007-4-16 21:28 +
+#set($Tags = ["set-imsimsc","get-imsimsc"])
+#set($Descripts = ["保存imsi使用的mscid","获取imsi使用的mscid"])
+#set($Tables = ["imsimsc","imsimsc"])
+*#
+#*2007-4-28 16:50 +
+#set($Tags = ["query-stat-simn","trace"])
+#set($Descripts = ["运营统计","trace"])
+#set($Tables = ["rnmoshow;rnmishow;imsitrace",""])
+#set($Jspdoes = ["qry","qry"])
+#set($Handles = ["query","query"])
+#set($Models = ["stat","log"])
+*#
+#*2007-5-12 14:23 +
+#set($Tags = ["set-smsc","get-smsc"])
+#set($Descripts = ["保存smsc数据","trace"])
+#set($Tables = ["rnmoshow;rnmishow;smsc","smsc"])
+#set($Jspdoes = ["",""])
+#set($Handles = ["insert","query"])
+#set($Models = ["",""])
+*#
+#*2007-5-28 +
+#set($Tags = ["set-hlr","query-msisdnreg","add-msisdnreg","del-msisdnreg"])
+#set($Descripts = ["更新imsi的hlr","查询副号码段(检测合法性用)","增加副号码段(检测合法性用)","删除副号码段(检测合法性用)"])
+#set($Tables = ["rnmoshow;rnmishow","msisdnreg","msisdnreg","msisdnreg"])
+#set($Jspdoes = ["","qry","add","del"])
+#set($Handles = ["update","","",""])
+#set($Models = ["bz","bz","bz","bz"])
+*#
+#*2007-6-5 +
+#set($Tags = ["generate-ltid","get-mtfsmbegin","store-mtfsmcontinue","get-mtfsmcontinue"])
+#set($Descripts = ["得到local tid","根据tid查询临时存储的BEGIN MT_FSM MSU","临时存储Continue MT_FSM","根据tid查询临时存储的Continue MT_FSM MSU"])
+#set($Tables = ["mtfsm;no7tran","mtfsm","mtfsm","mtfsm"])
+#set($Jspdoes = ["","","",""])
+#set($Handles = ["insert","query","insert","query"])
+#set($Models = ["","","",""])
+*#
+#*2007-6-18 +
+#set($Tags = ["clear-no7TransInfo"])
+#set($Descripts = ["清除事务相关信息"])
+#set($Tables = ["no7tran"])
+#set($Jspdoes = [""])
+#set($Handles = ["update"])
+#set($Models = [""])
+*#
+
+#* 2007-6-18 +
+#set($Tags = ["query-countrycrcode","add-countrycrcode","del-countrycrcode"])
+#set($Descripts = ["查询国家合作方","增加国家合作方","删除国家合作方"])
+#set($Tables = ["countrycrcode","countrycrcode","countrycrcode"])
+#set($Jspdoes = ["qry","add","del"])
+#set($Handles = ["query","insert","query"])
+#set($Models = ["bz","bz","bz"])
+*#
+
+#* 2008-4-7 +
+#set($Tags = ["change-imsi-msisdn0","query-boss-result"])
+#set($Descripts = ["换号/补卡, 副号码不变","查询boss接口过来的TID的结果"])
+#set($Tables = ["rnmoshow;rnmishow","boss"])
+#set($Jspdoes = ["",""])
+#set($Handles = ["update","query"])
+#set($Models = ["boss","boss"])
+*#
+
+#* 2008-8-1 +
+#set($Tags = ["set-call-forward-data","client-identity","modify-msisdnreg","modify-vmsisdn","modify-vmsrn"])
+#set($Descripts = ["保存副号码的呼转信息","客户端识别消息","修改副号码段(检测合法性用)","修改副号码段","修改移动用户漫游号码段"])
+#set($Tables = ["rnmishow","","msisdnreg","vmsisdn","vmsrn"])
+#set($Jspdoes = ["","","mod","mod","mod"])
+#set($Handles = ["update","","update","update","update"])
+#set($Models = ["","","bz","bz","bz"])
+*#
+
+#* 2008-8-14 +
+#set($Tags = ["modify-rnmInfo","transfer-rnmInfo"])
+#set($Descripts = ["更改rnmInfo","开户、激活/销户、暂停时通知ML，以便做相应的动作"])
+#set($Tables = ["rnmoshow;rnmishow","rnmoshow;rnmishow"])
+#set($Jspdoes = ["",""])
+#set($Handles = ["update","update"])
+#set($Models = ["bz","bz"])
+*#
+
+#* 2008-8-20 +
+#set($Tags = ["query-carrierProvince","add-carrierProvince","del-carrierProvince","modify-carrierProvince"])
+#set($Descripts = [" 查询来访合作方在CMCC开通业务省份"," 增加来访合作方在CMCC开通业务省份", " 删除来访合作方在CMCC开通业务省份", " 修改来访合作方在CMCC开通业务省份"])
+#set($Tables = ["carrierprovince","carrierprovince","carrierprovince","carrierprovince"])
+#set($Jspdoes = ["qry","add","del","mod"])
+#set($Handles = ["query","insert","delete","update"])
+#set($Models = ["bz","bz","bz","bz"])
+*#
+
+#* 2008-10-13 11:38:35 +
+#set($Tags = ["query-vmail","add-vmail","del-vmail","modify-vmail"])
+#set($Descripts = [" 查询来访vmail"," 增加来访vmail", " 删除来访vmail", " 修改来访vmail"])
+#set($Tables = ["vmail","vmail","vmail","vmail"])
+#set($Jspdoes = ["qry","add","del","mod"])
+#set($Handles = ["query","insert","delete","update"])
+#set($Models = ["bz","bz","bz","bz"])
+*#
+
+#* 2011-01-20 10:33:36 +
+#set($Tags = ["notifyPpsCl","callback","auth","charge","set-ppsTransInfo","get-ppsTransInfo","set-camelInfo","get-camelInfo","transfer-auth"])
+#set($Descripts = ["主要控制ppsCL的行为","呼叫","授权","费用通知","保存pps事务信息","获取pps事务信息","保存pps用户签约信息","获取pps用户签约信息","转发pps的相关信息"])
+#set($Tables = ["","rnmoshow;rnmoshown","rnmoshow;rnmoshown;ppsTrans","rnmoshow","ppsTrans","ppsTrans","rnmoshow","rnmoshow","rnmoshow;ppsTrans"])
+#set($Jspdoes = ["","","","","","","","",""])
+#set($Handles = ["query","query","query","query","insert","query","update","query","query"])
+#set($Models = ["","","","","","","","",""])
+*#
+
+#* 2012/5/28 14:59:30 +
+#set($Tags = ["query-bwuser","add-bwuser","del-bwuser","modify-bwuser"])
+#set($Descripts = [" 查询黑白名单"," 增加黑白名单", " 删除黑白名单", " 修改黑白名单"])
+#set($Tables = ["bwuser","bwuser","bwuser","bwuser"])
+#set($Jspdoes = ["qry","add","del","mod"])
+#set($Handles = ["query","insert","delete","update"])
+#set($Models = ["bz","bz","bz","bz"])
+*#
+
+#* 2012-06-16 12:06:51 +*#
+#set($Tags = ["query-voip","add-voip","del-voip","modify-voip"])
+#set($Descripts = [" 查询VOIP"," 增加VOIP", " 删除VOIP", " 修改VOIP"])
+#set($Tables = ["voip","voip","voip","voip"])
+#set($Jspdoes = ["qry","add","del","mod"])
+#set($Handles = ["query","insert","delete","update"])
+#set($Models = ["bz","bz","bz","bz"])
+
+#set ($tag_=$Tags.get($tagId))
+#set ($tag_=$strings.sub($tag_,"-","_"))
+#set ($splits=$strings.split($tag_,"_"))
+#set($tag0= "")
+#set($ii=0)
+#foreach ($split in $splits)
+  #set($Split=$strings.capitalizeFirstLetter($split))
+  #if($ii>0)
+  #set($tag0= $tag0.concat($Split))
+  #else
+  #set($tag0= $tag0.concat($split))
+  #end
+  #set($ii=$ii+1)
+#end
+#set($Tag0=$strings.capitalizeFirstLetter($tag0))
+#set($tag=$tag0.toLowerCase())
+#set($TAG=$tag0.toUpperCase())
+#set($Tag=$strings.capitalizeFirstLetter($tag))
+#set($TAG_=$tag_.toUpperCase())
+#set ($Descript0=$Descripts.get($tagId))
+#set ($Table0=$Tables.get($tagId))
+#set ($Table=$strings.capitalizeFirstLetter($Table0))
+#set ($Depend0=$Depends.get($tagId))
+#set ($Handle0=$Handles.get($tagId))
+#set ($HANDLE=$Handle0.toUpperCase())
+#set ($Jspdo0=$Jspdoes.get($tagId))
+#set ($JSPDO=$Jspdo0.toUpperCase())
+#set ($Model0=$Models.get($tagId))
+

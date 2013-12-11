@@ -1,0 +1,505 @@
+#*
+
+file: Control.vm
+
+This is the control template for our code generator!
+
+*#
+
+Generate  ...........debug-0..............
+
+#*
+以下是upt使用的表和协议
+*#
+Generate  ...........debug-1..............
+#*
+Generate  ...........upt..............
+#set($Tables = ["blacklist","dict","operator","syscfg","transmodecfg","uidtable","uptinfo","weektransmode","fee"])
+#set($Comments = ["禁止绑定号码表","数据字典表","业务提供商表","系统配置表","转移模式表","维护UID的表","一号通信息表","星期和时间号码转移表","计费"])
+##set($Tables = ["ping","common","operator-login","operator-logout","operator-register","operator-unregister","operator-register-user","operator-get-user","operator-modify-user","operator-remove-user","user-register","user-login","user-logout","get-user-all","set-user-all","get-user-info","set-user-info","get-upt-feecode","set-upt-feecode","get-transmodecfg-tel","set-transmodecfg-tel","set-transmodecfg-atel","set-user-pwd","set-user-pause","set-user-unreg","set-user-restore","set-user-lock","set-user-unlock","get-current-ringmode","set-current-ringmode","get-default-transmode","set-default-transmode","get-transmodecfg","set-transmodecfg","get-atransmodecfg","set-atransmodecfg","get-transmodecfg-tels","set-transmodecfg-tels","get-transmodecfg-ringtime","set-transmodecfg-ringtime","get-current-transmodecfg","get-undisturbed","set-undisturbed","get-calltrans","set-calltrans","get-forcedefaulttransmode","set-forcedefaulttransmode","set-weektransmode-rec","get-currentinfo","get-syscfginfo","get-blacklistinfo","get-dictinfo","get-alloperator","set-operator","get-operator","user-changeid","set-call-fee","get-call-fee","calc-callfee","get-fee-uptcode"])
+*#
+#*
+##2006-02-24 +
+#set($Tables = ["fee"])
+#set($Comments = ["计费"])
+*#
+Generate  ...........debug-2..............
+##for TagCommon.vm
+#* ----------upt protocol ----------
+#set($Tags = ["ping","common","operator-login","operator-logout","operator-register","operator-unregister","operator-register-user","operator-get-user","operator-modify-user","operator-remove-user","user-register","user-login","user-logout","get-user-all","set-user-all","get-user-info","set-user-info","get-upt-feecode","set-upt-feecode","get-transmodecfg-tel","set-transmodecfg-tel","set-transmodecfg-atel","set-user-pwd","set-user-pause","set-user-unreg","set-user-restore","set-user-lock","set-user-unlock","get-current-ringmode","set-current-ringmode","get-default-transmode","set-default-transmode","get-transmodecfg","set-transmodecfg","get-atransmodecfg","set-atransmodecfg","get-transmodecfg-tels","set-transmodecfg-tels","get-transmodecfg-ringtime","set-transmodecfg-ringtime","get-current-transmodecfg","get-undisturbed","set-undisturbed","get-calltrans","set-calltrans","get-forcedefaulttransmode","set-forcedefaulttransmode","set-weektransmode-rec","get-currentinfo","get-syscfginfo","get-blacklistinfo","get-dictinfo","get-alloperator","set-operator","get-operator","user-changeid","set-call-fee","get-call-fee","calc-callfee","get-fee-uptcode"])
+#set($Descripts = ["测试消息","公用信息","业务提供商登录: 业务提供商由客户端进行系统登录;","#业务提供商登出: 业务提供商由客户端进行系统登出;","业务提供商注册: 注册新业务提供商","业务提供商注销: 注销业务提供商","业务提供商注册UPT用户: 业务提供商登记新UPT用户. ","业务提供商获取UPT用户: 业务提供商查询UPT用户. ","业务提供商更改UPT用户信息: 业务提供商更改UPT用户注册信息.","业务提供商删除UPT用户: 业务提供商删除UPT用户","用户自注册: 用户本人注册. ","用户登录: 用户由客户端进行系统登录;","#用户登出: 用户由客户端进行系统登出;","#获取用户所有信息: 获取用户所有信息: UPT信息表,星期时间模式设置表,转移模式设置表","#更改用户所有信息: 更改用户所有信息: UPT信息表,星期时间模式设置表,转移模式设置表","获取用户注册信息: 获取用户注册信息","#用户更改注册信息: 用户更改注册信息","获取用户交费号码: 获取用户用于交费的号码,若没有表示使用UPT交费","更改用户交费号码: 更改用户用于交费的号码,若没有表示使用UPT交费","获取用户转移模式绑定号码: 获取用户某个转移模式绑定的号码,最多8个","更改用户转移模式绑定号码: 更改用户某个转移模式绑定的号码,最多8个,前面设定后才可设定后面的,没有号码的为空","更改用户转移模式某个绑定号码: 更改用户转移模式某个绑定的号码","用户更改口令: 用户更改口令","暂停用户: 暂停该用户.","注销用户: 注销该用户.","激活用户: 对于暂停/注销的用户进行恢复到正常使用状态;","锁定用户: 当用户一天登录口令失败指定次数(如100),则对该用户加锁.","解锁用户: 对锁定的用户进行人工解锁. ","获取当前振铃模式: 获取某个用户当前振铃模式. ","更改当前振铃模式: 更改某个用户当前振铃模式. ","获取默认转移模式: 获取某个用户默认转移模式. ","更改默认转移模式: 更改某个用户默认转移模式. ","获取转移模式及振铃时长设置: 获取所有转移模式的号码顺序及振铃时长的设置. ","更改转移模式及振铃时长设置: 更改所有转移模式的号码顺序及振铃时长的设置. ","获取某个转移模式及振铃时长设置: 获取某个转移模式的号码顺序及振铃时长的设置. ","更改某个转移模式及振铃时长设置: 更改某个转移模式的号码顺序及振铃时长的设置.  ","获取某个转移模式及其号码设置: 获取某个转移模式及其号码顺序的设置. ","更改某个转移模式及其号码顺序设置: 更改某个转移模式及其号码顺序顺序的设置. ","获取某个转移模式振铃时长设置: 获取某个转移模式振铃时长的设置.","更改某个转移模式振铃时长设置: 更改某个转移模式振铃时长的设置. ","获取当前转移模式及其号码设置: 获取某个用户当前转移模式及其号码设置. 当关闭强制使用默认转移模式时,先星期时间模式,后默认转移模式;开启时,默认转移模式.","获取免打扰功能设置: 获取是否开启免打扰功能及口令.","更改免打扰功能设置: 重新设置免打扰功能及口令.开启时必须输入口令;关闭时,口令无效. ","获取呼叫转移功能设置: 获取是否开启呼叫转移功能. ","更改呼叫转移功能设置: 重新设置呼叫转移功能.开启时,遇忙转移/关机无信号/掐线等转接下个号码;关闭时,遇到忙/关机无信号/掐线等立即中止呼叫.","获取强制使用默认转移模式: 获取某个用户强制使用默认转移模式.","更改强制使用默认转移模式: 更改某个用户是否开启强制使用默认转移模式. ","更改星期时间段转移设置: 更改某个用户时间段的转移模式设置. ","获取用户当前所有信息: 获取某个用户注册及其功能设置信息. ","获取系统配置信息","获取禁绑定电话","获取字典信息","获取业务所以业务提供商","修改业务提供商信息","获取某个业务提供商信息","UPT用户改号","UPT用户改号","计费","获取计费详细信息","计算通话费用","据callfee获取费用纪录的uptcode"])
+#set($Tables = ["","","operator","operator","operator","operator","operator;transmodecfg;uptinfo","operator;uptinfo","uptinfo","uptinfo","transmodecfg;uptinfo","uptinfo","uptinfo","uptinfo;transmodecfg;weektransmode","uptinfo;transmodecfg;weektransmode","uptinfo","uptinfo","uptinfo","uptinfo","transmodecfg","transmodecfg","transmodecfg","uptinfo","uptinfo","uptinfo","uptinfo","uptinfo","uptinfo;syscfg","uptinfo;","uptinfo","uptinfo","uptinfo","transmodecfg","transmodecfg","transmodecfg","transmodecfg","transmodecfg","transmodecfg","transmodecfg","transmodecfg","uptinfo;weektransmode;transmodecfg","uptinfo","uptinfo","uptinfo","uptinfo","uptinfo","uptinfo","weektransmode","uptinfo;weektransmode;transmodecfg","syscfg","blacklist","dict","operator","operator","operator","uptinfo","fee","fee","fee","fee"])
+*#
+
+#*
+以下是tl使用的表和协议
+*#
+Generate  ...........debug-3..............
+#*
+Generate  ...........tl..............
+#set($Tables = ["dialbak","syscfg","todaydial","uidtable","whitelist"])
+#set($Comments = ["拨号电话备份表","系统配置表","当天拨号电话表: 当天拨打电话的用户表，每天一清，将数据导入文本文件","维护UID的表","白名单-不受限制的电话用户"])
+##set($Tables = ["ping","gettime","savetime"])
+*#
+Generate  ...........debug-4..............
+##for TagCommon.vm
+#* ----------TL protocol ----------
+#set($Tags = ["ping","gettime","savetime"])
+#set($Descripts = ["测试消息","获取通话时长","保存通话时长"])
+#set($Tables = ["","whitelist;todaydial","todaydial"])
+*#
+
+#*
+以下是wac使用的表和协议
+*#
+Generate  ...........debug-5..............
+
+#*
+Generate  ...........wac..............
+#set($Tables = ["dict","operator","spectellist","syscfg","uidtable","wacbusiness","wacinfo","wakeset","fee","feerate","forbidcalled"])
+#set($Comments = ["数据字典表","业务提供商表","特殊号码表","系统配置表","维护UID的表","wac业务信息表: wacid,dn,pn各种业务标志","wac信息表: 基本信息,pass,date","唤醒设置表: 设置每个DN的唤醒信息","计费: 对主叫拨打外DN时进行计费.","计费费率","wac群禁止拨出号码"])
+##set($Tables = ["heart","ping","common","add-wacuser","del-wacuser","add-wactel","del-wactel","get-wac-tel","wake-service","get-wacallinfo","set-wacallinfo","get-wacallinfo-bz","set-wac-pnbz","get-bzflag","set-bzflag","get-wakeset","set-wakeset","get-inmins-wakeset","operator-add","operator-del","get-alloperator","get-operator","set-operator","get-all-wac","set-wacuser-status","set-operator-status","get-syscfginfo","set-syscfginfo","get-spectelinfo","set-spectelinfo","get-dictinfo","set-dictinfo","call-fee","get-call-fee","get-feerate","set-feerate","get-forbidcalled","set-forbidcalled","wake-service-result","get-feerate_mtime","set-wakeset-bat","change-pwd"])
+*#
+#*
+##2006-02-07 +
+#set($Tables = ["fee","feerate","forbidcalled"])
+#set($Comments = ["计费: 对主叫拨打外DN时进行计费.","计费费率","wac群禁止拨出号码"])
+##set($Tables = ["call-fee","get-call-fee","get-feerate","set-feerate","get-forbidcalled","set-forbidcalled"])
+*#
+
+#*
+以下是mupt使用的表和协议
+*#
+Generate  ...........debug-5..............
+
+#*
+Generate  ...........mupt..............
+##set($Tables = ["blackrn","dict","logger","muptinfo","muptrn","operator","syscfg","uidtable","userchanged","whitern"])
+##set($Comments = ["黑名单","数据字典表","关键操作日志","基本信息","业务信息表: rn,振铃标志","业务提供商表","系统配置表","维护UID的表","用户变化统计表","白名单"])
+##set($Tables = ["ping","common","change-pwd","add-user","del-user","modify-user","modify-muptrn","modify-muptid","modify-user-status","get-mupt","modify-rn","modify-rnflag","operator-add","operator-del","get-alloperator","get-operator","set-operator","set-operator-status","get-alluser","login","logout","count-user","count-userchanged","get-logger","get-syscfginfo","set-syscfginfo","get-dictinfo","set-dictinfo","get-blackrn","set-blackrn","get-whitern","set-whitern"])
+*#
+#*
+*#
+
+#*
+以下是smsr使用表
+*#
+
+#*
+Generate  ...........smsr..............
+##set($Tables = ["area","mobilehlr","smsrday_mmdd","smsrdaylog","smsrmonth_mm","userinfo","v_hlr","v_smsryear_yyyy"])
+##set($Comments = ["省/地区表","手机归属地","短信频次记录表","导数据日志表","短信频次记录归属地统计表","用户信息","手机或灵通的归属地","归属地统计频次"])
+*#
+#*
+##2007-1-23 13:26
+##set($Tables = ["area","mobilehlr","smsrday_mmdd","smsrdaylog","smsrmonth_mm","smsrmonth_stat_mm","smsrmonth_stat_op_mm","userinfo","v_smsryear_yyyy"])
+##set($Comments = ["省/地区表","手机归属地","短信频次记录表","导数据日志表","短信频次记录归属地统计表","话务统计、最大值、平均值","不同运营商的被叫次数统计","用户信息","归属地统计频次"])
+*#
+
+#*
+以下是snpm使用表
+*#
+
+#*
+Generate  ...........snpm..............
+##set($Tables = ["configure","dict","logging","roler","stelphone","telphone","template","uidtable","userinfo"])
+##set($Comments = ["系统配置表","数据字典表","操作日志","角色","特服号码表","号码表","模板表 - 各表的模板","维护UID的表","用户表"])
+##set($Tables = ["ping","add-tel","del-tel"])
+##set($Tables = ["ping","upload-spc-ngn","download-spc-ngn","upload-area","download-area","upload-stel","download-stel","upload-tel","download-tel"])
+##set($Tables = ["ping","common","login","logout","query-user","add-user","del-user","modify-user","query-roler","add-roler","del-roler","modify-roler","query-dict","add-dict","del-dict","modify-dict","query-configure","add-configure","del-configure","modify-configure","query-logging","query-spc-ngn","modify-spc-ngn","query-area","add-area","del-area","modify-area","query-stel","add-stel","del-stel","modify-stel","query-tel","upload-mpm"])
+*#
+
+#*
+以下是simn使用表
+*#
+
+#*
+Generate  ...........simn..............
+##set($Tables = ["boss","bwuser","carrierprovince","configure","countrycrcode","dict","hlr","imsimsc","imsimsisdn","imsimsisdnmsc","imsitrace","logging","msisdnreg","msrn","mtfsm","no7tran","rnmihide","rnmimsrn","rnmishow","rnmivlr","rnmohide","rnmohiden","rnmoshow","rnmoshown","roler","smsc","synctmp","uidtable","userinfo","ussduser","viewcarrierprovincevlr","vlr","vmail","vmsisdn","vmsisdnnum","vmsisdnumtrace","vmsrn","vmsrnnum","vmsrnnumtrace","voip","vsecimsi","vsecimsinum"])
+##set($Comments = ["BOSS执行信息","black_white","业务开通运营商或省份(仅来访使用)","系统配置表","国家合作方表(出访隐号用). 暂不用.","数据字典表. 暂不用.","HLR号码段","缓存IMSI和MSCID,供短信使用.","imsi使用的msisdn1,供计费使用.","FOR_USSD","imsi追踪表. ","操作日志","副号码段","MSRN信息. 暂不用.","短信堆积使用","事务trace","来访隐号用户,副号码据UL产生,默认msisdn0. 暂不用.","来访开通&#65533;&#65533;&#65533;的msrn. 暂不用.","来访显号用户","来访开通省的访问地. 暂不用.","出访隐号&#65533;&#65533;户; 副号码据UL动态更新,默认主号码","出访隐号用户副号码","出访显号用户;副号码据UL更新,,默认主号码.","出访显号用户副号码","角色","短信相关信息","","维护UID的表","用户表","FOR_USSD","某个国家在国内开通来访的省份","访问地","语音信箱配置(仅来访用)","副号码段","副号码段号码表","副号码TRACE. 暂不用","移动用户漫游号码段. 目前msrn通用.","移动漫游号码段号码表","移动漫游号码段号码表trace. 暂不用.","VOIP","副号码IMSI号段，暂仅台湾远传用","imsi号码段号码表"])
+##set($Tables = ["ping","add-rnmoshow","del-rnmoshow","change-rnmoshow-status","query-rnmoshowInfo","add-rnmishow","del-rnmishow","change-rnmishow-status","query-rnmishowInfo","query-crcode-by-msisdn1","query-rnmInfo","set-no7TransInfo","get-no7TransInfo","delete-no7TransInfo","update-location","lock-msrn-for-imsi","unlock-msrn-for-imsi","is-carrier-location","verify-msrn-for-imsi","set-imsimsc","get-imsimsc","set-smsc","get-smsc","set-hlr","generate-ltid","get-mtfsmbegin","store-mtfsmcontinue","get-mtfsmcontinue","login","logout","query-user","add-user","del-user","modify-user","query-roler","add-roler","del-roler","modify-roler","query-dict","add-dict","del-dict","modify-dict","query-configure","add-configure","del-configure","modify-configure","query-logging","query-vmsrn","add-vmsrn","del-vmsrn","query-vmsisdn","add-vmsisdn","del-vmsisdn","query-vlr","add-vlr","del-vlr","modify-vlr","query-rnmivlr","add-rnmivlr","del-rnmivlr","modify-rnmivlr","query-msrn","add-msrn","del-msrn","modify-msrn","query-rnmimsrn","add-rnmimsrn","del-rnmimsrn","modify-rnmimsrn","query-some-rnmoshowInfo","query-some-rnmishowInfo","query-msisdnreg","add-msisdnreg","del-msisdnreg","query-stat-simn","trace"])
+*#
+#*
+##2007-4-16 21:34
+##set($Tables = ["imsimsc"])
+##set($Comments = ["缓存IMSI和MSCID,供短信使用"])
+*#
+#*
+##2007-5-12 11:06
+##set($Tables = ["smsc"])
+##set($Comments = ["短信相关信息"])
+*#
+#*
+##2007-5-28
+##set($Tables = ["msisdnreg"])
+##set($Comments = ["副号码段"])
+##2007-6-5
+##set($Tables = ["mtfsm"])
+##set($Comments = ["短信堆积使用"])
+##2007-6-18
+##set($Tables = ["rnmoshow","rnmoshown","rnmohide","rnmohiden","rnmishow","rnmihide"])
+##set($Comments = ["出访显号用户;副号码据UL更新.","出访显号用户副号码","出访隐号用户;副号码据UL更新,默认是主号码","出访隐号用户副号码; 副号码据UL动态更新,默认uid","来访显号用户","来访隐号用户,副号码据UL产生,默认msisdn0"])
+##2007-8-27
+##set($Tables = ["imsimsisdn","countrycrcode"])
+##set($Comments = ["imsi使用的msisdn1,供计费使用.","国家合作方表(出访隐号用)"])
+##set($Tables = ["query-countrycrcode","add-countrycrcode","del-countrycrcode"])
+##set($Comments = ["查询国家合作方","增加国家合作方","删除国家合作方"])
+##2008-6-6
+##set($Tables = ["boss","synctmp"])
+##set($Comments = ["boss接口消息","BOSS比对"])
+##2008-8-1
+##set($Tables = ["set-call-forward-data","client-identity","modify-msisdnreg","modify-vmsisdn","modify-vmsrn"])
+##set($Comments = ["保存副号码的呼转信息","客户端识别消息","修改副号码段(检测合法性用)","修改副号码段","修改移动用户漫游号码段"])
+##2008-8-14
+#set($Tables = ["set-call-forward-data","client-identity","modify-msisdnreg","modify-vmsisdn","modify-vmsrn"])
+#set($Comments = ["保存副号码的呼转信息","客户端识别消息","修改副号码段(检测合法性用)","修改副号码段","修改移动用户漫游号码段"])
+##2008-8-20
+##set($Tables = ["carrierprovince"])
+##set($Comments = ["来访合作方在CMCC开通业务省份"])
+#set($Tables = ["query-carrierProvince","add-carrierProvince","del-carrierProvince","modify-carrierProvince"])
+#set($Comments = [" 查询来访合作方在CMCC开通业务省份"," 增加来访合作方在CMCC开通业务省份", " 删除来访合作方在CMCC开通业务省份", " 修改来访合作方在CMCC开通业务省份"])
+##2008-10-13 11:40:10
+#set($Tables = ["vmail"])
+#set($Comments = ["来访vmail"])
+#set($Tables = ["query-vmail","add-vmail","del-vmail","modify-vmail"])
+#set($Comments = [" 查询来访vmail"," 增加来访vmail", " 删除来访vmail", " 修改来访vmail"])
+##2010-1-20 15:31:09
+##set($Tables = ["boss","carrierprovince","configure","countrycrcode","dict","hlr","imsimsc","imsimsisdn","imsitrace","logging","msisdnreg","msrn","mtfsm","no7tran","rnmihide","rnmimsrn","rnmishow","rnmivlr","rnmohide","rnmohiden","rnmoshow","rnmoshown","roler","smsc","synctmp","uidtable","userinfo","viewcarrierprovincevlr","vlr","vmail","vmsisdn","vmsisdnnum","vmsisdnumtrace","vmsrn","vmsrnnum","vmsrnnumtrace"])
+##set($Comments = ["BOSS执行信息","业务开通运营商或省份(仅来访使用)","系统配置表","国家合作方表(出访隐号用). 暂不用.","数据字典表. 暂不用.","HLR号码段","缓存IMSI和MSCID,供短信使用.","imsi使用的msisdn1,供计费使用.","imsi追踪表. ","操作日志","副号码段","MSRN信息. 暂不用.","短信堆积使用","事务trace","来访隐号用户,副号码据UL产生,默认msisdn0. 暂不用.","来访开通省的msrn. 暂不用.","来访显号用户","来访开通省的访问地. 暂不用.","出访隐号用户; 副号码据UL动态更新,默认主号码","出访隐号用户副号码","出访显号用户;副号码据UL更新,,默认主号码.","出访显号用户副号码","角色","短信相关信息","","维护UID的表","用户表","某个国家在国内开通来访的省份","访问地","语音信箱配置(仅来访用)","副号码段","副号码段号码表","副号码TRACE. 暂不用","移动用户漫游号码段. 目前msrn通用.","移动漫游号码段号码表","移动漫游号码段号码表trace. 暂不用."])
+##2011-01-26 13:40:16
+#set($Tables = ["rnmoshow","rnmoshown","rnmohide","rnmohiden","imsitrace","userinfo","rnmishow"])
+#set($Comments = ["","","","","","",""])
+##2011-5-25 16:05:36
+##set($Tables = ["boss","carrierprovince","configure","countrycrcode","dict","hlr","imsimsc","imsimsisdn","imsimsisdnmsc","imsitrace","logging","msisdnreg","msrn","mtfsm","no7tran","rnmihide","rnmimsrn","rnmishow","rnmivlr","rnmohide","rnmohiden","rnmoshow","rnmoshown","roler","smsc","synctmp","uidtable","userinfo","viewcarrierprovincevlr","vlr","vmail","vmsisdn","vmsisdnnum","vmsisdnumtrace","vmsrn","vmsrnnum","vmsrnnumtrace"])
+##set($Comments = ["BOSS执行信息","业务开通运营商或省份(仅来访使用)","系统配置表","国家合作方表(出访隐号用). 暂不用.","数据字典表. 暂不用.","HLR号码段","缓存IMSI和MSCID,供短信使用.","imsi使用的msisdn1,供计费使用.","FOR_USSD","imsi追踪表. ","操作日志","副号码段","MSRN信息. 暂不用.","短信堆积使用","事务trace","来访隐号用户,副号码据UL产生,默认msisdn0. 暂不用.","来访开通省的msrn. 暂不用.","来访显号用户","来访开通省的访问地. 暂不用.","出访隐号用户; 副号码据UL动态更新,默认主号码","出访隐号用户副号码","出访显号用户;副号码据UL更新,,默认主号码.","出访显号用户副号码","角色","短信相关信息","","维护UID的表","用户表","某个国家在国内开通来访的省份","访问地","语音信箱配置(仅来访用)","副号码段","副号码段号码表","副号码TRACE. 暂不用","移动用户漫游号码段. 目前msrn通用.","移动漫游号码段号码表","移动漫游号码段号码表trace. 暂不用."])
+##
+##set($Tables = ["imsimsisdnmsc"])
+##set($Comments = ["for USSD"])
+##2012/5/24 17:24:20
+##set($Tables = ["bwuser"])
+##set($Comments = ["black-white for USSD"])
+##set($Tables = ["query-bwuser","add-bwuser","del-bwuser","modify-bwuser"])
+##set($Comments = [" 查询黑白名单"," 增加黑白名单", " 删除黑白名单", " 修改黑白名单"])
+##2012-06-16 11:42:30
+##set($Tables = ["voip"])
+##set($Comments = ["VOIP"])
+##set($Tables = ["query-voip","add-voip","del-voip","modify-voip"])
+##set($Comments = [" 查询VOIP"," 增加VOIP", " 删除VOIP", " 修改VOIP"])
+##2012/12/10 15:29:27
+##set($Tables = ["rnmoshow","rnmohide","voip"])
+##set($Comments = ["RNMOSHOW","RNMOHIDE","VOIP"])
+##2013/6/24 13:05:14
+##set($Tables = ["vsecimsi"，"vsecimsinum"])
+##set($Comments = ["副号码IMSI号段","副号码IMSI号段号码"])
+*#
+
+
+#*
+以下是aflex omsalldb使用表
+*#
+
+#*
+Generate  ...........omsalldb..............
+##set($Tables = ["aflexcap","alarm","alarmDefine","alarmFilter","alarmHis","BoardParam","configure","cpu","dbinfo","device","deviceSWT","dict","disk","dspc","E1","link","linkset","linkstat","logging","lspc","MC986","MC987","MC988","MC989","MC98x","memory","module","msc","MTP2Timer","nnsfService","node","NodeInfo","nri","pcm","plane","privilege","roler","route","routeset","spclen","traffic","uidtable","userinfo"])
+##set($Comments = ["configure offline of aflex-cap","alarm record","define alarm message","define alarm filter","history alarm record that have restored and confirmed","configure BoardParam","系统配置表","CPU counter","dbinfo table","device table. ","deviceSWT","数据字典表.","disk counter","destance SPC","configure E1","configure link ","configure linkset","link stat","操作日志","local SPC","MC986 counter","MC986 counter","MC986 counter","MC986 counter","MC98x counter","memory counter","function module","configure MSC","configure MTP2Timer","configure service of nnsf","node table","configure NodeInfo","configure nri ","configure pcm ","plane table","function module of a roler","角色","configure route","configure routeset.Def add a route(route.APC=this.DPC)","SPC length","traffic counter","维护UID的表","用户表"])
+##2009-5-22 10:52:32
+##set($Tables = ["logging","roler","module","privilege","userinfo"])
+##set($Comments = ["操作日志","角色","function module","function module of a roler","用户表"])
+##2009-6-23 10:11:14
+##set($Tables = ["configure","alarmFilter"])
+##set($Comments = ["configure","alarmFilter"])
+##2009-8-18 16:30:39 for NMS
+##set($Tables = ["node","palne","device","linkstat"])
+##set($Comments = ["树节点","分组","各种设备","链路统计"])
+##2009-9-1 9:14:55 for 	abits
+##set($Tables = ["deviceSWT"])
+##set($Comments = ["卫星用表"])
+##2009-10-9 11:44:56
+##set($Tables = ["dict"])
+##set($Comments = ["数据字典"])
+##2010-1-8 14:23:58
+##set($Tables = ["dbinfo"])
+##set($Comments = ["database info"])
+*#
+
+
+#*
+以下是salarydb使用表
+*#
+
+#*
+Generate  ...........salarydb..............
+##set($Tables = ["basicchg","calcsalary","commisioncfg","commisionchg","configure","dict","domination","employee","logging","module","persontax","privilege","roler","salarybank","salarycompose","salaryprocess","salaryrpt","saleaudit","saleplan","servcfg","uidtable","userinfo","userprivilege","userprivilege_","workrpt"])
+##set($Comments = ["基本工资调整","工资计算","提成佣金标准","佣金工资调整","系统配置表","数据字典表","人员管辖","员工信息","操作日志","function module","个调税","function module of a roler","角色","工资条","工资组成","核算进度","工资表","业绩考核","业绩目标","工龄工资","维护UID的表","用户表","","代替view生产POJO","考勤表"])
+*#
+
+
+#*
+以下是sim2db使用表
+*#
+
+#*
+Generate  ...........sim2db..............
+##set($Tables = ["_vfcl","_vfclstat","_vprovincecity","_vuserprivilege","clstat","configure","dict","fcl","fclstat","flog","hlr","logging","module","privilege","roler","uidtable","userinfo","vfcl","vfclstat","vlr","vprovincecity","vsim2","vuserprivilege"])
+##set($Comments = ["代替view生产POJO","代替view生产POJO","代替view生产POJO","代替view生产POJO","CL stat ","系统配置表","数据字典表","file detail","file stat ","FILE LOG, INCLUDE CL/UL FILES.","HLR","操作日志","function module","function module of a roler","角色","维护UID的表","用户表","imsi,vlr/min","imsi,fcnt/min","VLR","","","用户权限"])
+*#
+
+#*
+以下是expodb使用表
+*#
+
+#*
+Generate  ...........expodb..............
+##set($Tables = ["configure","dict","failed","logging","module","privilege","roler","secmsisdn","secmsisdndetail","uidtable","userinfo"])
+##set($Comments = ["系统配置表","数据字典表.","失败数据表","操作日志","function module","function module of a roler","角色","副号段表","副号段明细表，有号段表触发数据。","维护UID的表","用户表"])
+*#
+
+Generate  ...........debug-6..............
+
+#* comment is not space *#
+
+#* table *#
+##set($Tables = ["configure","dict","failed","logging","module","privilege","roler","secmsisdn","secmsisdndetail","uidtable","userinfo"])
+##set($Comments = ["系统配置表","数据字典表.","失败数据表","操作日志","function module","function module of a roler","角色","副号段表","副号段明细表，有号段表触发数据。","维护UID的表","用户表"])
+
+##set($Tables = ["boss","carrierprovince","configure","countrycrcode","dict","hlr","imsimsc","imsimsisdn","imsitrace","logging","msisdnreg","msrn","mtfsm","no7tran","rnmihide","rnmimsrn","rnmishow","rnmivlr","rnmohide","rnmohiden","rnmoshow","rnmoshown","roler","smsc","synctmp","uidtable","userinfo","viewcarrierprovincevlr","vlr","vmail","vmsisdn","vmsisdnnum","vmsisdnumtrace","vmsrn","vmsrnnum","vmsrnnumtrace"])
+##set($Comments = ["BOSS执行信息","业务开通运营商或省份(仅来访使用)","系统配置表","国家合作方表(出访隐号用). 暂不用.","数据字典表. 暂不用.","HLR号码段","缓存IMSI和MSCID,供短信使用.","imsi使用的msisdn1,供计费使用.","imsi追踪表. ","操作日志","副号码段","MSRN信息. 暂不用.","短信堆积使用","事务trace","来访隐号用户,副号码据UL产生,默认msisdn0. 暂不用.","来访开通省的msrn. 暂不用.","来访显号用户","来访开通省的访问地. 暂不用.","出访隐号用户; 副号码据UL动态更新,默认主号码","出访隐号用户副号码","出访显号用户;副号码据UL更新,,默认主号码.","出访显号用户副号码","角色","短信相关信息","","维护UID的表","用户表","某个国家在国内开通来访的省份","访问地","语音信箱配置(仅来访用)","副号码段","副号码段号码表","副号码TRACE. 暂不用","移动用户漫游号码段. 目前msrn通用.","移动漫游号码段号码表","移动漫游号码段号码表trace. 暂不用."])
+
+##set($Tables = ["deviceswt"])
+##set($Comments = ["deviceswt"])
+
+##set($Tables = ["dbinfo"])
+##set($Comments = ["database info"])
+
+#* protocol
+#set($Tables = ["notifyPpsCl","callback","auth","charge","set-ppsTransInfo","get-ppsTransInfo","set-camelInfo","get-camelInfo","transfer-auth"])
+#set($Comments = ["主要控制ppsCL的行为","呼叫","授权","费用通知","保存pps事务信息","获取pps事务信息","保存pps用户签约信息","获取pps用户签约信息","转发pps的相关信息"])
+ 
+#set($Tables = ["notifyPpsCl"])
+#set($Comments = ["主要控制ppsCL的行为"])
+ *#
+  
+#* protocol for jsp
+#set($Jspdoes = ["qry","add","del","mod"])
+#set($Models = ["bz","bz","bz","bz"])
+
+#set($protocol0="Simn")
+#set($protocol=$protocol0.toLowerCase())
+ *#
+
+#* cic module using
+#set($Tables = ["exam","trainning"])
+#set($Comments = ["考核","培训"])
+ *#
+#* cic table using
+##set ($Tables =["examTimes","examProcess","examResult","examTemplate","examTempItem","compCategory","competence","kpiCategory","kpi"])
+##set ($TableComments =["考核期次","考核流程","考核结果","考核模板","考核模板项目","CompCategory","Competence","KPICategory","KPI"])
+#set ($Tables =["trainingTimes","trainingRequire","trainingPlan","trainingPlanEmp","courseCategory","course","trnFeedback","positionCourse","employeeCourse"])
+#set ($TableComments =["培训期次","培训需求","培训计划","培训计划人员","课程类别","课程","培训登记表","岗位课程关系","员工可能培训课程"])
+ *#
+
+#* c2c table using
+#set($Tables = ["alarm","alarmDefine","alarmFilter","alarmHis","configure","logging","module","privilege","roler","tdevice","tgroup","tmdnnumber","tminnumber","trule","uidtable","userinfo"])
+#set($Comments = ["alarm record","define alarm message","define alarm filter","history alarm record that have restored and confirmed","系统配置表","操作日志","function module","function module of a roler","角色","设备列表","过滤组数据","Mdn Number","Min Number","过滤规则数据. 每组最多10个.","维护UID的表","用户表"])
+  *#
+
+#* crnm(omsalldb) table using
+##set($Tables = ["aflexcap","alarm","alarmDefine","alarmFilter","alarmHis","ArsService","ArsUser","BoardParam","Carrier","configure","Country","cpu","dbinfo","device","deviceSWT","dict","disk","dspc","E1","link","linkset","linkstat","logging","lspc","MC986","MC987","MC988","MC989","MC98x","memory","module","msc","MTP2Timer","NDC","nnsfService","node","NodeInfo","nri","pcm","plane","PmMinStat","privilege","rnmSecondary","rnmUser","roler","route","routeset","ServiceRnmGt","spclen","SysConfiguration","TdrMinStat","traffic","uidtable","userinfo"])
+##set($Comments = ["configure offline of aflex-cap","alarm record","define alarm message","define alarm filter","history alarm record that have restored and confirmed","落地漫游业务配置","落地漫游用户","configure BoardParam","合作运营商","系统配置表","国家","CPU counter","dbinfo table","device table. ","deviceSWT","数据字典表.","disk counter","destance SPC","configure E1","configure link ","configure linkset","link stat","操作日志","local SPC","MC986 counter","MC986 counter","MC986 counter","MC986 counter","MC98x counter","memory counter","function module","configure MSC","configure MTP2Timer","运营商NDC","configure service of nnsf","node table","configure NodeInfo","configure nri ","configure pcm ","plane table","PM文件统计表","function module of a roler","一卡多号副号码","一卡多号用户","角色","configure route","configure routeset.Def add a route(route.APC=this.DPC)","业务GT","SPC length","业务系统配置","TDR 文件统计表","traffic counter","维护UID的表","用户表"])
+##2011-7-10 11:12:00
+##set($Tables = ["bzuserstat"])
+##set($Comments = ["业务用户统计(日周月)"])
+##2011-7-17 13:24:18
+##set($Tables = ["cspsysinfo"])
+##set($Comments = ["CSP的CPU-MEM-DISK性能统计"])
+##2011-7-18 19:05:30
+##set($Tables = ["pmMinStat","cspSysinfo","bzuserStat","tdrMinStat","mpmMapOcMinStat"])
+##set($Comments = ["PM文件统计表","CSP的CPU-MEM-DISK性能统计","业务用户统计(日周月)","TDR 文件统计表","MPM消息分类统计"])
+*#
+
+#set($Tables = ["vsecimsi","vsecimsinum"])
+#set($Comments = ["副号码IMSI号段","副号码IMSI号段号码"])
+
+Generate  ...........start..............
+
+#set($i=0)
+#foreach ($table_ in $Tables)
+
+    #set ($table_=$strings.sub($table_,"-","_"))
+
+    #set ($splits=$strings.split($table_,"_"))
+    #set($table0= "")
+    #set($ii=0)
+    #foreach ($split in $splits)
+      #set($Split=$strings.capitalizeFirstLetter($split))
+      #if($ii>0)
+      #set($table0= $table0.concat($Split))
+      #else
+      #set($table0= $table0.concat($split))
+      #end
+      #set($ii=$ii+1)
+    #end
+
+    Generate $table_ ...$table0 ...
+
+    #set($table= $table0.toLowerCase())
+    #set($TABLE = $table0.toUpperCase())
+    #set($Table = $strings.capitalizeFirstLetter($table))
+    #set($Table0 = $strings.capitalizeFirstLetter($table0))
+
+    Generate $table_ ...$table0 ...$Table0
+
+    #set($comment0= $Comments.get($i))
+
+    ##JAVA文件
+
+    #*仅cic使用*#
+    #* cic module
+    #set($OutputFile = "I")
+    #set($OutputFile = $OutputFile.concat($Table))
+    #set($OutputFile = $OutputFile.concat("Dao.java"))
+    $generator.parse("CicIDao.vm", $OutputFile, "module0", $table_)
+
+    #set($OutputFile = $Table.concat("DaoImpl"))
+    #set($OutputFile = $OutputFile.concat(".java"))
+    $generator.parse("CicDaoImpl.vm", $OutputFile, "module0", $table_)
+
+    #set($OutputFile = "I")
+    #set($OutputFile = $OutputFile.concat($Table))
+    #set($OutputFile = $OutputFile.concat("Service.java"))
+    $generator.parse("CicIService.vm", $OutputFile, "module0", $table_)
+
+    #set($OutputFile = $Table.concat("ServiceImpl"))
+    #set($OutputFile = $OutputFile.concat(".java"))
+    $generator.parse("CicServiceImpl.vm", $OutputFile, "module0", $table_)
+
+     *#
+
+#*
+    #set($OutputFile = $Table.concat(".Xml"))
+    $generator.parse("CicModuleXml.vm", $OutputFile, "module0", $table_)
+*#
+
+    #* cic table
+    #set($OutputFile = $Table0.concat("ManagerController.java"))
+    $generator.parse("CicTableManagerController.vm", $OutputFile, "table0", $table_)
+ *#
+
+    #*仅表使用*#
+  #* 建议使用Table0Xxx    
+    #set($OutputFile = $Table.concat(".java"))
+    $generator.parse("TablePOJO.vm", $OutputFile, "table_", $table_)
+
+  
+    #set($OutputFile = $Table.concat("Ext.java"))
+    $generator.parse("TableExt.vm", $OutputFile, "table0", $table0)
+    *#
+     
+    ##for OMS salary c2c crnm simn
+    #*     *# 
+    #set($OutputFile = $Table0.concat(".java"))
+    $generator.parse("Table0POJO.vm", $OutputFile, "table_", $table_)
+     
+    #set($OutputFile = $Table0.concat("Ext.java"))
+    $generator.parse("Table0Ext.vm", $OutputFile, "table_", $table_)
+    
+#*
+
+    #set($OutputFile = $Table0.concat("Dao.java"))
+    $generator.parse("Table0Dao.vm", $OutputFile, "table0", $table0)
+   
+    #set($OutputFile = $Table0.concat("Model.java"))
+    $generator.parse("Table0Model.vm", $OutputFile, "table_", $table_)
+    #set($OutputFile = $Table0.concat(".dozer.xml"))
+    $generator.parse("Table0Dozer.vm", $OutputFile, "table_", $table_)
+*#
+
+    #*
+    #set($OutputFile = $Table.concat("Dao.java"))
+    $generator.parse("TableDao.vm", $OutputFile, "table0", $table0)
+
+    #set($OutputFile = $Table.concat("Manager.java"))
+    $generator.parse("TableDaoManager.vm", $OutputFile, "table0", $table0)
+
+    #set($OutputFile = $Table.concat("DaoTest.java"))
+    $generator.parse("TableDaoTest.vm", $OutputFile, "table0", $table0)
+ *#
+
+
+    #*仅protocol使用*#
+    #* 
+    #set($OutputFile = $Table0.concat("HandleTest.java"))
+    $generator.parse("TagHandleTest.vm", $OutputFile, "tagId", $i)
+     *#
+     #*
+    #set($OutputFile = $Table0.concat("Handle.java"))
+    ##$generator.parse("TagHandle.vm", $OutputFile, "tagId", $i)
+    $generator.parse("TagHandleJdbc.vm", $OutputFile, "tagId", $i)
+
+    #set($OutputFile = $Table0.concat("Client.java"))
+    $generator.parse("TagClient.vm", $OutputFile, "tagId", $i)
+
+    #set($OutputFile = $Table0.concat("ClientTest.java"))
+    $generator.parse("TagClientTest.vm", $OutputFile, "tagId", $i)
+		   
+		#set($OutputFile = $Table0.concat("Client.java"))
+    $generator.parse("TagClient.vm", $OutputFile, "tagId", $i)
+ *#
+ 
+    #*仅protocol for jsp使用*#
+    #*
+    #set($models0 = $Models.get($i))
+    #set($jspdoes0 = $Jspdoes.get($i))
+    #if($jspdoes0!="")
+      #set($Jspdoes0 = $strings.capitalizeFirstLetter($jspdoes0))
+
+      #set($OutputFile = $Table0.concat("Action.java"))
+      #if($models0!="")
+        #set($OutputFile = $OutputFile.concat("."))
+        #set($OutputFile = $OutputFile.concat($models0))
+      #end
+      $generator.parse("TagAction.vm", $OutputFile, "tagId", $i)
+
+      #if($jspdoes0=="qry")
+        #set($OutputFile = $table0.concat(".jsp"))
+        #if($models0!="")
+          #set($OutputFile = $OutputFile.concat("."))
+          #set($OutputFile = $OutputFile.concat($models0))
+        #end
+        $generator.parse("qryTagJsp.vm", $OutputFile, "tagId", $i)
+
+        #set($OutputFile = $Table0.concat("CondAction.java"))
+        #if($models0!="")
+          #set($OutputFile = $OutputFile.concat("."))
+          #set($OutputFile = $OutputFile.concat($models0))
+        #end
+        $generator.parse("TagCondAction.vm", $OutputFile, "tagId", $i)
+
+        #set($OutputFile = $table0.concat("Cond.jsp"))
+        #if($models0!="")
+          #set($OutputFile = $OutputFile.concat("."))
+          #set($OutputFile = $OutputFile.concat($models0))
+        #end
+        $generator.parse("qryTagJspCond.vm", $OutputFile, "tagId", $i)
+      #elseif($jspdoes0!="del")
+        #set($OutputFile = $table0.concat(".jsp"))
+        #if($models0!="")
+          #set($OutputFile = $OutputFile.concat("."))
+          #set($OutputFile = $OutputFile.concat($models0))
+        #end
+        $generator.parse("addmodTagJsp.vm", $OutputFile, "tagId", $i)
+      #end
+    #end
+      *#
+
+  #set($i=$i+1)
+#end
+
+#* generate testcase
+#set($OutputFile = $protocol.concat(".testcase.xml"))
+$generator.parse("TestcaseXml.vm", $OutputFile, "protocol0", $protocol0 )
+ *#
+
+Generate  ............end...............
+
+

@@ -1,0 +1,154 @@
+#set($module0="trainning")
+#set($module=$module0.toLowerCase())
+#set($Module0=$strings.capitalizeFirstLetter($module0))
+#set($Module=$strings.capitalizeFirstLetter($module))
+#set($MODULE=$module0.toUpperCase())
+
+#set($table= $table0.toLowerCase())
+#set($TABLE = $table0.toUpperCase())
+#set($Table = $strings.capitalizeFirstLetter($table))
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-11-7
+*   create
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.atlascopco.cic.web.${module};
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
+
+import com.atlascopco.cic.entity.${Table0};
+import com.atlascopco.cic.service.${module}.I${Module0}Service;
+
+/**
+ * ${Table0} manager controller
+ *
+ * @author Xiaoran27 $author$
+ * @version $Revision: 1.1 $
+  */
+public class ${Table0}ManagerController extends MultiActionController{
+
+  private I${Module0}Service ${module}Service;
+
+  public I${Module0}Service get${Module0}Service() {
+    return ${module}Service;
+  }
+
+  public void set${Module0}Service(I${Module0}Service ${module}Service) {
+    this.${module}Service = ${module}Service;
+  }
+
+  public ModelAndView list(HttpServletRequest request, HttpServletResponse response,${Table0} theForm){
+    Map<String,Object> model = new HashMap<String,Object>();
+    model.put("dataList", this.get${Module0}Service().query${Table0}DataList(theForm,10,1));
+    return new ModelAndView("${module}/list${Table0}",model);
+  }
+
+  /**
+   * 说明：add初始化
+   *
+   * @param request  HttpServletRequest
+   * @param response HttpServletResponse
+   * @param theForm ${Table0}
+   *
+   * @return ModelAndView
+   */
+  public ModelAndView initAdd(HttpServletRequest request, HttpServletResponse response,${Table0} theForm){
+    Map<String,Object> model = new HashMap<String,Object>();
+    model.put("parent${Table0}List", this.get${Module0}Service().query${Table0}List(theForm));
+    return new ModelAndView("${module}/add${Table0}",model);
+  }
+
+  /**
+   * 说明：edit初始化
+   *
+   * @param request  HttpServletRequest
+   * @param response HttpServletResponse
+   * @param theForm ${Table0}
+   *
+   * @return ModelAndView
+   */
+  public ModelAndView initEdit(HttpServletRequest request, HttpServletResponse response,${Table0} theForm){
+    Map<String,Object> model = new HashMap<String,Object>();
+    ${Table0} updateForm = this.get${Module0}Service().query${Table0}ById(theForm.getId());
+    model.put("parent${Table0}List", this.get${Module0}Service().query${Table0}List(theForm));
+    model.put("updateForm", updateForm);
+    return new ModelAndView("${module}/edit${Table0}",model);
+  }
+
+  /**
+   * 说明：保存新增
+   *
+   * @param request  HttpServletRequest
+   * @param response HttpServletResponse
+   * @param theForm ${Table0}
+   *
+   * @return ModelAndView
+   */
+  public ModelAndView add(HttpServletRequest request, HttpServletResponse response,${Table0} theForm){
+    theForm.initCreateDate();
+    this.get${Module0}Service().add${Table0}(theForm);
+    Map<String,Object> model = new HashMap<String,Object>();
+    model.put("theForm", theForm);
+    model.put("btnValue", "back");
+    model.put("forwardUrl", "${table0}Manager.do");
+    return new ModelAndView("${module}/addSuccess",model);
+  }
+  /**
+   * 说明：保存Edit
+   *
+   * @param request  HttpServletRequest
+   * @param response HttpServletResponse
+   * @param theForm ${Table0}
+   *
+   * @return ModelAndView
+   */
+  public ModelAndView edit(HttpServletRequest request, HttpServletResponse response,${Table0} theForm){
+    theForm.initUpdateDate();
+    this.get${Module0}Service().update${Table0}(theForm);
+    Map<String,Object> model = new HashMap<String,Object>();
+    model.put("theForm", theForm);
+    model.put("btnValue", "back");
+    model.put("forwardUrl", "${table0}Manager.do");
+    return new ModelAndView("${module}/editSuccess",model);
+  }
+
+  /**
+   * 说明：del
+   *
+   * @param request  HttpServletRequest
+   * @param response HttpServletResponse
+   * @param theForm ${Table0}
+   *
+   * @return ModelAndView
+   */
+  public ModelAndView del(HttpServletRequest request, HttpServletResponse response,${Table0} theForm){
+    this.get${Module0}Service().del${Table0}(theForm.getId());
+    return this.list(request, response,theForm);
+  }
+
+  /**
+   * 说明：update
+   *
+   * @param request  HttpServletRequest
+   * @param response HttpServletResponse
+   * @param theForm ${Table0}
+   *
+   * @return ModelAndView
+   */
+  public ModelAndView update(HttpServletRequest request, HttpServletResponse response,${Table0} theForm){
+    this.get${Module0}Service().update${Table0}(theForm);
+    return this.list(request, response,theForm);
+  }
+}

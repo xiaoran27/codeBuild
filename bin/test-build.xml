@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="antprettybuild.xsl"?>
+<!DOCTYPE project [
+    <!ENTITY build-share SYSTEM "share-build.xml.ent">
+]>
+
+<project name="test" default="test.java" basedir="..">
+
+	&build-share;
+	
+	<!--===============================================-->
+	<!-- Compile                                       -->
+	<!--===============================================-->
+	<target name="test.compile" depends="compile.javac">
+		<ant antfile="${current.dir}/common-build.xml" target="common.javac" inheritAll="true" inheritRefs="false">
+			<property name="common.build.classes" value="${test.build.dir}"/>
+			<property name="common.java.dir" value="${test.source.dir}"/>
+			<property name="common.build.depcache" value="${build.depcache.dir}"/>
+			<reference torefid="common.classpath.ref" refid="test.classpath.ref"/>
+		</ant>
+	</target>
+
+	<target name="compile.javac" >
+		<ant antfile="${current.dir}/compile-build.xml" target="compile" inheritAll="false" inheritRefs="false"/>
+	</target>
+	
+	<!--===============================================-->
+	<!-- Test                                          -->
+	<!--===============================================-->
+	<target name="test.java" depends="test.compile" description="Test Java">
+	    <junit printSummary="no" fork="true" haltonerror="true" filtertrace="true">
+	    	<classpath>
+	      		<path refid="test.classpath.ref"/>
+				<pathelement path="${test.build.dir}"/>
+			</classpath>
+			<formatter type="brief" usefile="false"/>
+			<batchtest>
+				<fileset dir="${test.build.dir}">
+					<include name="**/*Test*.class"/>
+					<exclude name="**/*$*.class"/>
+				</fileset>
+			</batchtest>
+	    </junit>
+	</target>
+
+	<!--===============================================-->
+	<!-- Clean                                         -->
+	<!--===============================================-->
+	<target name="clean" >
+		<delete dir="${test.build.dir}"/>
+	</target>
+
+</project>

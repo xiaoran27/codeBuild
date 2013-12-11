@@ -1,0 +1,93 @@
+#parse("TagCommon.vm")
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-17 20:22
+*   create
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-18 21:30
+* + import com.lj.comm.socket.*;
+*   import com.lj.${protocol}.msgc.socket.*;
+*   return  super.showFormHandle(arg0, arg1, arg2, arg3);
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.lj.web.${Model0}.action;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.springframework.validation.BindException;
+import org.springframework.web.servlet.ModelAndView;
+
+import ${protocol}.msg.*;
+import com.lj.comm.socket.*;
+import com.lj.${protocol}.msgc.socket.*;
+import com.lj.web.constant.OperatorResult;
+import com.lj.web.spring.controller.LjSimpleFormController;
+
+/**
+ * ${Descript0}
+ *
+ * @author Xiaoran27 $author: $
+ * @version $Revision: 1.1 $
+ * @ID $Id: TagCondAction.vm,v 1.1 2007/04/20 09:33:33 xiaoran27 Exp $
+  */
+public class ${Tag0}CondAction extends LjSimpleFormController {
+
+  /**
+   * Logger for this class
+   */
+  private static final Logger logger = Logger.getLogger(${Tag0}Action.class);
+
+  /**
+   * 页面submit数据处理
+   * @see com.lj.web.spring.controller.LjSimpleFormController#onSubmitHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, Object, org.springframework.validation.BindException)
+   * 
+   * @param arg0 页面请求
+   * @param arg1 页面响应
+   * @param arg2 页面绑定form
+   * @param arg3 绑定数据异常
+   *
+   * @return 响应数据及显示页面
+   *
+   * @throws Exception DOCUMENT ME!
+   */
+  @Override
+  protected ModelAndView onSubmitHandle(HttpServletRequest arg0,
+    HttpServletResponse arg1, Object arg2, BindException arg3
+  ) throws Exception {
+    //TODO: see showFormHandle(...)
+    return  super.onSubmitHandle(arg0, arg1, arg2, arg3);
+  }
+
+  /**
+   * 页面query数据处理
+   * @see com.lj.web.spring.controller.LjSimpleFormController#showFormHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.validation.BindException, java.util.Map)
+   * 
+   * @param arg0 页面请求
+   * @param arg1 页面响应
+   * @param arg2 绑定数据异常
+   * @param arg3 DOCUMENT ME!
+   *
+   * @return 响应数据及显示页面
+   *
+   * @throws Exception DOCUMENT ME!
+   */
+  @Override
+  protected ModelAndView showFormHandle(HttpServletRequest arg0,
+    HttpServletResponse arg1, BindException arg2, Map arg3
+  ) throws Exception {
+    /*
+  #if($Jspdo0!="")
+    #parse("onSubmitHandleAction.vm")
+  #end  
+    */
+  
+    return  super.showFormHandle(arg0, arg1, arg2, arg3);
+  }
+}

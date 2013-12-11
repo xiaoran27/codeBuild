@@ -1,0 +1,135 @@
+<?xml version="1.0" ?>
+
+<!DOCTYPE project [
+    <!ENTITY build-share SYSTEM "share-build.xml.ent">
+]>
+<?xml-stylesheet type="text/xsl" href="antprettybuild.xsl"?>
+<project name="conf" default="db2list" basedir="..">
+
+  &build-share;
+
+  <property name="conf.out.dir" value="${conf.dir}/out"/>
+  <property name="xslt.dir" value="${conf.dir}/xslt"/>
+  <property name="vm.dir" value="${conf.dir}/vm"/>
+  <property name="generate.out.dir" value="${build.dir}/out"/>
+  <property name="vm.out.dir" value="${conf.out.dir}/vm"/>
+
+  <property name="pdm.filename" value="simndb.pdm"/><!--define-->
+
+  <property name="conf.pdm.file" value="${conf.dir}/db/design/${pdm.filename}"/>
+  <property name="conf.dbxml.file" value="${conf.out.dir}/db.xml"/>
+
+  <property name="xslt.pdm2db.file" value="${xslt.dir}/Advanced_PDM2DB.xsl"/>
+  <property name="xslt.db2vm.file" value="${xslt.dir}/DB2VM.xsl"/>
+  <property name="xslt.db2filter.file" value="${xslt.dir}/DB2FILTER.xsl"/>
+
+  <property name="vm.db2src.file" value="Control.vm"/>
+
+  <!--===============================================-->
+  <!-- Init Conf Tools                               -->
+  <!--===============================================-->
+  <target name="conf.init" depends="init">
+    <tstamp/>
+    <mkdir dir="${conf.out.dir}"/>
+    <mkdir dir="${generate.out.dir}"/>
+    <mkdir dir="${vm.out.dir}"/>
+  </target>
+
+  <!--===============================================-->
+  <!-- Convert PDM to DB XML                         -->
+  <!--===============================================-->
+
+  <target name="pdm2db" depends="conf.init" description="Convert PDM to DB Xml">
+    <style in="${conf.pdm.file}" out="${conf.dbxml.file}" style="${xslt.pdm2db.file}"/>
+  </target>
+
+  <!--===============================================-->
+  <!-- Convert DB XML to LIST                        -->
+  <!--===============================================-->
+  <target name="db2list" depends="pdm2db" description="Generate Resource File">
+    <style in="${conf.dbxml.file}" out="${conf.out.dir}/CommonTemplate.vm" style="${xslt.db2vm.file}"/>
+  </target>
+
+  <!--===============================================-->
+  <!-- CONVERT DB TO JSP  USING  VELOCITY            -->
+  <!--===============================================-->
+
+  <target name="db2src.pre" >
+      <path id="velocity.path.refid">
+        <fileset dir="${lib.dir}/compile.ant.lib">
+          <include name="**/*velocity*/*.jar"/>
+        </fileset>
+      </path>
+        <available classname="org.apache.velocity.texen.ant.TexenTask"
+          property="TexenTask.present"
+          classpathref="velocity.path.refid"/>
+        <fail unless="TexenTask.present">
+            TexenTask is not present! Please check to make sure that
+            velocity.jar is in your classpath.
+        </fail>
+        <taskdef name="texen" classname="org.apache.velocity.texen.ant.TexenTask"
+          classpathref="velocity.path.refid"/>
+  </target>
+
+  <target name="db2src" depends="db2src.pre" description="Generate SRC by DB XML">
+    <delete>
+      <fileset dir="${vm.out.dir}">
+        <include name="**/*"/>
+      </fileset>
+    </delete>
+    <texen
+      controlTemplate="${vm.db2src.file}"
+      outputDirectory="${vm.out.dir}"
+      templatePath="${vm.dir},${conf.out.dir}"
+      outputFile="generation.report"
+      inputEncoding="gbk"
+      outputEncoding="gbk"/>
+      <!--<delete file="${vm.out.dir}/generation.report"/>-->
+  </target>
+
+
+  <target name="db2src.all" depends="db2list, db2src"/>
+
+  <target name="clean" >
+    <delete dir="${generate.out.dir}"/>
+    <delete file="${user.dir}/velocity.log"/>
+  </target>
+
+  <target name="clean.all" depends="clean">
+    <delete dir="${conf.out.dir}"/>
+  </target>
+
+  <!--===============================================-->
+  <!-- Generate JSP(Use Anakia)                      -->
+  <!--===============================================-->
+  <!--
+  <target name="generate.pre" >
+      <path id="velocity.path.refid">
+        <fileset dir="${lib.dir}/compile.ant.lib">
+          <include name="**/*velocity*/*.jar"/>
+        </fileset>
+      </path>
+        <available classname="org.apache.velocity.anakia.AnakiaTask"
+          property="AnakiaTask.present"
+          classpathref="velocity.path.refid"/>
+        <fail unless="AnakiaTask.present">
+            AnakiaTask is not present! Please check to make sure that
+            velocity.jar is in your classpath.
+        </fail>
+        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask"
+          classpathref="velocity.path.refid"/>
+  </target>
+    <target name="generate" depends="conf.init, generate.pre">
+
+      <property name="docs.src" value="${conf.dir}/vm"/>
+      <property name="docs.dest" value="${conf.dir}/vm"/>
+
+        <anakia basedir="${docs.src}" destdir="${docs.dest}/"
+             extension=".html" style="style.vsl"
+             excludes="*.vsl"
+             includes="comment.xml"
+             lastModifiedCheck="false"
+             templatePath="${docs.src}"/>
+    </target>
+    -->
+</project>

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="antprettybuild.xsl"?>
+<!DOCTYPE project [
+    <!ENTITY build-share SYSTEM "share-build.xml.ent">
+]>
+
+<project name="compile" default="compile" basedir="..">
+
+	&build-share;
+
+	<!--===============================================-->
+	<!-- Compile                                       -->
+	<!--===============================================-->
+	<target name="compile" depends="init" description="Compile code">
+		<ant antfile="${current.dir}/common-build.xml" target="common.javac" inheritAll="true" inheritRefs="false">
+			<property name="common.build.classes" value="${java.build.dir}"/>
+			<property name="common.java.dir" value="${java.source.dir}"/>
+			<property name="common.othersource.dir" value="${generate.source.dir}"/>
+			<property name="common.build.depcache" value="${build.depcache.dir}"/>
+			<reference refid="java.classpath.ref" torefid="common.classpath.ref"/>
+		</ant>
+	</target>
+
+	<!--===============================================-->
+	<!-- Jar                                           -->
+	<!--===============================================-->
+	<target name="jar" depends="compile" description="Create Jar File">
+		<mkdir dir="${java.build.jardir}"/>
+		<jar jarfile="${java.build.jardir}/${java.jar.file}">
+			<fileset dir="${java.build.dir}"/>
+		</jar>
+	</target>
+
+	<!--===============================================-->
+	<!-- Clean                                         -->
+	<!--===============================================-->
+	<target name="clean" >
+		<delete dir="${java.build.jardir}"/>
+		<delete dir="${java.build.dir}"/>
+		<delete dir="${build.dir}"/>
+	</target>
+
+</project>

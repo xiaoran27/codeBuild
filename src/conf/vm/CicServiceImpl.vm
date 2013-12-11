@@ -1,0 +1,469 @@
+#parse("ModuleCommon.vm")
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-11-3
+*   create
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-12-16
+* + 支持带条件查询结果
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2008-1-1
+* M 查询子数据依据关联的field而不是table
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.atlascopco.cic.service.${module}.impl;
+
+import java.util.*;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+
+import com.atlascopco.cic.dao.${module}.I${Module0}Dao;
+import com.atlascopco.cic.service.${module}.I${Module0}Service;
+import com.atlascopco.cic.entity.*;
+import com.atlascopco.framework.dao.DataList;
+
+
+/**
+ * ${ModuleComment} Service接口实现
+ *
+ * @author Xiaoran27 $author$
+ * @version $Revision: 1.3 $
+  */
+public class ${Module0}ServiceImpl implements I${Module0}Service {
+
+  private I${Module0}Dao ${module}Dao;
+
+  public I${Module0}Dao get${Module0}Dao() {
+    return ${module}Dao;
+  }
+
+  public void set${Module0}Dao(I${Module0}Dao ${module}Dao) {
+    this.${module}Dao = ${module}Dao;
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#createQueryByHQL(org.hibernate.Session, java.lang.String, java.util.Map)
+   */
+  public Query createQueryByHQL(Session session, String hql, Map pStmtParams) {
+      return this.get${Module0}Dao().createQueryByHQL(session, hql, pStmtParams);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#createQueryByHQL(org.hibernate.Session, java.lang.String, java.lang.Object[])
+   */
+  public Query createQueryByHQL(Session session, String hql, Object[] pStmtParams) {
+      return this.get${Module0}Dao().createQueryByHQL(session, hql, pStmtParams);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#createSQLQueryBySQL(org.hibernate.Session, java.lang.String, java.util.Map, java.util.Map)
+   */
+  public SQLQuery createSQLQueryBySQL(Session session, String sql, Map paramMap, Map scalarMap) {
+      return this.get${Module0}Dao().createSQLQueryBySQL(session, sql, paramMap, scalarMap);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#findObjectsByHQLInTop(java.lang.String, int)
+   */
+  public List findObjectsByHQLInTop(String hql, int top) throws HibernateException {
+      return this.get${Module0}Dao().findObjectsByHQLInTop(hql, top);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#findObjectsByHQLInTop(java.lang.String, java.util.Map, int)
+   */
+  public List findObjectsByHQLInTop(String hql, Map pStmtParams, int top) throws HibernateException {
+      return this.get${Module0}Dao().findObjectsByHQLInTop(hql, pStmtParams, top);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#queryDataList(java.lang.String, int, int)
+   */
+  public DataList queryDataList(String hql, int pageNo, int pageSize) throws HibernateException {
+      return this.get${Module0}Dao().queryDataList(hql, pageNo, pageSize);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#queryDataList(java.lang.String, java.util.Map, int, int)
+   */
+  public DataList queryDataList(String hql, Map pStmtParams, int pageNo, int pageSize) throws HibernateException {
+      return this.get${Module0}Dao().queryDataList(hql, pStmtParams, pageNo, pageSize);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#queryDataList(java.lang.String, java.lang.Object[], int, int)
+   */
+  public DataList queryDataList(String hql, Object[] pStmtParams, int pageNo, int pageSize) throws HibernateException {
+      return this.get${Module0}Dao().queryDataList(hql, pStmtParams, pageNo, pageSize);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#queryDataListBySQLInPagination(java.lang.String, java.util.Map, java.util.Map, int, int)
+   */
+  public DataList queryDataListBySQLInPagination(String sql, Map paramMap, Map scalarMap, int pageNo, int pageSize) throws HibernateException {
+      return this.get${Module0}Dao().queryDataListBySQLInPagination(sql, paramMap, scalarMap, pageNo, pageSize);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#queryDataListPar(java.lang.String, java.util.Map, int, int)
+   */
+  public DataList queryDataListPar(String hql, Map pStmtParams, int pageNo, int pageSize) throws HibernateException {
+      return this.get${Module0}Dao().queryDataListPar(hql, pStmtParams, pageNo, pageSize);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#queryForList(java.lang.String, java.util.Map)
+   */
+  public List queryForList(String hql, Map pStmtParams) throws HibernateException {
+      return this.get${Module0}Dao().queryForList(hql, pStmtParams);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#queryForList(java.lang.String, java.lang.Object[])
+   */
+  public List queryForList(String hql, Object[] pStmtParams) throws HibernateException {
+      return this.get${Module0}Dao().queryForList(hql, pStmtParams);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#queryForList(java.lang.String)
+   */
+  public List queryForList(String hql) throws HibernateException {
+      return this.get${Module0}Dao().queryForList(hql);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#queryUniqueObject(java.lang.String)
+   */
+  public Object queryUniqueObject(String hql) throws HibernateException {
+      return this.get${Module0}Dao().queryUniqueObject(hql);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#uniqueResult(java.lang.String, java.util.Map)
+   */
+  public Object uniqueResult(String hql, Map pStmtParams) throws HibernateException {
+      return this.get${Module0}Dao().uniqueResult(hql, pStmtParams);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#uniqueResult(java.lang.String, java.lang.Object[])
+   */
+  public Object uniqueResult(String hql, Object[] pStmtParams) throws HibernateException {
+      return this.get${Module0}Dao().uniqueResult(hql, pStmtParams);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#deleteEntitys(Class ,Long[] )
+   */
+  public void deleteEntitys(Class entity,Long[] id) {
+      this.get${Module0}Dao().deleteEntitys(entity, id);
+  }
+
+  /**
+   * @see com.atlascopco.framework.dao.hibernate.IHibernate#executeUpdate(String , Object[] )
+   */
+  public int executeUpdate(String hql, Object[] pStmtParams) {
+      return this.get${Module0}Dao().executeUpdate(hql, pStmtParams);
+  }
+
+#set($i =0)#foreach($table0 in $Tables)#set($Table0 = $strings.capitalizeFirstLetter($table0))#set($table = $table0.toLowerCase())#set($Table = $strings.capitalizeFirstLetter($table))#set($TABLE = $table0.toUpperCase())#set($TableComment0 = $TableComments.get($i))
+  //${Table0} manager
+  /**
+   * @see com.atlascopco.cic.service.${module0}.I${Module0}Service#query${Table0}DataList(${Table0} ,int ,int )
+   */
+  public DataList query${Table0}DataList(${Table0} theForm,int pageSize,int pageNo){
+    return this.get${Module0}Dao().query${Table0}DataList(theForm,pageNo,pageSize);
+  }
+
+  /**
+   * @see com.atlascopco.cic.service.${module0}.I${Module0}Service#query${Table0}DataList(${Table0} ,int ,int , String[] )
+   */
+  public DataList query${Table0}DataList(${Table0} theForm,int pageSize,int pageNo, String[] children){
+    DataList dataList = this.get${Module0}Dao().query${Table0}DataList(theForm,pageNo,pageSize);
+
+#set($ChildTable = $ChildTables.get($i))
+#set($ChildrenTable=$strings.split($ChildTable,","))
+#set($ChildField = $ChildFields.get($i))
+#set($ChildrenField=$ChildField.split(","))
+#set($ChildType = $ChildTypes.get($i))
+#set($ChildrenType=$strings.split($ChildType,","))
+
+    //only load one level data
+    if (null!=children  && children.length > 0){
+       for(Object obj : dataList.getItems()){
+        ${Table0} row = (${Table0}) obj;
+        for(String child : children){//child data: ${ChildTable}
+#if ($ChildTable!="")
+#set($ii =0)#foreach($child0 in $ChildrenTable)#set($Child0 = $strings.capitalizeFirstLetter($child0))#set($child = $child0.toLowerCase())#set($Child = $strings.capitalizeFirstLetter($child))#set($CHILD = $child0.toUpperCase())
+##get relate field & type
+#set($t =0)#foreach ($item in $ChildrenField)
+#if ($ii==$t)#set($childField0 = $item)#end
+#set($t=$t+1)#end
+#set($ChildField0 = $strings.capitalizeFirstLetter($childField0))
+#set($t =0)#foreach ($item in $ChildrenType)
+#if ($ii==$t)#set($childType0 = $item)#end
+#set($t=$t+1)#end
+           #if($ii>0)}#end if (child.equals("${childField0}")){ //${Child0}
+#if($childType0=="1")
+              row.get${ChildField0}().loadDataForLazy();
+#else
+              Set set = row.get${ChildField0}();
+              for(Object childObj : set){
+                ((${Child0})childObj).loadDataForLazy();
+              }
+#end
+#set($ii=$ii+1)#end
+           #if($ii>0)}#end
+#end
+        }
+      }
+    }
+
+    return dataList;
+  }
+
+
+  /**
+   * @see com.atlascopco.cic.service.${module0}.I${Module0}Service#query${Table0}DataList(String,Map<String,Object>,int ,int , String[] )
+   */
+  public DataList query${Table0}DataList(String where, Map<String,Object> params, int pageSize,int pageNo, String[] children){
+    StringBuilder hsql = new StringBuilder("from "+${Table0}.class.getSimpleName());
+    hsql.append(where.trim().substring(0,5).toLowerCase().equals("where")?" ":" where ").append(where);
+
+    DataList dataList = this.get${Module0}Dao().queryDataList(hsql.toString(),params,pageNo,pageSize);
+
+#set($ChildTable = $ChildTables.get($i))
+#set($ChildrenTable=$strings.split($ChildTable,","))
+#set($ChildField = $ChildFields.get($i))
+#set($ChildrenField=$ChildField.split(","))
+#set($ChildType = $ChildTypes.get($i))
+#set($ChildrenType=$strings.split($ChildType,","))
+
+    //only load one level data
+    if (null!=children  && children.length > 0){
+       for(Object obj : dataList.getItems()){
+        ${Table0} row = (${Table0}) obj;
+        for(String child : children){//child data: ${ChildTable}
+#if ($ChildTable!="")
+#set($ii =0)#foreach($child0 in $ChildrenTable)#set($Child0 = $strings.capitalizeFirstLetter($child0))#set($child = $child0.toLowerCase())#set($Child = $strings.capitalizeFirstLetter($child))#set($CHILD = $child0.toUpperCase())
+##get relate field & type
+#set($t =0)#foreach ($item in $ChildrenField)
+#if ($ii==$t)#set($childField0 = $item)#end
+#set($t=$t+1)#end
+#set($ChildField0 = $strings.capitalizeFirstLetter($childField0))
+#set($t =0)#foreach ($item in $ChildrenType)
+#if ($ii==$t)#set($childType0 = $item)#end
+#set($t=$t+1)#end
+           #if($ii>0)}#end if (child.equals("${childField0}")){ //${Child0}
+#if($childType0=="1")
+              row.get${ChildField0}().loadDataForLazy();
+#else
+              Set set = row.get${ChildField0}();
+              for(Object childObj : set){
+                ((${Child0})childObj).loadDataForLazy();
+              }
+#end
+#set($ii=$ii+1)#end
+           #if($ii>0)}#end
+#end
+        }
+      }
+    }
+
+    return dataList;
+  }
+
+
+  /**
+   * @see com.atlascopco.cic.service.${module0}.I${Module0}Service#query${Table0}DataList(String,Object[],int ,int , String[] )
+   */
+  public DataList query${Table0}DataList(String where, Object[] params, int pageSize,int pageNo, String[] children){
+    StringBuilder hsql = new StringBuilder("from "+${Table0}.class.getSimpleName());
+    hsql.append(where.trim().substring(0,5).toLowerCase().equals("where")?" ":" where ").append(where);
+
+    DataList dataList = this.get${Module0}Dao().queryDataList(hsql.toString(),params,pageNo,pageSize);
+
+#set($ChildTable = $ChildTables.get($i))
+#set($ChildrenTable=$strings.split($ChildTable,","))
+#set($ChildField = $ChildFields.get($i))
+#set($ChildrenField=$ChildField.split(","))
+#set($ChildType = $ChildTypes.get($i))
+#set($ChildrenType=$strings.split($ChildType,","))
+
+    //only load one level data
+    if (null!=children  && children.length > 0){
+       for(Object obj : dataList.getItems()){
+        ${Table0} row = (${Table0}) obj;
+        for(String child : children){//child data: ${ChildTable}
+#if ($ChildTable!="")
+#set($ii =0)#foreach($child0 in $ChildrenTable)#set($Child0 = $strings.capitalizeFirstLetter($child0))#set($child = $child0.toLowerCase())#set($Child = $strings.capitalizeFirstLetter($child))#set($CHILD = $child0.toUpperCase())
+##get relate field & type
+#set($t =0)#foreach ($item in $ChildrenField)
+#if ($ii==$t)#set($childField0 = $item)#end
+#set($t=$t+1)#end
+#set($ChildField0 = $strings.capitalizeFirstLetter($childField0))
+#set($t =0)#foreach ($item in $ChildrenType)
+#if ($ii==$t)#set($childType0 = $item)#end
+#set($t=$t+1)#end
+           #if($ii>0)}#end if (child.equals("${childField0}")){ //${Child0}
+#if($childType0=="1")
+              row.get${ChildField0}().loadDataForLazy();
+#else
+              Set set = row.get${ChildField0}();
+              for(Object childObj : set){
+                ((${Child0})childObj).loadDataForLazy();
+              }
+#end
+#set($ii=$ii+1)#end
+           #if($ii>0)}#end
+#end
+        }
+      }
+    }
+
+    return dataList;
+  }
+
+
+  /**
+   * @see com.atlascopco.cic.service.${module0}.I${Module0}Service#query${Table0}List(${Table0})
+   */
+  public List query${Table0}List(${Table0} theForm){
+    return this.get${Module0}Dao().query${Table0}List(theForm);
+  }
+
+  /**
+   * @see com.atlascopco.cic.service.${module0}.I${Module0}Service#query${Table0}List(${Table0}, String[])
+   */
+  public List query${Table0}List(${Table0} theForm, String[] children){
+    List list = this.get${Module0}Dao().query${Table0}List(theForm);
+
+#set($ChildTable = $ChildTables.get($i))
+#set($ChildrenTable=$strings.split($ChildTable,","))
+#set($ChildField = $ChildFields.get($i))
+#set($ChildrenField=$ChildField.split(","))
+#set($ChildType = $ChildTypes.get($i))
+#set($ChildrenType=$strings.split($ChildType,","))
+
+    //only load one level data
+    if (null!=children  && children.length > 0){
+       for(Object obj : list){
+        ${Table0} row = (${Table0}) obj;
+        for(String child : children){//child data: ${ChildTable}
+#if ($ChildTable!="")
+#set($ii =0)#foreach($child0 in $ChildrenTable)#set($Child0 = $strings.capitalizeFirstLetter($child0))#set($child = $child0.toLowerCase())#set($Child = $strings.capitalizeFirstLetter($child))#set($CHILD = $child0.toUpperCase())
+##get relate field & type
+#set($t =0)#foreach ($item in $ChildrenField)
+#if ($ii==$t)#set($childField0 = $item)#end
+#set($t=$t+1)#end
+#set($ChildField0 = $strings.capitalizeFirstLetter($childField0))
+#set($t =0)#foreach ($item in $ChildrenType)
+#if ($ii==$t)#set($childType0 = $item)#end
+#set($t=$t+1)#end
+           #if($ii>0)}#end if (child.equals("${childField0}")){ //${Child0}
+#if($childType0=="1")
+              row.get${ChildField0}().loadDataForLazy();
+#else
+              Set set = row.get${ChildField0}();
+              for(Object childObj : set){
+                ((${Child0})childObj).loadDataForLazy();
+              }
+#end
+#set($ii=$ii+1)#end
+           #if($ii>0)}#end
+#end
+        }
+      }
+    }
+
+    return list;
+  }
+
+  /**
+   * @see com.atlascopco.cic.service.${module0}.I${Module0}Service#query${Table0}ById(Long)
+   */
+  public ${Table0} query${Table0}ById(Long id){
+    return (${Table0}) this.get${Module0}Dao().query${Table0}ById(id);
+  }
+
+  /**
+   * @see com.atlascopco.cic.service.${module0}.I${Module0}Service#query${Table0}ById(Long , String[])
+   */
+  public ${Table0} query${Table0}ById(Long id, String[] children){
+    ${Table0} ${table0} = (${Table0}) this.get${Module0}Dao().query${Table0}ById(id);
+
+#set($ChildTable = $ChildTables.get($i))
+#set($ChildrenTable=$strings.split($ChildTable,","))
+#set($ChildField = $ChildFields.get($i))
+#set($ChildrenField=$ChildField.split(","))
+#set($ChildType = $ChildTypes.get($i))
+#set($ChildrenType=$strings.split($ChildType,","))
+
+    //only load one level data
+    if (null!=children  && children.length > 0){
+        for(String child : children){//child data: ${ChildTable}
+#if ($ChildTable!="")
+#set($ii =0)#foreach($child0 in $ChildrenTable)#set($Child0 = $strings.capitalizeFirstLetter($child0))#set($child = $child0.toLowerCase())#set($Child = $strings.capitalizeFirstLetter($child))#set($CHILD = $child0.toUpperCase())
+##get relate field & type
+#set($t =0)#foreach ($item in $ChildrenField)
+#if ($ii==$t)#set($childField0 = $item)#end
+#set($t=$t+1)#end
+#set($ChildField0 = $strings.capitalizeFirstLetter($childField0))
+#set($t =0)#foreach ($item in $ChildrenType)
+#if ($ii==$t)#set($childType0 = $item)#end
+#set($t=$t+1)#end
+           #if($ii>0)}#end if (child.equals("${childField0}")){ //${Child0}
+#if($childType0=="1")
+              ${table0}.get${ChildField0}().loadDataForLazy();
+#else
+              Set set = ${table0}.get${ChildField0}();
+              for(Object childObj : set){
+                ((${Child0})childObj).loadDataForLazy();
+              }
+#end
+#set($ii=$ii+1)#end
+           #if($ii>0)}#end
+#end
+        }
+      }
+
+    return ${table0};
+  }
+
+  /**
+   * @see com.atlascopco.cic.service.${module0}.I${Module0}Service#add${Table0}(${Table0})
+   */
+  public void add${Table0}(${Table0} theForm){
+    this.get${Module0}Dao().add${Table0}(theForm);
+  }
+
+  /**
+   * @see com.atlascopco.cic.service.${module0}.I${Module0}Service#update${Table0}(${Table0})
+   */
+  public void update${Table0}(${Table0} theForm){
+    this.get${Module0}Dao().update${Table0}(theForm);
+  }
+
+  /**
+   * @see com.atlascopco.cic.service.${module0}.I${Module0}Service#del${Table0}(Long)
+   */
+  public void del${Table0}(Long id){
+    this.get${Module0}Dao().del${Table0}(id);
+  }
+
+  /*================${Table0}提供的特殊接口=====start===============*\
+
+  \*================${Table0}提供的特殊接口===== end ===============*/
+
+#set($i=$i+1)#end
+  /*================${module}提供的特殊接口=====start===============*\
+
+  \*================${module}提供的特殊接口===== end ===============*/
+}

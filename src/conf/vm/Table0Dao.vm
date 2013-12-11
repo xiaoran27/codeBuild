@@ -1,0 +1,242 @@
+#set ($table_=$strings.sub($table_,"-","_"))
+#set ($splits=$strings.split($table_,"_"))
+#set($table0= "")
+#foreach ($split in $splits)
+  #set($Split=$strings.capitalizeFirstLetter($split))
+  #set($table0= $table0.concat($Split))
+#end
+#set($table=$table0.toLowerCase())
+#set($Table=$strings.capitalizeFirstLetter($table)) 
+#set($TABLE=$table_.toUpperCase())
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+#parse("CommonTemplate.vm")
+##set($Comment=$strings.capitalizeFirstLetter($comment0))
+#set($Comment=$comment0)
+#set($comment=$comment0.toLowerCase())
+#set($COMMENT=$comment0.toUpperCase())
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2011-6-12
+* create & implements
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+
+package com.xiaoran27.db.entity.dao;
+
+
+import org.apache.log4j.Logger;
+import java.sql.*;
+import java.util.*;
+
+import com.dbms.*;
+import com.xiaoran27.db.entity.dao.comm.*;
+import com.xiaoran27.db.entity.pojo.*;
+import com.xiaoran27.db.entity.pojo.ext.*;
+
+
+/**
+ * ${comment0} database operate
+ *
+ * @author Xiaoran27 $author$
+ * @version $Revision: 1.7 $
+ */
+ 
+@SuppressWarnings("unchecked")
+public class ${Table0}Dao extends AbstractDao<${Table0}> {
+
+
+
+	private static final Logger logger = Logger.getLogger(${Table0}Dao.class);
+
+
+	public ${Table0}Dao() {
+		super();
+		try {
+			if (null==conn || conn.isClosed()){
+				conn = ProxoolMulti.getConnectionByAlias("confdb");
+			}
+		} catch (SQLException e) {
+			logger.error("${Table0}Dao() - e="+e,e);
+		}
+	}
+
+	/* (non-Javadoc)                                                
+	 * @see com.xiaoran27.db.entity.dao.comm.IDao#queryCount()              
+
+	 */                                                             
+	public int queryCount() {                                    
+		return  queryCount(null);                                                  
+	}                                                               
+
+
+	/* (non-Javadoc)                                                
+	 * @see com.xiaoran27.db.entity.dao.comm.IDao#queryCount(T o)
+	 */                                                                
+	public int queryCount(${Table0} o) {                              
+
+		reset();
+		${Table0}  ${table} = (${Table0})o;
+		String sql = " select count(*) from  ${table}";
+		if (null != o){
+			${Table0}Ext  ${table}Ext = new ${Table0}Ext( ${table});
+			sql =  sql+ ${table}Ext.toSqlWhere();
+		}
+
+		int cnt = -1;
+		try {
+			cnt = ProxoolMulti.executeQueryRowCount(sql);
+		} catch (SQLException e) {
+			setErrorNum(ERRNUM_EXCEPTION);;
+			setError(e.getErrorCode()+" - "+e.getSQLState());
+			logger.error("querySpec(Object) - o="+o,e);
+		} catch (Exception e) {
+			setErrorNum(ERRNUM_EXCEPTION);;
+			setError(e.getMessage());
+			logger.error("querySpec(Object) - o="+o,e);
+		}
+		return  cnt;                                                     
+	}  
+	
+	/* (non-Javadoc)                                                
+	 * @see com.xiaoran27.db.entity.dao.comm.IDao#query()              
+	 */                                                             
+	public List<${Table0}> query() {                                    
+		return  query(null);                                                  
+	}                             
+	
+	/* (non-Javadoc)                                                
+	 * @see com.xiaoran27.db.entity.dao.comm.IDao#query(T o)
+	 */                                                                
+	public List<${Table0}> query(${Table0} o) {   
+		return query(o, 1, 1000);
+	}                                  
+
+
+	/* (non-Javadoc)                                                
+	 * @see com.xiaoran27.db.entity.dao.comm.IDao#query(T o, int start, int count)
+	 */                                                                
+	public List<${Table0}> query(${Table0} o, int start, int count) {                              
+
+		reset();
+		${Table0}  ${table} = (${Table0})o;
+		String sql = " select * from  ${table}";
+		if (null != o){
+			${Table0}Ext  ${table}Ext = new ${Table0}Ext( ${table});
+			sql =  ${table}Ext.toQuerySql();
+		}
+
+		List<${Table0}> list = new ArrayList<${Table0}>();
+		try {
+			list = (List<${Table0}>)ProxoolMulti.executeQueryList(${Table0}.class,sql,start,count);
+		} catch (SQLException e) {
+			setErrorNum(ERRNUM_EXCEPTION);;
+			setError(e.getErrorCode()+" - "+e.getSQLState());
+			logger.error("querySpec(Object) - o="+o,e);
+		} catch (Exception e) {
+			setErrorNum(ERRNUM_EXCEPTION);;
+			setError(e.getMessage());
+			logger.error("querySpec(Object) - o="+o,e);
+		}
+		return  list;                                                     
+	}                                                                  
+
+
+		
+
+	/* (non-Javadoc)                                                
+	 * @see com.xiaoran27.db.entity.dao.comm.IDao#add(java.lang.Object)
+	 */                                                                
+	public int add(${Table0} o) {                              
+
+	reset();
+		int rtn = -1;                          
+		${Table0} ${table} = (${Table0})o;
+
+		${Table0}Ext ${table}Ext = new ${Table0}Ext(${table});
+		String sql = ${table}Ext.toInsertSql();
+		
+		try {
+			boolean result = ProxoolMulti.executeBatch(sql, true);
+			rtn = result?0:-1;
+		} catch (SQLException e) {
+			setErrorNum(ERRNUM_EXCEPTION);;
+			setError(e.getErrorCode()+" - "+e.getSQLState());
+			logger.error("add(Object) - o="+o,e);
+		} catch (Exception e) {
+			setErrorNum(ERRNUM_EXCEPTION);;
+			setError(e.getMessage());
+			logger.error("add(Object) - o="+o,e);
+		}
+		return rtn; 
+	}                                                                  
+		
+
+	/* (non-Javadoc)                                                
+	 * @see com.xiaoran27.db.entity.dao.comm.IDao#del(java.lang.Object)
+	 */                                                                
+	public int del(${Table0} o) {                              
+
+	reset();
+		int rtn = -1;                          
+		${Table0} ${table} = (${Table0})o;
+
+		${Table0}Ext ${table}Ext = new ${Table0}Ext(${table});
+		String sql = ${table}Ext.toDeleteSql();
+		
+		try {
+			boolean result = ProxoolMulti.executeBatch(sql, true);
+			rtn = result?0:-1;
+		} catch (SQLException e) {
+			setErrorNum(ERRNUM_EXCEPTION);;
+			setError(e.getErrorCode()+" - "+e.getSQLState());
+			logger.error("del(Object) - o="+o,e);
+		} catch (Exception e) {
+			setErrorNum(ERRNUM_EXCEPTION);;
+			setError(e.getMessage());
+			logger.error("del(Object) - o="+o,e);
+		}
+		return rtn; 
+	}                                                                  
+		
+
+	/* (non-Javadoc)                                                
+	 * @see com.xiaoran27.db.entity.dao.comm.IDao#mod(java.lang.Object)
+	 */                                                                
+	public int mod(${Table0} o) {                              
+
+	reset();
+		int rtn = -1;                          
+		${Table0} ${table} = (${Table0})o;
+
+		${Table0}Ext ${table}Ext = new ${Table0}Ext(${table});
+		String sql = ${table}Ext.toUpdateSql();
+		
+		try {
+			boolean result = ProxoolMulti.executeBatch(sql, true);
+			rtn = result?0:-1;
+		} catch (SQLException e) {
+			setErrorNum(ERRNUM_EXCEPTION);;
+			setError(e.getErrorCode()+" - "+e.getSQLState());
+			logger.error("mod(Object) - o="+o,e);
+		} catch (Exception e) {
+			setErrorNum(ERRNUM_EXCEPTION);;
+			setError(e.getMessage());
+			logger.error("mod(Object) - o="+o,e);
+		}
+		return rtn; 
+	}                             
+	
+                                     
+	/**
+	* @param args
+	*/
+	public static void main(String[] args) {
+	
+	}
+	
+
+
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="antprettybuild.xsl"?>
+<!DOCTYPE project [
+    <!ENTITY build-share SYSTEM "share-build.xml.ent">
+]>
+
+<project name="release" default="init" basedir="..">
+
+	&build-share;
+	
+</project>

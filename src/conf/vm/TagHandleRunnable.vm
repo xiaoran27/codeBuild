@@ -1,0 +1,97 @@
+#parse("TagCommon.vm")
+
+package com.lj.${protocol}.handle.runnable;
+
+import java.nio.ByteBuffer;
+import java.util.Date;
+
+import com.lj.comm.handle.IHandleRunnable;
+import com.lj.${protocol}.handle.${Tag0}Handle;
+
+import ${protocol}.msg.${protocol0}Message;
+import ${protocol}.msg.${protocol0}${Tag0}Req;
+
+/**
+ * @author Xiaoran27
+ * Date 2006-01-05
+ *
+ * ${Descript0}
+ */
+public class ${Tag0}HandleRunnable extends ${Tag0}Handle implements IHandleRunnable {
+	
+	private boolean stop=false;
+	private byte[] rcvbuf,sndbuf ;
+
+	/**
+	 * 
+	 */
+	public ${Tag0}HandleRunnable() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public void run() {
+		// TODO Auto-generated method stub
+		
+		while(!stop){
+			if (rcvbuf == null){
+				try{
+					Thread.currentThread().sleep(100);
+				}catch(Exception e){}
+			}else{
+				synchronized (this){
+					try{
+						//System.out.println("rcvbuf="+new String(rcvbuf,0,rcvbuf.length));
+						sndbuf=null;
+						sndbuf=this.handleReq(rcvbuf);
+						//System.out.println("sndbuf="+new String(sndbuf,0,sndbuf.length));
+					}catch(Exception e){
+						sndbuf=null;
+					}
+					rcvbuf = null;
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * @return Returns the sndbuf.
+	 */
+	public byte[] getSndbuf() {
+		return sndbuf;
+	}
+
+	/**
+	 * @param rcvbuf The rcvbuf to set.
+	 */
+	public void setRcvbuf(byte[] rcvbuf) {
+		sndbuf=null;
+		this.rcvbuf = rcvbuf;
+		this.notify();
+	}
+
+	/**
+	 * @return Returns the stop.
+	 */
+	public boolean isStop() {
+		return stop;
+	}
+
+	/**
+	 * @param stop The stop to set.
+	 */
+	public void setStop(boolean stop) {
+		this.stop = stop;
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

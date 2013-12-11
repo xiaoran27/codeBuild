@@ -1,0 +1,136 @@
+#parse("TagCommon.vm")
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-14 20:36
+*   create
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.lj.${protocol}.${msgforamt}.socket.test;
+
+import org.apache.log4j.Logger;
+import junit.framework.TestCase;
+
+import com.lj.${protocol}.${msgforamt}.socket.${Tag0}Client;
+#if ( $msgforamt == "msgc")
+import ${protocol}.msg.${protocol0}${Tag0}Req;
+import ${protocol}.msg.${protocol0}${Tag0}Rsp;
+#else
+import  com.lj.${protocol}.${msgforamt}.msg.${Tag0}MessageReq;
+import  com.lj.${protocol}.${msgforamt}.msg.${Tag0}MessageRsp;
+#end
+/**
+ * ${Descript0}
+ *
+ * @author Xiaoran27 $author: $
+ * @version $Revision: 1.9 $
+ * @ID $Id: TagClientTest.vm,v 1.9 2007/07/31 08:25:49 xiaoran27 Exp $
+  */
+public class ${Tag0}ClientTest extends TestCase {
+
+  private static final Logger logger = Logger.getLogger(${Tag0}ClientTest.class);
+
+  private ${Tag0}Client a${Tag0}Client = null;
+
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(${Tag0}ClientTest.class);
+    System.exit(0);
+  }
+
+  protected void setUp() throws Exception {
+    super.setUp();
+    a${Tag0}Client = new ${Tag0}Client();
+  }
+
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    a${Tag0}Client = null;
+  }
+
+  /*
+   * Test method for 'com.lj.comm.socket.AClientMessage.writeMsg(Object)'
+   */
+  public void testWriteMsg() {
+    //see testReadMsg
+  }
+
+  /*
+   * Test method for 'com.lj.comm.socket.AClientMessage.readMsg()'
+   */
+  public void testReadMsg() {
+#if ( $msgforamt == "msgc")
+    ${Protocol0}${Tag0}Req req = new ${Protocol0}${Tag0}Req();
+    ${Protocol0}${Tag0}Rsp rsp = null;
+#else
+    ${Tag0}MessageReq req = new ${Tag0}MessageReq();
+    ${Tag0}MessageRsp rsp = null;
+#end
+
+    int count=0;
+    int times = 10;//second
+    int seq = (int)(System.currentTimeMillis()&0x0000ffff) - 10000;
+    long old = System.currentTimeMillis();
+    while(System.currentTimeMillis() - old < times*1000){
+      try{
+        
+        //拼发送消息
+        req.setSeq(seq++);
+        //req.setXxx(value); //TODO: set request value.
+
+        if (logger.isInfoEnabled()){
+            logger.info("Send REQ: " + req);
+        }
+        
+        //一半时间去发送
+        int rtn = a${Tag0}Client.writeMsg(req);
+        while (rtn<0 && (System.currentTimeMillis() - old < (times/2)*1000)){
+            a${Tag0}Client = new ${Tag0}Client();
+            if (logger.isInfoEnabled()){
+                logger.info(rtn+" - reconnecting ... a${Tag0}Client=" + a${Tag0}Client);
+            }
+            rtn = a${Tag0}Client.writeMsg(req);
+        }
+        if (rtn<0){
+            break;
+        }
+
+        //一半时间去接收
+        long old2 = System.currentTimeMillis();
+        do{
+          try{
+             java.lang.Thread.sleep(5);
+#if ( $msgforamt == "msgc")
+             rsp = (${protocol0}${Tag0}Rsp)a${Tag0}Client.readMsg(1);  //1s
+#else
+             rsp = (${Tag0}MessageRsp)a${Tag0}Client.readMsg(1);  //1s
+#end
+             if (null!=rsp && req.getSeq()!=rsp.getSeq()){
+            	 logger.warn("not matched message. discard: "+rsp);
+            	 rsp=null;
+             }
+          }catch(Exception e){
+            logger.error("Recv message is Exception e="+e, e);
+            break;
+          }
+        }while(rsp == null && System.currentTimeMillis() - old2 < (times-times/2)*1000); 
+        
+        if (logger.isInfoEnabled()){
+            logger.info("Recv RSP: " + rsp);
+        }
+        if (null!=rsp) break;  //仅收一个包,在这儿break;
+        if (null!=rsp) count ++;  //一般做性能测试;
+      }catch(Exception e){
+          logger.error("Send/Recv message is Exception e="+e, e);
+      }
+    }
+
+    System.out.println("Send/Receive(sleep 5ms): " + count + " test for "+times+"s.");
+    
+    assertNotNull(rsp);
+    assertEquals(0, rsp.getResCommon().getErrcode());
+    
+  }
+
+}

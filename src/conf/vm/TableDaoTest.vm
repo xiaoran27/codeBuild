@@ -1,0 +1,439 @@
+#set($table=$table0.toLowerCase())
+#set($Table=$strings.capitalizeFirstLetter($table))
+#set($TABLE=$table0.toUpperCase())
+#parse("CommonTemplate.vm")
+#set($Comment=$strings.capitalizeFirstLetter($comment0))
+#set($comment=$comment0.toLowerCase())
+#set($COMMENT=$comment0.toUpperCase())
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-14 20:36
+*   create
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.xiaoran27.db.entity.dao.test;
+
+import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import com.xiaoran27.db.entity.dao.${Table}Dao;
+import com.xiaoran27.db.entity.pojo.${Table};
+
+import junit.framework.TestCase;
+
+public class ${Table}DaoTest extends TestCase {
+
+  private boolean _DEBUG = true;
+
+  ${Table} ${table} = null;
+  ${Table}Dao ${table}Dao = null;
+  Long uid = null;
+
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(${Table}DaoTest.class);
+  }
+
+  protected void setUp() throws Exception {
+    super.setUp();
+    ${table} = new ${Table}();
+    ${table}Dao = new ${Table}Dao();
+  }
+
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    ${table} = null;
+    ${table}Dao = null;
+  }
+
+  /*
+   * Test method for 'com.xiaoran27.db.entity.dao.${Table}Dao.insert(Object)'
+   */
+  public void testInsert() {
+    System.out.println("======================insert(obj) test start=============================");
+
+    ${table} = new ${Table}();
+#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($columncode))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($ComlumnReference.get($i)=="")##!$TablePKS.contains($ColumnCode0) &&
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+  ${table}.set${ColumnCode}(1);
+#elseif ( $ColumnType0 == "Long" || $ColumnType0 == "long" )
+  ${table}.set${ColumnCode}(1l);
+#elseif ( $ColumnType0 == "Float" || $ColumnType0 == "float" )
+  ${table}.set${ColumnCode}(1f);
+#elseif ( $ColumnType0 == "Double" || $ColumnType0 == "double" )
+  ${table}.set${ColumnCode}(1d);
+#elseif ($ColumnType0 == "java.sql.Date" || $ColumnType0 == "java.sql.Timestamp" )
+    ${table}.set${ColumnCode}(new java.sql.Timestamp(System.currentTimeMillis()));
+#else
+    ${table}.set${ColumnCode}("1");
+#end
+#set($j=$j+1)#end #set($i=$i+1) #end
+    ${table}Dao.beginTrans();
+    if (${table}Dao.insert(${table}) > 0){
+      ${table}Dao.commitTrans();
+#if($table != "uidtable")
+      uid = ${table}.getUid();
+#end
+    }else{
+      ${table}Dao.rollbackTrans();
+    }
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+    System.out.println("======================insert(obj) test end=============================");
+  }
+
+  /*
+   * Test method for 'com.xiaoran27.db.entity.dao.${Table}Dao.update(Object)'
+   */
+  public void testUpdate() {
+    System.out.println("======================update(obj) test start=============================");
+
+    ${table} = new ${Table}();
+#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($columncode))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($ComlumnReference.get($i)=="")##!$TablePKS.contains($ColumnCode0) &&
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+  ${table}.set${ColumnCode}(2);
+#elseif ( $ColumnType0 == "Long" || $ColumnType0 == "long" )
+  ${table}.set${ColumnCode}(2l);
+#elseif ( $ColumnType0 == "Float" || $ColumnType0 == "float" )
+  ${table}.set${ColumnCode}(2f);
+#elseif ( $ColumnType0 == "Double" || $ColumnType0 == "double" )
+  ${table}.set${ColumnCode}(2d);
+#elseif ($ColumnType0 == "java.sql.Date" || $ColumnType0 == "java.sql.Timestamp" )
+    ${table}.set${ColumnCode}(new java.sql.Timestamp(System.currentTimeMillis()));
+#else
+    ${table}.set${ColumnCode}("2");
+#end
+#set($j=$j+1)#end #set($i=$i+1) #end
+
+    ${table}Dao.beginTrans();
+    if (${table}Dao.insert(${table}) > 0){
+      ${table}Dao.commitTrans();
+#if($table != "uidtable")
+      uid = ${table}.getUid();
+#end
+    }else{
+      ${table}Dao.rollbackTrans();
+    }
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+
+#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($columncode))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if(!$TablePKS.contains($ColumnCode0) && $ComlumnReference.get($i)=="")##
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+  ${table}.set${ColumnCode}(9);
+#elseif ( $ColumnType0 == "Long" || $ColumnType0 == "long" )
+  ${table}.set${ColumnCode}(9l);
+#elseif ( $ColumnType0 == "Float" || $ColumnType0 == "float" )
+  ${table}.set${ColumnCode}(9f);
+#elseif ( $ColumnType0 == "Double" || $ColumnType0 == "double" )
+  ${table}.set${ColumnCode}(9d);
+#elseif ($ColumnType0 == "java.sql.Date" || $ColumnType0 == "java.sql.Timestamp" )
+    ${table}.set${ColumnCode}(new java.sql.Timestamp(System.currentTimeMillis()));
+#else
+    ${table}.set${ColumnCode}("9");
+#end
+#set($j=$j+1)#end #set($i=$i+1) #end
+    ${table}Dao.beginTrans();
+    if (${table}Dao.update(${table}) > 0){
+      ${table}Dao.commitTrans();
+    }else{
+      ${table}Dao.rollbackTrans();
+    }
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+    System.out.println("======================update(obj) test end=============================");
+  }
+
+  /*
+   * Test method for 'com.xiaoran27.db.entity.dao.${Table}Dao.queryByPK(Object)'
+   */
+  public void testQueryByPK() {
+    System.out.println("======================queryByPK test start=============================");
+
+    ${table} = new ${Table}();
+#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($columncode))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($ComlumnReference.get($i)=="")##!$TablePKS.contains($ColumnCode0) &&
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+  ${table}.set${ColumnCode}(3);
+#elseif ( $ColumnType0 == "Long" || $ColumnType0 == "long" )
+  ${table}.set${ColumnCode}(3l);
+#elseif ( $ColumnType0 == "Float" || $ColumnType0 == "float" )
+  ${table}.set${ColumnCode}(3f);
+#elseif ( $ColumnType0 == "Double" || $ColumnType0 == "double" )
+  ${table}.set${ColumnCode}(3d);
+#elseif ($ColumnType0 == "java.sql.Date" || $ColumnType0 == "java.sql.Timestamp" )
+    ${table}.set${ColumnCode}(new java.sql.Timestamp(System.currentTimeMillis()));
+#else
+    ${table}.set${ColumnCode}("3");
+#end
+#set($j=$j+1)#end #set($i=$i+1) #end
+
+    ${table}Dao.beginTrans();
+    if (${table}Dao.insert(${table}) > 0){
+      ${table}Dao.commitTrans();
+#if($table != "uidtable")
+      uid = ${table}.getUid();
+#end
+    }else{
+      ${table}Dao.rollbackTrans();
+    }
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+
+    ${table} = (${Table})${table}Dao.queryByPK(#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($columncode))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($TablePKS.contains($ColumnCode0))#if($ColumnType0 == "Integer" || $ColumnType0 == "int" || $ColumnType0 == "long" || $ColumnType0 == "float" || $ColumnType0 == "double")#if($ColumnCode0 == "uid")uid #else 3#end #else"3"#end#set($j=$j+1)#end#set($i=$i+1)#end);
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+    System.out.println(${table});
+
+    System.out.println("======================queryByPK test end=============================");
+
+  }
+
+  /*
+   * Test method for 'com.xiaoran27.db.entity.dao.${Table}Dao.delete(Object)'
+   */
+  public void testDelete() {
+    System.out.println("======================delete(obj) test start=============================");
+
+    ${table} = new ${Table}();
+#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($columncode))#set($ColumnCode = $strings.capitalizeFirstLetter($columncode))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($ComlumnReference.get($i)=="")##!$TablePKS.contains($ColumnCode0) &&
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+  ${table}.set${ColumnCode}(4);
+#elseif ( $ColumnType0 == "Long" || $ColumnType0 == "long" )
+  ${table}.set${ColumnCode}(4l);
+#elseif ( $ColumnType0 == "Float" || $ColumnType0 == "float" )
+  ${table}.set${ColumnCode}(4f);
+#elseif ( $ColumnType0 == "Double" || $ColumnType0 == "double" )
+  ${table}.set${ColumnCode}(4d);
+#elseif ($ColumnType0 == "java.sql.Date" || $ColumnType0 == "java.sql.Timestamp" )
+    ${table}.set${ColumnCode}(new java.sql.Timestamp(System.currentTimeMillis()));
+#else
+    ${table}.set${ColumnCode}("4");
+#end
+#set($j=$j+1)#end #set($i=$i+1) #end
+
+    ${table}Dao.beginTrans();
+    if (${table}Dao.insert(${table}) > 0){
+      ${table}Dao.commitTrans();
+#if($table != "uidtable")
+      uid = ${table}.getUid();
+#end
+    }else{
+      ${table}Dao.rollbackTrans();
+    }
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+
+    ${table}Dao.beginTrans();
+    if (${table}Dao.delete(${table}) > 0){
+      ${table}Dao.commitTrans();
+    }else{
+      ${table}Dao.rollbackTrans();
+    }
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+
+    ${table} = new ${Table}();
+#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($columncode))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($ComlumnReference.get($i)=="")##!$TablePKS.contains($ColumnCode0) &&
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+  ${table}.set${ColumnCode}(4);
+#elseif ( $ColumnType0 == "Long" || $ColumnType0 == "long" )
+  ${table}.set${ColumnCode}(4l);
+#elseif ( $ColumnType0 == "Float" || $ColumnType0 == "float" )
+  ${table}.set${ColumnCode}(4f);
+#elseif ( $ColumnType0 == "Double" || $ColumnType0 == "double" )
+  ${table}.set${ColumnCode}(4d);
+#elseif ($ColumnType0 == "java.sql.Date" || $ColumnType0 == "java.sql.Timestamp" )
+    ${table}.set${ColumnCode}(new java.sql.Timestamp(System.currentTimeMillis()));
+#else
+    ${table}.set${ColumnCode}("4");
+#end
+#set($j=$j+1)#end #set($i=$i+1)#end
+
+    ${table}Dao.beginTrans();
+    if (${table}Dao.insert(${table}) > 0){
+      ${table}Dao.commitTrans();
+#if($table != "uidtable")
+      uid = ${table}.getUid();
+#end
+    }else{
+      ${table}Dao.rollbackTrans();
+    }
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+
+    ${table}Dao.beginTrans();
+    if (${table}Dao.delete(${table}.get#foreach($ColumnCode0 in $TablePKS)#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($columncode))${ColumnCode}#end()) > 0){ //one field is key.
+      ${table}Dao.commitTrans();
+    }else{
+      ${table}Dao.rollbackTrans();
+    }
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+
+    ${table} = new ${Table}();
+#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($columncode))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($ComlumnReference.get($i)=="")##!$TablePKS.contains($ColumnCode0) &&
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+  ${table}.set${ColumnCode}(4);
+#elseif ( $ColumnType0 == "Long" || $ColumnType0 == "long" )
+  ${table}.set${ColumnCode}(4l);
+#elseif ( $ColumnType0 == "Float" || $ColumnType0 == "float" )
+  ${table}.set${ColumnCode}(4f);
+#elseif ( $ColumnType0 == "Double" || $ColumnType0 == "double" )
+  ${table}.set${ColumnCode}(4d);
+#elseif ($ColumnType0 == "java.sql.Date" || $ColumnType0 == "java.sql.Timestamp" )
+    ${table}.set${ColumnCode}(new java.sql.Timestamp(System.currentTimeMillis()));
+#else
+    ${table}.set${ColumnCode}("4");
+#end
+#set($j=$j+1)#end #set($i=$i+1)#end
+
+    ${table}Dao.beginTrans();
+    if (${table}Dao.insert(${table}) > 0){
+      ${table}Dao.commitTrans();
+#if($table != "uidtable")
+      uid = ${table}.getUid();
+#end
+    }else{
+      ${table}Dao.rollbackTrans();
+    }
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+
+    Map map = new LinkedHashMap();
+    map.put("UID",uid);
+    ${table}Dao.beginTrans();
+    if (${table}Dao.delete(map) > 0){ //
+      ${table}Dao.commitTrans();
+    }else{
+      ${table}Dao.rollbackTrans();
+    }
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+
+    System.out.println("======================delete(obj) test end=============================");
+  }
+
+  /*
+   * Test method for 'com.xiaoran27.db.entity.dao.${Table}Dao.queryByUniqueIndex(Map)'
+   */
+  public void testQueryByUniqueIndex() {
+    System.out.println("======================queryByUniqueIndex(obj) test start=============================");
+
+    Map map = null;
+#foreach($allUniqueKey0 in $TableINXS)
+    map = new LinkedHashMap();
+#set($i =0)#foreach($indexColumn0 in $ColumnCodes)#set($indexcolumn = $indexColumn0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($allUniqueKey0.indexOf($indexColumn0)>=0)
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+      map.put("${indexColumn0}",new Integer(1));
+#elseif($ColumnType0 == "long" || $ColumnType0 == "float" ||$ColumnType0 == "double" )
+      map.put("${indexColumn0}",new ${ColumnType}(1));
+#else
+      map.put("${indexColumn0}","1");
+#end
+#end #set($i = $i +1)#end
+    ${table} = (${Table})${table}Dao.queryByUniqueIndex(map);
+    System.out.println(${table});
+#end
+
+#foreach($allUniqueKey0 in $TableINXS)
+    map = new LinkedHashMap();
+#set($i =0)#foreach($indexColumn0 in $ColumnCodes)#set($indexcolumn = $indexColumn0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($allUniqueKey0.indexOf($indexColumn0)>=0)
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+      map.put("${indexColumn0}",new Integer(2));
+#elseif($ColumnType0 == "long" || $ColumnType0 == "float" ||$ColumnType0 == "double" )
+      map.put("${indexColumn0}",new ${ColumnType}(2));
+#else
+      map.put("${indexColumn0}","2");
+#end
+#end #set($i = $i +1)#end
+    ${table} = (${Table})${table}Dao.queryByUniqueIndex(map);
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+    System.out.println(${table});
+#end
+
+#foreach($allUniqueKey0 in $TableINXS)
+    map = new LinkedHashMap();
+#set($i =0)#foreach($indexColumn0 in $ColumnCodes)#set($indexcolumn = $indexColumn0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($allUniqueKey0.indexOf($indexColumn0)>=0)
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+      map.put("${indexColumn0}",new Integer(3));
+#elseif($ColumnType0 == "long" || $ColumnType0 == "float" ||$ColumnType0 == "double" )
+      map.put("${indexColumn0}",new ${ColumnType}(3));
+#else
+      map.put("${indexColumn0}","3");
+#end
+#end #set($i = $i +1)#end
+    ${table} = (${Table})${table}Dao.queryByUniqueIndex(map);
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+    System.out.println(${table});
+#end
+
+#foreach($allUniqueKey0 in $TableINXS)
+    map = new LinkedHashMap();
+#set($i =0)#foreach($indexColumn0 in $ColumnCodes)#set($indexcolumn = $indexColumn0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($allUniqueKey0.indexOf($indexColumn0)>=0)
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+      map.put("${indexColumn0}",new Integer(4));
+#elseif($ColumnType0 == "long" || $ColumnType0 == "float" ||$ColumnType0 == "double" )
+      map.put("${indexColumn0}",new ${ColumnType}(4));
+#else
+      map.put("${indexColumn0}","4");
+#end
+#end #set($i = $i +1)#end
+    ${table} = (${Table})${table}Dao.queryByUniqueIndex(map);
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+    System.out.println(${table});
+#end
+
+    System.out.println("======================queryByUniqueIndex(obj) test end=============================");
+
+  }
+
+  /*
+   * Test method for 'com.xiaoran27.db.entity.dao.${Table}Dao.queryAll()'
+   */
+  public void testQueryAll() {
+    System.out.println("======================queryAll test start=============================");
+
+    List list = ${table}Dao.queryAll();
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+    System.out.println(list.size());
+
+    System.out.println("======================queryAll test end=============================");
+  }
+
+
+  /*
+   * Test method for 'com.xiaoran27.db.entity.dao.${Table}Dao.query(LinkedHashMap,int,int)'
+   */
+  public void testQuery() {
+    System.out.println("======================query test start=============================");
+
+    LinkedHashMap map = new LinkedHashMap();
+    List list = ${table}Dao.query(map,2,3);
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+    System.out.println(list.size());
+
+    System.out.println("======================query test end=============================");
+  }
+
+  /*
+   * Test method for 'com.xiaoran27.db.entity.dao.${Table}Dao.queryCount(LinkedHashMap)'
+   */
+  public void testQueryCount() {
+    System.out.println("======================queryCount test start=============================");
+
+    LinkedHashMap map = new LinkedHashMap();
+    int count = ${table}Dao.queryCount(map);
+    if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+    System.out.println(count);
+
+    System.out.println("======================queryCount test end=============================");
+  }
+
+  /*
+   * Test method for 'com.xiaoran27.db.entity.dao.${Table}Dao.deleteAll()'
+   */
+  public void testDeleteAll() {
+      System.out.println("======================deleteAll test start=============================");
+
+    ${table}Dao.beginTrans();
+    if (${table}Dao.deleteAll() > 0){
+      if (_DEBUG){System.err.println("errorInfo: "+ ${table}Dao.getErrorInfo());}
+      ${table}Dao.commitTrans();
+    }else{
+      ${table}Dao.rollbackTrans();
+    }
+
+    System.out.println("======================deleteAll test end=============================");
+  }
+}

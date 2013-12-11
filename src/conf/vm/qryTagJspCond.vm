@@ -1,0 +1,100 @@
+#parse("TagCommon.vm")
+
+<%@ page contentType="text/html; charset=GBK" language="java"  %>
+
+<html>
+<head>
+<%@ include file="/include/param.jsp" %>
+<%@ include file="/include/header.jsp" %>
+<title><%=appTitle%></title>
+</head>
+
+<%
+String action="${tag0}.action";
+String id="OperatorTable";
+String title = "${Descript0}";
+%>
+<body style="overflow-x:hidden">
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr bgcolor="#7691C7">
+  <td width="91%" >
+    <IMG src="images/Page_Arrow1.gif" width="23" height="23" border="0" align="absmiddle"><%=title %>
+  </TD>
+  </tr>
+  <td width="9%" align="center">
+    <input type="button" name="add" class="btn2" value="增加" onClick="window.location.href='${add}${tag0}.action'">
+  </td>
+</table>
+
+<p>&nbsp;</p>
+<table width="80%"  border="0" cellpadding="0" cellspacing="0">
+  <tbody>
+  <form name="form1" method="post" action="<%=action%>" onSubmit="return checkInput()">
+    <!--
+    <tr >
+      <td width="45%" align="right" class="menu">开始时间:</td>
+      <td width="55%">
+        <input name="starttime" type="text" class="inputtext" readOnly value="<%=starttime%>" onclick="fPopCalendar(this,this,this.value,10);">
+      </td>
+    </tr>
+    <tr <%=getStyle(!oneDatetime)%>>
+      <td width="45%" align="right" class="menu">结束时间:</td>
+      <td width="55%">
+        <input name="endtime" type="text" class="inputtext" readOnly value="<%=endtime%>" onclick="fPopCalendar(this,this,this.value,10);">
+      </td>
+    </tr>
+    -->
+    <tr >
+      <td width="45%" align="right" class="menu">选项:</td>
+      <td width="55%">
+        <select name="listbox">
+             <%=com.lj.web.convert.ConstantDisplay.getInstance().optionsOfFlag("_FLAG","")%>
+        </select>
+      </td>
+    </tr>
+    <tr >
+      <td width="45%" align="right" class="menu">输入框:</td>
+      <td width="55%"><input name="_input" type="text" class="inputtext" ></td>
+    </tr>
+
+    <tr>
+      <td colspan="2">
+        <div align="center">
+          <input type="submit" name="submit" value="查询" class="btn2">
+          &nbsp;&nbsp;
+          <input name="Submit" type="reset"  value="重置" class="btn2">
+        </div>
+      </td>
+    </tr>
+  </form>
+  </tbody>
+</table>
+
+<script language="JavaScript" >
+  function checkInput(){
+    /*
+    if (document.all["starttime"].value>document.all["endtime"].value){
+      alert("[开始时间]不能大于[结束时间]!");
+      document.all["starttime"].focus();
+      return false;
+    }
+
+    document.all["endtime"].readonly=false
+    document.all["endtime"].value=document.all["starttime"].value+" 23:59:59";
+    document.all["starttime"].readonly=false
+    document.all["starttime"].value=document.all["starttime"].value+" 00:00:00";
+    */
+   
+   //TODO: 对输入参数进行校验
+
+    return true;
+  }
+</script>
+
+</body>
+</html>
+
+
+
+

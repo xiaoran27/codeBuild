@@ -1,0 +1,593 @@
+#set($table=$table0.toLowerCase())
+#set($Table=$strings.capitalizeFirstLetter($table))
+#set($TABLE=$table0.toUpperCase())
+#parse("CommonTemplate.vm")
+#set($Comment=$strings.capitalizeFirstLetter($comment0))
+#set($comment=$comment0.toLowerCase())
+#set($COMMENT=$comment0.toUpperCase())
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-14 20:36
+*   create
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-29 17:40
+*  + public int queryCount(String where) throws HibernateException;
+* M StringBuffer -> StringBuilder
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-5-14 20:31
+* M queryByUniqueIndex(Map )支持多唯一索引
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-6-20
+* M 修复多唯一索引列名包含问题
+* M 判断where是不是and开始,不是判断hsql
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.xiaoran27.db.entity.dao;
+
+import com.xiaoran27.db.entity.dao.comm.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import com.xiaoran27.db.entity.pojo.${Table};
+
+/**
+ * ${comment0}
+ *
+ * @author Xiaoran27 $author$
+ * @version $Revision: 1.12 $
+  */
+public class ${Table}Dao extends AbstractDao {
+
+  /**
+   *
+   */
+  public ${Table}Dao() {
+  }
+
+  /**
+   * 新增一个数据
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#insert(java.lang.Object)
+   */
+  public int insert(Object obj) throws HibernateException {
+    try {
+        if (obj instanceof ${Table}) {
+          getSession().save(obj);
+          //getSession().persist(obj); //增加数据好像有问题
+        }else{
+          setErrorInfo("the param is error, it must be a ${Table} instance.");
+          return -1;
+        }
+
+        return 1;
+    } catch (HibernateException e) {
+      setErrorInfo("insert(Object obj): "+e);
+      throw e;
+    }
+  }
+
+  /**
+   * 删除一各数据.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#delete(java.lang.Object)
+   */
+  public int delete(Object obj) throws HibernateException {
+    try{
+        if (obj instanceof ${Table}) {
+          getSession().delete(obj);
+#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($TablePKS.contains($ColumnCode0))
+    }else if (obj instanceof #if($ColumnType0=="int")Integer#elseif($ColumnType0=="long")Long#elseif($ColumnType0=="float")Float#elseif($ColumnType0=="double")Double#else${ColumnType}#end){
+          Query query = getSession().createQuery("delete from com.xiaoran27.db.entity.pojo.${Table} where ${columncode}=:${ColumnCode0}");
+          query.setParameter("${ColumnCode0}",obj,Hibernate.#if($ColumnType0=="int")INTEGER#else${COLUMNTYPE}#end);
+          return query.executeUpdate();
+#set($j=$j+1)#end #set($i=$i+1)#end
+        }else if (obj instanceof Map){
+          StringBuilder queryHql = new StringBuilder("delete from com.xiaoran27.db.entity.pojo.${Table} where 1=1 ");
+
+          Map map=(Map)obj;
+          for(Iterator iter=map.keySet().iterator();iter.hasNext();){
+            String key=(String)iter.next();
+            queryHql.append(" and ").append(key.toLowerCase());
+            queryHql.append(" = :").append(key);
+          }
+
+          Query query = getSession().createQuery(queryHql.toString());
+
+          for(Iterator iter=map.entrySet().iterator();iter.hasNext();){
+            Map.Entry entry=(Map.Entry)iter.next();
+            query = query.setParameter((String)entry.getKey(),entry.getValue());
+          }
+
+          return query.executeUpdate();
+        }else{
+          setErrorInfo("the param is error, it must be a ${Table} or id(entity's ID datatype) or Map(K,V) instance.");
+          return -1;
+        }
+
+
+        return 1;
+      } catch (HibernateException e) {
+      setErrorInfo("delete(Object obj): "+e);
+      throw e;
+    }
+  }
+
+  /**
+   * 删除所有数据.
+   *
+   * @see com.xiaoran27.db.entity.daor.IDao#deleteAll()
+   */
+  public int deleteAll() throws HibernateException {
+    try{
+        Query query = getSession().createQuery(" delete from com.xiaoran27.db.entity.pojo.${Table}");
+        return query.executeUpdate();
+      } catch (HibernateException e) {
+      setErrorInfo("deleteAll(): "+e);
+      throw e;
+    }
+
+  }
+
+  /**
+   * 修改一个数据.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#update(java.lang.Object)
+   */
+  public int update(Object obj) throws HibernateException {
+    try{
+        if (obj instanceof ${Table}) {
+          getSession().update(obj);
+        }else{
+          setErrorInfo("the param is error, it must be a ${Table} instance.");
+          return -1;
+        }
+
+
+        return 1;
+      } catch (HibernateException e) {
+      setErrorInfo("update(Object obj): "+e);
+      throw e;
+    }
+  }
+
+   /**
+   * 修改批量数据.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#update(Map , LinkedHashMap )
+   */
+  public int update(Map setMap, LinkedHashMap whereMap) throws HibernateException {
+    try{
+        StringBuilder queryHql = new StringBuilder("update com.xiaoran27.db.entity.pojo.${Table} set ");
+
+        //set param
+        int i=0;
+        for(Iterator iter=setMap.keySet().iterator();iter.hasNext();){
+          if (i>1){
+            queryHql.append(" , ");
+          }
+          i++;
+          String key=(String)iter.next();
+          queryHql.append(key.toLowerCase());
+          queryHql.append(" = :").append(key).append(i);
+        }
+
+        //where param
+        queryHql.append(" where 1 = 1 ");
+        for(Iterator iter=whereMap.keySet().iterator();iter.hasNext();){
+          String key=(String)iter.next();
+          queryHql.append(" and ").append(key.toLowerCase());
+          queryHql.append(" = :").append(key);
+        }
+
+        Query query = getSession().createQuery(queryHql.toString());
+
+        //set value
+        i=0;
+        for(Iterator iter=setMap.entrySet().iterator();iter.hasNext();){
+          i++;
+          Map.Entry entry=(Map.Entry)iter.next();
+          query = query.setParameter((String)entry.getKey()+String.valueOf(i),entry.getValue());
+        }
+
+        //where value
+        for(Iterator iter=whereMap.entrySet().iterator();iter.hasNext();){
+          Map.Entry entry=(Map.Entry)iter.next();
+          query = query.setParameter((String)entry.getKey(),entry.getValue());
+        }
+
+        return query.executeUpdate();
+      } catch (HibernateException e) {
+      setErrorInfo("update(Map setMap, LinkedHashMap whereMap): "+e);
+      throw e;
+    }
+  }
+
+  /**
+   * 修改批量数据.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#update(Map , String )
+   */
+  public int update(Map setMap, String where) throws HibernateException {
+    try{
+        StringBuilder queryHql = new StringBuilder("update com.xiaoran27.db.entity.pojo.${Table} set ");
+
+        //set param
+        int i=0;
+        for(Iterator iter=setMap.keySet().iterator();iter.hasNext();){
+          if (i>1){
+            queryHql.append(" , ");
+          }
+          i++;
+          String key=(String)iter.next();
+          queryHql.append(key.toLowerCase());
+          queryHql.append(" = :").append(key).append(i);
+        }
+
+        //where
+        queryHql.append(" where 1 = 1 ");
+        if (where.trim().startsWith("and")){
+          queryHql.append(where);
+        }else{
+          queryHql.append(" and ").append(where);
+        }
+
+        Query query = getSession().createQuery(queryHql.toString());
+
+        //set value
+        i=0;
+        for(Iterator iter=setMap.entrySet().iterator();iter.hasNext();){
+          i++;
+          Map.Entry entry=(Map.Entry)iter.next();
+          query = query.setParameter((String)entry.getKey()+String.valueOf(i),entry.getValue());
+        }
+
+        return query.executeUpdate();
+      } catch (HibernateException e) {
+      setErrorInfo("update(Map setMap, LinkedHashMap whereMap): "+e);
+      throw e;
+    }
+  }
+
+  /**
+   * 修改批量数据.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#update(String , String )
+   */
+  public int update(String set, String where) throws HibernateException {
+    try{
+        StringBuilder queryHql = new StringBuilder("update com.xiaoran27.db.entity.pojo.${Table} set ");
+
+        //set param
+        queryHql.append(set);
+
+        //where
+        queryHql.append(" where 1 = 1 ");
+        if (where.trim().startsWith("and")){
+          queryHql.append(where);
+        }else{
+          queryHql.append(" and ").append(where);
+        }
+
+        Query query = getSession().createQuery(queryHql.toString());
+
+        return query.executeUpdate();
+      } catch (HibernateException e) {
+      setErrorInfo("update(Map setMap, LinkedHashMap whereMap): "+e);
+      throw e;
+    }
+  }
+
+  /**
+   * 按主键查询数据.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#queryByPK(java.lang.Object)
+   */
+  public Object queryByPK(Object obj) throws HibernateException {
+    try{
+        ${Table} ${table} = null;
+#set($i =0)#set($j =0)#foreach($ColumnCode0 in $ColumnCodes)#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#if($TablePKS.contains($ColumnCode0))
+        if (obj instanceof #if($ColumnType0=="int")Integer#elseif($ColumnType0=="long")Long#elseif($ColumnType0=="float")Float#elseif($ColumnType0=="double")Double#else${ColumnType}#end) {
+          Query query = getSession().createQuery("from com.xiaoran27.db.entity.pojo.${Table} where ${columncode} = :${ColumnCode0}");
+          query.setParameter("${ColumnCode0}", obj, Hibernate.#if($ColumnType0=="int")INTEGER#else${COLUMNTYPE}#end);
+
+          List list = query.list();
+          if (!list.isEmpty()){
+            ${table} = (${Table})list.get(0);
+          }
+
+        }else{
+          setErrorInfo("the param is error, it must be a #if($ColumnType0=="int")Integer#elseif($ColumnType0=="long")Long#elseif($ColumnType0=="float")Float#elseif($ColumnType0=="double")Double#else${ColumnType}#end instance.");
+          return null;
+        }
+#set($j=$j+1)#end #set($i=$i+1)#end
+
+
+        return ${table};
+        } catch (HibernateException e) {
+      setErrorInfo("queryByPK(Object obj): "+e);
+      throw e;
+    }
+  }
+
+  /**
+   * 按唯一索引查询数据.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#queryByUniqueIndex(java.util.Map)
+   */
+  public Object queryByUniqueIndex(Map map) throws HibernateException {
+    try{
+        StringBuilder allUniqueKey = new StringBuilder();
+        for(Iterator iter=map.keySet().iterator();iter.hasNext();){
+          allUniqueKey.append(iter.next()).append(',');
+        }
+
+        final int INX_SIZE = $TableINXS.size();
+        StringBuilder[] reg = new StringBuilder[INX_SIZE];
+        for(int i=0;i<INX_SIZE;i++){
+          reg[i] = new StringBuilder();
+        }
+
+        {// judge start
+#set($i =0)#set($allUniqueKeyTip = "")#foreach($allUniqueKey0 in $TableINXS)#set($alluniquekey = $allUniqueKey0.toLowerCase())#set($allUniqueKeyTip=$allUniqueKeyTip.concat("\"").concat($allUniqueKey0).concat("\""))#set($i =$i+1)#if($i<$TableINXS.size())#set($allUniqueKeyTip = $allUniqueKeyTip.concat(" or ")) #end #end
+#set($i =0)#foreach($allUniqueKey0 in $TableINXS)
+          {
+            String uqUnit = "(${allUniqueKey0})";
+            String[] keys = "${allUniqueKey0}".split(",");
+            for(int i=0;i<keys.length;i++){
+              reg[${i}].append(uqUnit.replace(",","|")).append(",");
+            }
+          }
+#set($i =$i+1)#end
+          boolean isExists = false;
+          for(int i=0;i<INX_SIZE;i++){
+            isExists = isExists || Pattern.matches(reg[i].toString(),allUniqueKey.toString());
+          }
+          if (!isExists){
+            setErrorInfo("the param is error, it must include ${allUniqueKeyTip}.");
+            return null;
+          }
+        }//judge end
+
+        ${Table} ${table} = null;
+        Query query = null;
+        Object objKey = null;
+        Object objValue = null;
+        List list = null;
+
+#set($inx =0)#foreach($allUniqueKey0 in $TableINXS)#set($allUniqueKey0s=$strings.split($allUniqueKey0.toLowerCase(),","))
+        if (Pattern.matches(reg[${inx}].toString(),allUniqueKey.toString())){
+          query = getSession().createQuery("from com.xiaoran27.db.entity.pojo.${Table} where #set($i =0)#foreach($indexColumn0 in $ColumnCodes)#set($indexcolumn = $indexColumn0.toLowerCase())#foreach($oneUniqueKey0 in $allUniqueKey0s)#if($oneUniqueKey0==$indexcolumn)$indexcolumn = :$indexColumn0 #if($i+1<$ColumnCodes.size()) and #end#end#end#set($i = $i +1)#end 1=1");
+#set($i =0)#foreach($indexColumn0 in $ColumnCodes)#set($indexcolumn = $indexColumn0.toLowerCase())#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#foreach($oneUniqueKey0 in $allUniqueKey0s)#if($oneUniqueKey0==$indexcolumn)
+          objKey = "${indexColumn0}";
+          if (map.containsKey(objKey)){
+            objValue = map.get(objKey);
+            if (objValue instanceof #if($ColumnType0=="int")Integer#elseif($ColumnType0=="long")Long#elseif($ColumnType0=="float")Float#elseif($ColumnType0=="double")Double#else${ColumnType}#end) {
+              query.setParameter("${indexColumn0}", objValue, Hibernate.#if($ColumnType0=="int")INTEGER#else${COLUMNTYPE}#end);
+            }else{
+              setErrorInfo("the ${indexColumn0}'s value is error, it must be a #if($ColumnType0=="int")Integer#elseif($ColumnType0=="long")Long#elseif($ColumnType0=="float")Float#elseif($ColumnType0=="double")Double#else${ColumnType}#end instance.");
+              return null;
+            }
+          }else{
+            setErrorInfo("the param is error, it must include \"${indexColumn0}\".");
+            return null;
+          }
+#end#end #set($i = $i +1)#end
+
+          if (null == query) return null;
+          list = query.list();
+          if (!list.isEmpty()){
+            ${table} = (${Table})list.get(0);
+            if (null!=${table}){
+              return ${table};
+            }
+          }
+        }
+#set($inx =$inx+1)#end
+        return null;
+      } catch (HibernateException e) {
+      setErrorInfo("queryByUniqueIndex(Map map): "+e);
+      throw e;
+    }
+  }
+
+  /**
+   * 查询所有数据.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#queryAll()
+   */
+  public List queryAll() throws HibernateException {
+    try{
+        Query query = getSession().createQuery("from com.xiaoran27.db.entity.pojo.${Table}");
+        List list = query.list();
+
+        return list;
+      } catch (HibernateException e) {
+      setErrorInfo("queryAll(): "+e);
+      throw e;
+    }
+  }
+
+
+  /**
+   * 查询符合条件数据的指定记录集合.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#query(java.util.Map, int, int)
+   */
+  public List query(LinkedHashMap map, int first, int count) throws HibernateException {
+    try{
+        StringBuilder queryHql = new StringBuilder("from com.xiaoran27.db.entity.pojo.${Table} where 1=1 ");
+
+        for(Iterator iter=map.keySet().iterator();iter.hasNext();){
+          String key=(String)iter.next();
+          queryHql.append(" and ").append(key.toLowerCase());
+          queryHql.append(" = :").append(key);
+        }
+
+        Query query = getSession().createQuery(queryHql.toString());
+        query = query.setFirstResult(first<0?0:first).setMaxResults(count<0?0:count);
+
+        for(Iterator iter=map.entrySet().iterator();iter.hasNext();){
+          Map.Entry entry=(Map.Entry)iter.next();
+          query = query.setParameter((String)entry.getKey(),entry.getValue());
+        }
+
+        List list = query.list();
+
+        return list;
+      } catch (HibernateException e) {
+      setErrorInfo("query(LinkedHashMap map, int first, int count): "+e);
+      throw e;
+    }
+  }
+
+  /**
+   * 查询符合条件数据.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#query(java.util.Map, int, int)
+   */
+  public List query(LinkedHashMap map) throws HibernateException {
+    return query(map, 0, Integer.MAX_VALUE );
+  }
+
+  /**
+   * 查询符合条件数据的指定记录集合.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#query(String, int, int)
+   */
+  public List query(String where, int first, int count) throws HibernateException {
+    try{
+        StringBuilder queryHql = new StringBuilder("from com.xiaoran27.db.entity.pojo.${Table} where 1=1 ");
+        if (where.trim().startsWith("and")){
+          queryHql.append(where);
+        }else{
+          queryHql.append(" and ").append(where);
+        }
+
+        Query query = getSession().createQuery(queryHql.toString());
+        query = query.setFirstResult(first<0?0:first).setMaxResults(count<0?0:count);
+
+        List list = query.list();
+
+        return list;
+      } catch (HibernateException e) {
+      setErrorInfo("query(String where, int first, int count): "+e);
+      throw e;
+    }
+  }
+
+  /**
+   * 查询符合条件数据.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#query(String, int, int)
+   */
+  public List query(String where) throws HibernateException {
+    return query(where, 0, Integer.MAX_VALUE );
+  }
+
+  /**
+   * 查询数据个数.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#queryCount()
+   */
+  public int queryCount() throws HibernateException {
+    try{
+        Query query = getSession().createQuery("select count(*) from com.xiaoran27.db.entity.pojo.${Table}");
+        Object obj = query.uniqueResult();
+        if (null==obj){
+          return 0;
+        }else{
+          if (obj instanceof Integer){
+             return ((Integer)obj).intValue();
+          }else {
+             return ((Long)obj).intValue();
+          }
+        }
+      } catch (HibernateException e) {
+      setErrorInfo("queryCount(): "+e);
+      throw e;
+    }
+  }
+
+
+  /**
+   * 查询符合条件数据的个数.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#queryCount(String)
+   */
+  public int queryCount(String where) throws HibernateException {
+    try{
+        StringBuilder queryHql = new StringBuilder("select count(*) from com.xiaoran27.db.entity.pojo.${Table} where 1=1 ");
+        if (where.trim().startsWith("and")){
+          queryHql.append(where);
+        }else{
+          queryHql.append(" and ").append(where);
+        }
+
+        Query query = getSession().createQuery(queryHql.toString());
+
+        Object obj = query.uniqueResult();
+        if (null==obj){
+          return 0;
+        }else{
+          if (obj instanceof Integer){
+             return ((Integer)obj).intValue();
+          }else {
+             return ((Long)obj).intValue();
+          }
+        }
+      } catch (HibernateException e) {
+        setErrorInfo("queryCount(): "+e);
+        throw e;
+      }
+  }
+
+  /**
+   * 查询符合条件数据的个数.
+   *
+   * @see com.xiaoran27.db.entity.dao.IDao#queryCount(java.util.LinkedHashMap)
+   */
+  public int queryCount(LinkedHashMap map) throws HibernateException {
+    try{
+        StringBuilder queryHql = new StringBuilder("select count(*) from com.xiaoran27.db.entity.pojo.${Table} where 1=1 ");
+
+        for(Iterator iter=map.keySet().iterator();iter.hasNext();){
+          String key=(String)iter.next();
+          queryHql.append(" and ").append(key.toLowerCase());
+          queryHql.append(" = :").append(key);
+        }
+
+        Query query = getSession().createQuery(queryHql.toString());
+
+        for(Iterator iter=map.entrySet().iterator();iter.hasNext();){
+          Map.Entry entry=(Map.Entry)iter.next();
+          query = query.setParameter((String)entry.getKey(),entry.getValue());
+        }
+
+        Object obj = query.uniqueResult();
+        if (null==obj){
+          return 0;
+        }else{
+          if (obj instanceof Integer){
+             return ((Integer)obj).intValue();
+          }else {
+             return ((Long)obj).intValue();
+          }
+        }
+      } catch (HibernateException e) {
+      setErrorInfo("queryCount(LinkedHashMap map): "+e);
+      throw e;
+    }
+  }
+
+  public static void main(String[] args) {
+  }
+}

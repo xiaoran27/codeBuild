@@ -1,0 +1,13 @@
+Buildfile: compile-build.xml
+
+init:
+
+compile:
+
+common.javac:
+   [depend] Deleted 0 out of date files in 6 seconds
+    [javac] Compiling 802 source files to F:\wwwsite\exam\build\build\classes
+     [copy] Copied 3 empty directories to 3 empty directories under F:\wwwsite\exam\build\build\classes
+
+BUILD SUCCESSFUL
+Total time: 2 minutes 6 seconds

@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet type="text/xsl" href="antprettybuild.xsl"?>
+<project name="main-build" default="compile.javac" basedir=".">
+
+	<!--===============================================-->
+	<!-- database to source(.java;.jsp;.sql)           -->
+	<!--===============================================-->
+	<target name="db2src" description="database to source">
+		<ant antfile="conf-build.xml" target="db2src" inheritAll="false" inheritRefs="false"/>
+	</target>
+	
+	<!--===============================================-->
+	<!-- database to source(.java;.jsp;.sql)           -->
+	<!--===============================================-->
+	<target name="db2src.all" description="database to source">
+		<ant antfile="conf-build.xml" target="db2src.all" inheritAll="false" inheritRefs="false"/>
+	</target>	
+
+	<!--===============================================-->
+	<!-- copye to dir                                  -->
+	<!--===============================================-->
+	<target name="cp2generated" description="copye to dir">
+		<ant antfile="dopackage.xml" target="cp2generated" inheritAll="false" inheritRefs="false"/>
+	</target>	
+
+	<!--===============================================-->
+	<!-- Compile Javac                                 -->
+	<!--===============================================-->
+	<target name="compile.javac" description="Compile code">
+		<ant antfile="compile-build.xml" target="compile" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- JAR                                           -->
+	<!--===============================================-->
+	<target name="compile.jar" description="Create JAR File">
+		<ant antfile="compile-build.xml" target="jar" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- Web Deploy                                    -->
+	<!--===============================================-->
+	<target name="web.deploy" description="Deploy web pplication">
+		<ant antfile="web-build.xml" target="deploy" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- WAR                                           -->
+	<!--===============================================-->
+	<target name="web.war" description="Create WAR File">
+		<ant antfile="web-build.xml" target="war" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- Test                                          -->
+	<!--===============================================-->
+<!--	
+	<target name="test" description="Test">
+		<ant antfile="test-build.xml" target="test" inheritAll="false" inheritRefs="false"/>
+	</target>
+-->
+	<!--===============================================-->
+	<!-- Jspc                                          -->
+	<!--===============================================-->
+	<target name="jspc" description="Jspc the jsp pages">
+		<ant antfile="web-build.xml" target="jspc" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- Dist Without lib                              -->
+	<!--===============================================-->
+	<target name="dist" description="Create All Development File Archives Without lib files">
+		<ant antfile="dist-build.xml" target="dist.nolib" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- Dist All development files                    -->
+	<!--===============================================-->
+	<target name="dist.all" description="Create All Development File Archives">
+		<ant antfile="dist-build.xml" target="dist.all" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- Clean                                         -->
+	<!--===============================================-->
+	<target name="clean" >
+		<ant antfile="compile-build.xml" target="clean" inheritAll="false" inheritRefs="false"/>
+		<ant antfile="web-build.xml" target="clean" inheritAll="false" inheritRefs="false"/>
+		<ant antfile="dist-build.xml" target="clean" inheritAll="false" inheritRefs="false"/>
+		<ant antfile="conf-build.xml" target="clean" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+</project>

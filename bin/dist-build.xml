@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="antprettybuild.xsl"?>
+<!DOCTYPE project [
+    <!ENTITY build-share SYSTEM "share-build.xml.ent">
+]>
+
+<project name="dist" default="dist.all" basedir="..">
+
+	&build-share;
+
+	<property name="dist.source.file" value="source.zip"/>
+	<property name="dist.binary.file" value="bin.zip"/>
+	<property name="dist.all.file" value="${webapp.name}_all.zip"/>
+	<property name="dist.all.nolib.file" value="${webapp.name}_all.nolib.zip"/>
+	<property name="dist.all.norelease.file" value="${webapp.name}_all.norelease.zip"/>
+
+	<target name="dist.init" depends="init">
+		<mkdir dir="${dist.dir}"/>
+		<property name="base.location" location="${base.dir}"/>
+		<basename property="base.dir.basename" file="${base.location}"/>
+		<condition property="base.isroot.preset">
+			<equals arg1="${base.dir.basename}" arg2=""/>
+		</condition>
+	</target>
+
+	<target name="dist.base.pre" depends="dist.init" if="base.isroot.preset">
+		<property name="base.dir.location" value="${base.location}"/>
+	</target>
+
+	<target name="dist.all.pre" depends="dist.base.pre" >
+		<!-- Convert abslute name to related name for fileset -->
+		<property name="base.dir.location" value="${base.location}\"/>
+		<pathconvert targetos="unix" property="dist.dir.relatedname" >
+			<path><pathelement path="${dist.dir}"/></path><map from="${base.dir.location}" to=""/>
+		</pathconvert>
+		<pathconvert targetos="unix" property="build.dir.relatedname" >
+			<path><pathelement path="${build.dir}"/></path><map from="${base.dir.location}" to=""/>
+		</pathconvert>
+		<pathconvert targetos="unix" property="deploy.dir.relatedname" >
+			<path><pathelement path="${deploy.dir}"/></path><map from="${base.dir.location}" to=""/>
+		</pathconvert>
+		<pathconvert targetos="unix" property="eclipse.build.classes.relatedname" >
+			<path><pathelement path="${eclipse.build.classes}"/></path><map from="${base.dir.location}" to=""/>
+		</pathconvert>
+		<pathconvert targetos="unix" property="eclipse.work.dir.relatedname" >
+			<path><pathelement path="${eclipse.work.dir}"/></path><map from="${base.dir.location}" to=""/>
+		</pathconvert>
+		<pathconvert targetos="unix" property="lib.dir.relatedname" >
+			<path><pathelement path="${lib.dir}"/></path><map from="${base.dir.location}" to=""/>
+		</pathconvert>
+		<pathconvert targetos="unix" property="release.dir.relatedname" >
+			<path><pathelement path="${release.dir}"/></path><map from="${base.dir.location}" to=""/>
+		</pathconvert>
+	</target>
+
+	<target name="dist.all" depends="dist.all.pre" description="Create All Development File Archives">
+		<delete file="${dist.dir}/${dist.all.file}"/>
+		<zip destfile="${dist.dir}/${dist.all.file}" defaultexcludes="no">
+			<zipfileset dir="${base.dir}" >
+				<exclude name="${dist.dir.relatedname}/"/>
+				<exclude name="${build.dir.relatedname}/"/>
+				<exclude name="${deploy.dir.relatedname}/"/>
+				<exclude name="${deploy.dir.relatedname}/"/>
+				<exclude name="${eclipse.build.classes.relatedname}/"/>
+				<exclude name="${eclipse.work.dir.relatedname}/"/>
+				<exclude name="**/RECYCLER/"/>
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="dist.nolib" depends="dist.all.pre" description="Create All Development File Archives Without lib files">
+		<delete file="${dist.dir}/${dist.all.nolib.file}"/>
+		<zip destfile="${dist.dir}/${dist.all.nolib.file}" defaultexcludes="no">
+			<zipfileset dir="${base.dir}" >
+				<exclude name="${dist.dir.relatedname}/"/>
+				<exclude name="${build.dir.relatedname}/"/>
+				<exclude name="${deploy.dir.relatedname}/"/>
+				<exclude name="${deploy.dir.relatedname}/"/>
+				<exclude name="${release.dir.relatedname}/"/>
+				<exclude name="${eclipse.build.classes.relatedname}/"/>
+				<exclude name="${eclipse.work.dir.relatedname}/"/>
+				<exclude name="${lib.dir.relatedname}/"/>
+				<exclude name="**/RECYCLER/"/>
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="dist.norelease" depends="dist.all.pre" description="Create All Development File Archives Without release files">
+		<delete file="${dist.dir}/${dist.all.norelease.file}"/>
+		<zip destfile="${dist.dir}/${dist.all.norelease.file}" defaultexcludes="no">
+			<zipfileset dir="${base.dir}" >
+				<exclude name="${dist.dir.relatedname}/"/>
+				<exclude name="${build.dir.relatedname}/"/>
+				<exclude name="${deploy.dir.relatedname}/"/>
+				<exclude name="${deploy.dir.relatedname}/"/>
+				<exclude name="${release.dir.relatedname}/"/>
+				<exclude name="${eclipse.build.classes.relatedname}/"/>
+				<exclude name="${eclipse.work.dir.relatedname}/"/>
+				<exclude name="**/RECYCLER/"/>
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="clean" description="Clean the dist dir">
+		<delete dir="${dist.dir}"/>
+	</target>
+</project>

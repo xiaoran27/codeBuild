@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="bin/antprettybuild.xsl"?>
+<project name="main-build" default="compile.javac" basedir="./bin">
+
+	<!--===============================================-->
+	<!-- project description                           -->
+	<!--===============================================-->
+  <description>
+    all buildes are here.
+  </description>
+  
+  <property name="src" value="build"/>
+  <property file="${src}.properties" description="The description of the current property"/>
+  
+	<!--===============================================-->
+	<!-- Compile Javac                                 -->
+	<!--===============================================-->
+	<target name="compile.javac" description="Compile code">
+		<ant target="compile.javac" inheritAll="false" inheritRefs="false"/>
+	</target>
+	
+	<!--===============================================-->
+	<!-- JAR                                           -->
+	<!--===============================================-->
+	<target name="compile.jar" description="Create JAR File">
+		<ant target="compile.jar" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- Web Deploy                                    -->
+	<!--===============================================-->
+	<target name="web.deploy" description="Deploy web pplication">
+		<ant target="web.deploy" inheritAll="false" inheritRefs="false"/>
+	</target>
+	
+	<!--===============================================-->
+	<!-- WAR                                           -->
+	<!--===============================================-->
+	<target name="web.war" description="Create WAR File">
+		<ant target="web.war" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- Test                                          -->
+	<!--===============================================-->
+	<target name="test" description="Test">
+		<ant target="test" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- Jspc                                          -->
+	<!--===============================================-->
+	<target name="jspc" description="Jspc the jsp pages">
+		<ant target="jspc" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- Dist Without lib                              -->
+	<!--===============================================-->
+	<target name="dist" description="Create All Development File Archives Without lib files">
+		<ant target="dist" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<!--===============================================-->
+	<!-- Dist All development files                    -->
+	<!--===============================================-->
+	<target name="dist.all" description="Create All Development File Archives">
+		<ant target="dist.all" inheritAll="false" inheritRefs="false"/>
+	</target>
+	
+	<!--===============================================-->
+	<!-- Clean                                         -->
+	<!--===============================================-->
+	<target name="clean" >
+		<ant target="clean" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+</project>

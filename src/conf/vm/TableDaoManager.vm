@@ -1,0 +1,231 @@
+
+/************************ CHANGE REPORT HISTORY ******************************\
+************************* CHANGE REPORT HISTORY *******************************
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-14 20:36
+*   create
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-6-19
+* + clossSession();
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.xiaoran27.db.entity.manager;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.xiaoran27.db.entity.manager.comm.*;
+import org.hibernate.HibernateException;
+#set($table=$table0.toLowerCase())
+#set($Table=$strings.capitalizeFirstLetter($table))
+#set($TABLE=$table0.toUpperCase())
+#parse("CommonTemplate.vm")
+##set($Comment=$strings.capitalizeFirstLetter($comment0))
+#set($Comment=$comment0)
+#set($comment=$comment0.toLowerCase())
+#set($COMMENT=$comment0.toUpperCase())
+import com.xiaoran27.db.entity.dao.${Table}Dao;
+
+
+/**
+ * ${comment0}
+ *
+ * @author Xiaoran27 $author$
+ * @version $Revision: 1.8 $
+  */
+public class ${Table}Manager extends ${Table}Dao implements IDaoManager {
+
+  /**
+   *
+   */
+  public ${Table}Manager() {
+    super();
+  }
+
+  /**
+   * 新增一个数据
+   *
+   * @see com.xiaoran27.db.entity.manager.IDaoManager#insert(java.lang.Object, boolean)
+   */
+  public int insert(Object obj, boolean autoCommit) throws HibernateException {
+    int rtn = -1;
+
+    if (autoCommit){
+
+      beginTrans();
+      rtn = insert(obj);
+      if (rtn > 0){
+        commitTrans();
+      }else{
+        rollbackTrans();
+      }
+      //closeSession();
+
+    }else{
+      rtn = insert(obj);
+    }
+
+    return rtn;
+  }
+
+  /**
+   * 删除一各数据.
+   *
+   * @see com.xiaoran27.db.entity.manager.IDaoManager#delete(java.lang.Object, boolean)
+   */
+  public int delete(Object obj, boolean autoCommit) throws HibernateException {
+    int rtn = -1;
+
+    if (autoCommit){
+
+      beginTrans();
+      rtn = delete(obj);
+      if (rtn > 0){
+        commitTrans();
+      }else{
+        rollbackTrans();
+      }
+      //closeSession();
+    }else{
+      rtn = delete(obj);
+    }
+
+    return rtn;
+  }
+
+  /**
+   * 删除所有数据.
+   *
+   * @see com.xiaoran27.db.entity.manager.IDaoManager#deleteAll(boolean)
+   */
+  public int deleteAll(boolean autoCommit) throws HibernateException {
+    int rtn = -1;
+
+    if (autoCommit){
+
+      beginTrans();
+      rtn = deleteAll();
+      if (rtn > 0){
+        commitTrans();
+      }else{
+        rollbackTrans();
+      }
+      //closeSession();
+    }else{
+      rtn = deleteAll();
+    }
+
+    return rtn;
+  }
+
+  /**
+   * 修改一个数据.
+   *
+   * @see com.xiaoran27.db.entity.manager.IDaoManager#update(java.lang.Object, boolean)
+   */
+  public int update(Object obj, boolean autoCommit) throws HibernateException {
+    int rtn = -1;
+
+    if (autoCommit){
+
+      beginTrans();
+      rtn = update(obj);
+      if (rtn > 0){
+        commitTrans();
+      }else{
+        rollbackTrans();
+      }
+      //closeSession();
+    }else{
+      rtn = update(obj);
+    }
+
+    return rtn;
+  }
+
+  /**
+   * 修改批量数据.
+   *
+   * @see com.xiaoran27.db.entity.manager.IDaoManager#update(Map , LinkedHashMap , boolean)
+   */
+  public int update(Map setMap, LinkedHashMap whereMap, boolean autoCommit) throws HibernateException {
+    int rtn = -1;
+
+    if (autoCommit){
+
+      beginTrans();
+      rtn = update(setMap, whereMap);
+      if (rtn > 0){
+        commitTrans();
+      }else{
+        rollbackTrans();
+      }
+      //closeSession();
+    }else{
+      rtn = update(setMap, whereMap);
+    }
+
+    return rtn;
+  }
+
+  /**
+   * 修改批量数据.
+   *
+   * @see com.xiaoran27.db.entity.manager.IDaoManager#update(Map , String , boolean)
+   */
+  public int update(Map setMap, String where, boolean autoCommit) throws HibernateException {
+    int rtn = -1;
+
+    if (autoCommit){
+
+      beginTrans();
+      rtn = update(setMap,where);
+      if (rtn > 0){
+        commitTrans();
+      }else{
+        rollbackTrans();
+      }
+      //closeSession();
+    }else{
+      rtn = update(setMap,where);
+    }
+
+    return rtn;
+  }
+
+  /**
+   * 修改批量数据.
+   *
+   * @see com.xiaoran27.db.entity.manager.IDaoManager#update(String , String , boolean)
+   */
+  public int update(String set, String where, boolean autoCommit) throws HibernateException {
+    int rtn = -1;
+
+    if (autoCommit){
+
+      beginTrans();
+      rtn = update(set,where);
+      if (rtn > 0){
+        commitTrans();
+      }else{
+        rollbackTrans();
+      }
+      //closeSession();
+    }else{
+      rtn = update(set,where);
+    }
+
+    return rtn;
+  }
+
+  /**
+   * @param args
+   */
+  public static void main(String[] args) {
+    // TODO Auto-generated method stub
+
+  }
+
+}

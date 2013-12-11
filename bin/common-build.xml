@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+<project name="common-build" default="common.default" basedir="..">
+
+<property name="build.optimize" value="on"/>
+<property name="build.debug" value="on"/>
+<property name="build.deprecation" value="on"/>
+
+<target name="build.debug" />
+
+<!-- ================================================= -->
+<!-- Common compile target                             -->
+<!-- ================================================= -->
+
+<target name="common.javac" description="Common target for compile(javac)">
+	<!--assert the requried property -->
+	<fail unless="common.build.classes">
+		Property "common.build.classes" is not exist. This property is refer to the build dir.
+	</fail>
+	<fail unless="common.java.dir">
+		Property "common.java.dir" is not exist. This property is refer to the java source dir.
+	</fail>
+	<fail unless="common.build.depcache">
+		Property "common.build.depcache" is not exist. This property is refer to the depcache dir.
+	</fail>
+	<property name="common.othersource.dir" value="${common.java.dir}"/>
+<!--
+	<fail unless="common.classpath.ref">
+		Ref "common.classpath.ref" is not exist.
+	</fail>
+-->
+	<mkdir dir="${common.build.classes}"/>
+	<depend srcdir="${common.java.dir}:${common.othersource.dir}" destdir="${common.build.classes}"
+	        cache="${common.build.depcache}" closure="yes">
+	  	<include name="**/*.java"/>
+	</depend>
+	<javac destdir="${common.build.classes}"
+	debug="${build.debug}" optimize="${build.optimize}" deprecation="${build.deprecation}">
+		<src path="${common.java.dir}:${common.othersource.dir}"/>
+		<include name="**/*.java"/>
+		<classpath>
+			 <path refid="common.classpath.ref"/>
+			 <pathelement path="${common.build.classes}"/>
+		</classpath>
+	</javac>
+	<native2ascii src="${common.java.dir}" dest="${common.build.classes}"
+		includes="**/*.properties"/>
+	<copy todir="${common.build.classes}">
+		<fileset dir="${common.java.dir}">
+		  <exclude name="**/*.java"/>
+		  <exclude name="**/*.properties"/>
+		  <exclude name="**/*.bak"/>
+		</fileset>
+	</copy>
+</target>
+
+</project>

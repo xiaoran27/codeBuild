@@ -1,0 +1,547 @@
+#set ($table_=$strings.sub($table_,"-","_"))
+#set ($splits=$strings.split($table_,"_"))
+#set($table0= "")
+#foreach ($split in $splits)
+  #set($Split=$strings.capitalizeFirstLetter($split))
+  #set($table0= $table0.concat($Split))
+#end
+#set($table=$table0.toLowerCase())
+#set($Table=$strings.capitalizeFirstLetter($table)) 
+#set($TABLE=$table_.toUpperCase())
+#set($Table0 = $strings.capitalizeFirstLetter($table0))
+#parse("CommonTemplate.vm")
+##set($Comment=$strings.capitalizeFirstLetter($comment0))
+#set($Comment=$comment0)
+#set($comment=$comment0.toLowerCase())
+#set($COMMENT=$comment0.toUpperCase())
+
+/************************ CHANGE REPORT HISTORY ******************************\
+** Product VERSION,UPDATED BY,UPDATE DATE                                     *
+*   DESCRIPTION OF CHANGE                                                     *
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-14 16:11
+*   解决值null时,toString()问题
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2007-4-26 13:58
+* M toXxxSql() 时间类型转字符串错误
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2009-3-23
+* + toSqlWhere() 
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2009-3-24
+* + toQuerySql() 
+* + getXxxx(Xxxx xxxx)
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2009-3-25
+* M static getXxxx(Xxxx xxxx) 
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2011-6-5
+* M //对指定值进行特殊处理
+*-----------------------------------------------------------------------------*
+* V,xiaoran27,2012-12-25
+* M if (!have)
+\*************************** END OF CHANGE REPORT HISTORY ********************/
+
+package com.xiaoran27.db.entity.pojo.ext;
+
+import java.util.*;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import com.xiaoran27.db.entity.pojo.${Table0};
+import com.xiaoran27.db.entity.pojo.ext.comm.I2SqlString;
+
+/**
+ * ${comment0} to SQL(insert/delete/update) String.
+ *
+ * @author Xiaoran27 $author$
+ * @version $Revision: 1.7 $
+  */
+public class ${Table0}Ext implements I2SqlString {
+  private ${Table0} ${table}=null;
+
+  public ${Table0}Ext(${Table0} ${table}) {
+    this.${table} = ${table};
+  }
+
+  /**
+   * 增加的SQL
+   *
+   * @see com.xiaoran27.db.entity.pojo.ext.comm.I2SqlString#toInsertSql()
+   */
+  public String toInsertSql() {
+#set($insertUid=0)
+    StringBuilder sb = new StringBuilder(" insert into ");  //DML
+    sb.append(" ${table} ");  //table0
+    sb.append(" ( #set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))#set($i=$i+1)#if( 1==$insertUid || $columncode!="uid")$columncode #if($i<$ColumnCodes.size()),#end#end#end )");  // columns
+    sb.append(" values ( ");  //values
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))
+#set($i=$i+1)
+
+    //${columncode}
+#if(1==$insertUid || $columncode!="uid")
+#if($columntype=="int" || $columntype=="long" || $columntype=="float" || $columntype=="double" )
+    sb.append(" ").append(${table}.get${ColumnCode}());  
+#elseif($columntype=="java.sql.date" || $columntype=="java.sql.timestamp")
+    if (null==${table}.get${ColumnCode}()){
+      sb.append(" null ");
+    }else{
+      sb.append(" '").append(new java.sql.Timestamp(${table}.get${ColumnCode}().getTime())).append("'");  
+    }
+#else
+    if (null==${table}.get${ColumnCode}()){
+      sb.append(" null ");
+    }else{
+      sb.append(" '").append(StringEscapeUtils.escapeSql(${table}.get${ColumnCode}())).append("'");  
+    }
+#end
+#if($i<$ColumnCodes.size())
+    sb.append(",");
+#end
+#end
+#end
+
+    sb.append(" ) ");
+
+    return sb.toString();
+  }
+
+  /**
+   * 删除的SQL
+   *
+   * @see com.xiaoran27.db.entity.pojo.ext.comm.I2SqlString#toDeleteSql()
+   */
+  public String toDeleteSql() {
+    StringBuilder sb = new StringBuilder(" delete from ");  //DML
+    sb.append(" ${table} ");  //table0
+    sb.append(" where 1 = 1 ");
+    
+    //KEY OR UNIQUE INDEX
+#if($TablePKS.size()<1)
+    sb.append(" and uid = ").append(${table}.getUid());  //uid;
+#else
+#set($i =0)#foreach($ColumnCode0 in $TablePKS)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))
+
+    //${columncode}
+#if($columntype=="int" || $columntype=="long" || $columntype=="float" || $columntype=="double" )
+    sb.append(" and ${columncode} = ").append(${table}.get${ColumnCode}());  
+#elseif($columntype=="java.sql.date" || $columntype=="java.sql.timestamp")
+    if (null==${table}.get${ColumnCode}()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} =  '").append(new java.sql.Timestamp(${table}.get${ColumnCode}().getTime())).append("'"); 
+    }
+#else
+    if (null==${table}.get${ColumnCode}()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} =  '").append(StringEscapeUtils.escapeSql(${table}.get${ColumnCode}())).append("'"); 
+    }
+#end
+#set($i=$i+1)#end
+#end
+
+    return sb.toString();
+  }
+
+  /**
+   * 修改的SQL
+   *
+   * @see com.xiaoran27.db.entity.pojo.ext.comm.I2SqlString#toUpdateSql()
+   */
+  public String toUpdateSql() {
+    
+    StringBuilder sb = new StringBuilder(" update ");  //DML
+    sb.append(" ${table} ");  //table0
+    sb.append(" set ");  //SET
+    boolean have=false;
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))
+
+    //${columncode}
+#if($columncode!="uid")
+    if (have) sb.append(" ,");
+#if($columntype=="int" || $columntype=="long" || $columntype=="float" || $columntype=="double" )
+    if (${table}.get${ColumnCode}()==I2SqlString.NOT_SET_VALUE_NUMBER_DOUBLE){
+      //not todo
+      have=false;
+    }else if (${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_INTEGER
+    						|| ${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_DOUBLE){
+      sb.append(" ${columncode} = ").append(0);  //${columncode}=0
+      have=true;
+    }else{
+      sb.append(" ${columncode} = ").append(${table}.get${ColumnCode}());  
+      have=true;
+    }
+#elseif($columntype=="java.sql.date" || $columntype=="java.sql.timestamp")
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+      have=false;
+    }else if (I2SqlString.SET_ZERO_VALUE_TIMESTAMP.getTime()==${table}.get${ColumnCode}().getTime()){
+      sb.append(" ${columncode} = null ");
+      have=true;
+    }else{
+      sb.append(" ${columncode} =  '").append(new java.sql.Timestamp(${table}.get${ColumnCode}().getTime())).append("'");
+      have=true;
+    }
+#else
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+      have=false;
+    }else if (I2SqlString.SET_NULL_VALUE_STRING==${table}.get${ColumnCode}()){
+      sb.append(" ${columncode} = null ");
+      have=true;
+    }else{
+      sb.append(" ${columncode} = '").append(StringEscapeUtils.escapeSql(${table}.get${ColumnCode}())).append("'");
+      have=true;
+    }
+#end
+#end
+#set($i=$i+1)#end
+     if (!have)  sb.deleteCharAt(sb.length()-1); //-,
+
+    sb.append(" where 1 = 1 ");
+    //KEY OR UNIQUE INDEX
+#if($TablePKS.size()<1)
+    sb.append(" and uid = ").append(${table}.getUid());  //uid;
+#else
+#set($i =0)#foreach($ColumnCode0 in $TablePKS)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))
+
+    //${columncode}
+#if($columntype=="int" || $columntype=="long" || $columntype=="float" || $columntype=="double" )
+    if (${table}.get${ColumnCode}()==I2SqlString.NOT_SET_VALUE_NUMBER_DOUBLE){
+      //not todo
+    }else if (${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_INTEGER
+    						|| ${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_DOUBLE){
+      sb.append(" and ${columncode} = ").append(0);  //${columncode}=0
+    }else{
+      sb.append(" and ${columncode} = ").append(${table}.get${ColumnCode}()); 
+    }
+#elseif($columntype=="java.sql.date" || $columntype=="java.sql.timestamp")
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_ZERO_VALUE_TIMESTAMP.getTime()==${table}.get${ColumnCode}().getTime()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} =  '").append(new java.sql.Timestamp(${table}.get${ColumnCode}().getTime())).append("'"); 
+    }
+#else
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_NULL_VALUE_STRING==${table}.get${ColumnCode}()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} = '").append(StringEscapeUtils.escapeSql(${table}.get${ColumnCode}())).append("'");
+    }
+#end
+#set($i=$i+1)#end
+#end
+
+    return sb.toString();
+  }
+  
+  
+  /**
+   * 生成查询SQL
+   *
+   * 
+   */
+  public String toQuerySql() {
+    StringBuilder sb = new StringBuilder("select * from ");  //DML
+    sb.append(" ${table} ");  //table0
+    sb.append(" where 1 = 1 ");
+    
+    //KEY OR UNIQUE INDEX
+#if($TablePKS.size()<1)
+    if (${table}.getUid() >= I2SqlString.UID_MIN ){
+      sb.append(" and uid = ").append(${table}.getUid());  //uid;
+    }
+#else
+#set($i =0)#foreach($ColumnCode0 in $TablePKS)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))
+
+    //${columncode}
+#if($columntype=="int" || $columntype=="long" || $columntype=="float" || $columntype=="double" )
+    if (${table}.get${ColumnCode}()==I2SqlString.NOT_SET_VALUE_NUMBER_DOUBLE){
+      //not todo
+    }else if (${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_INTEGER
+    						|| ${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_DOUBLE){
+      sb.append(" and ${columncode} = ").append(0);  //${columncode}=0
+    }else{
+      sb.append(" and ${columncode} = ").append(${table}.get${ColumnCode}());  
+    }
+#elseif($columntype=="java.sql.date" || $columntype=="java.sql.timestamp")
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_ZERO_VALUE_TIMESTAMP.getTime()==${table}.get${ColumnCode}().getTime()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} =  '").append(new java.sql.Timestamp(${table}.get${ColumnCode}().getTime())).append("'");  //${columncode}
+    }
+#else
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_NULL_VALUE_STRING==${table}.get${ColumnCode}()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} = '").append(StringEscapeUtils.escapeSql(${table}.get${ColumnCode}())).append("'");  //${columncode}
+    }
+#end
+#set($i=$i+1)#end
+#end
+    
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))
+
+    //${columncode}
+##if($columncode!="uid")
+#if($columntype=="int" || $columntype=="long" || $columntype=="float" || $columntype=="double" )
+    if (${table}.get${ColumnCode}()==I2SqlString.NOT_SET_VALUE_NUMBER_DOUBLE){
+      //not todo
+    }else if (${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_INTEGER
+    						|| ${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_DOUBLE){
+      sb.append(" and ${columncode} = ").append(0);  //${columncode}=0
+    }else{
+      sb.append(" and ${columncode} = ").append(${table}.get${ColumnCode}());  
+    }
+#elseif($columntype=="java.sql.date" || $columntype=="java.sql.timestamp")
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_ZERO_VALUE_TIMESTAMP.getTime()==${table}.get${ColumnCode}().getTime()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} =  '").append(new java.sql.Timestamp(${table}.get${ColumnCode}().getTime())).append("'");  //${columncode}
+    }
+#else
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_NULL_VALUE_STRING==${table}.get${ColumnCode}()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} = '").append(StringEscapeUtils.escapeSql(${table}.get${ColumnCode}())).append("'");  //${columncode}
+    }
+#end
+##end
+#set($i=$i+1)#end
+
+    return sb.toString();
+  }
+  
+
+  /**
+   * 生成SQL查询条件
+   *
+   * 
+   */
+  public String toSqlWhere() {
+    StringBuilder sb = new StringBuilder("where 1=1 ");  //DML
+    
+    //KEY OR UNIQUE INDEX
+#if($TablePKS.size()<1)
+    if (${table}.getUid() >= I2SqlString.UID_MIN ){
+      sb.append(" and uid = ").append(${table}.getUid());  //uid;
+    }
+#else
+#set($i =0)#foreach($ColumnCode0 in $TablePKS)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))
+
+    //${columncode}
+#if($columntype=="int" || $columntype=="long" || $columntype=="float" || $columntype=="double" )
+    if (${table}.get${ColumnCode}()==I2SqlString.NOT_SET_VALUE_NUMBER_DOUBLE){
+      //not todo
+    }else if (${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_INTEGER
+    						|| ${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_DOUBLE){
+      sb.append(" and ${columncode} = ").append(0);  //${columncode}=0
+    }else{
+      sb.append(" and ${columncode} = ").append(${table}.get${ColumnCode}());  
+    }
+#elseif($columntype=="java.sql.date" || $columntype=="java.sql.timestamp")
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_ZERO_VALUE_TIMESTAMP.getTime()==${table}.get${ColumnCode}().getTime()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} =  '").append(new java.sql.Timestamp(${table}.get${ColumnCode}().getTime())).append("'");  //${columncode}
+    }
+#else
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_NULL_VALUE_STRING==${table}.get${ColumnCode}()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} = '").append(StringEscapeUtils.escapeSql(${table}.get${ColumnCode}())).append("'");  //${columncode}
+    }
+#end
+#set($i=$i+1)#end
+#end
+
+    
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))
+
+    //${columncode}
+#if($columncode!="uid")
+#if($columntype=="int" || $columntype=="long" || $columntype=="float" || $columntype=="double" )
+    if (${table}.get${ColumnCode}()==I2SqlString.NOT_SET_VALUE_NUMBER_DOUBLE){
+      //not todo
+    }else if (${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_INTEGER
+    						|| ${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_DOUBLE){
+      sb.append(" and ${columncode} = ").append(0);  //${columncode}=0
+    }else{
+      sb.append(" and ${columncode} = ").append(${table}.get${ColumnCode}());  
+    }
+#elseif($columntype=="java.sql.date" || $columntype=="java.sql.timestamp")
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_ZERO_VALUE_TIMESTAMP.getTime()==${table}.get${ColumnCode}().getTime()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} =  '").append(new java.sql.Timestamp(${table}.get${ColumnCode}().getTime())).append("'");  //${columncode}
+    }
+#else
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_NULL_VALUE_STRING==${table}.get${ColumnCode}()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} = '").append(StringEscapeUtils.escapeSql(${table}.get${ColumnCode}())).append("'");  //${columncode}
+    }
+#end
+#end
+#set($i=$i+1)#end
+
+    return sb.toString();
+  }
+
+  
+  /**
+   * 生成删除的SQL
+   *
+   */
+  public String toDeleteSqlFull() {
+    StringBuilder sb = new StringBuilder("delete from ");  //DML
+    sb.append(" ${table} ");  //table0
+    sb.append(" where 1 = 1 ");
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))
+
+    //${columncode}
+##if($columncode!="uid")
+#if($columntype=="int" || $columntype=="long" || $columntype=="float" || $columntype=="double" )
+    if (${table}.get${ColumnCode}()==I2SqlString.NOT_SET_VALUE_NUMBER_DOUBLE){
+      //not todo
+    }else if (${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_INTEGER
+    						|| ${table}.get${ColumnCode}()==I2SqlString.SET_ZERO_VALUE_NUMBER_DOUBLE){
+      sb.append(" and ${columncode} = ").append(0);  //${columncode}=0
+    }else{
+      sb.append(" and ${columncode} = ").append(${table}.get${ColumnCode}());  
+    }
+#elseif($columntype=="java.sql.date" || $columntype=="java.sql.timestamp")
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_ZERO_VALUE_TIMESTAMP.getTime()==${table}.get${ColumnCode}().getTime()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} =  '").append(new java.sql.Timestamp(${table}.get${ColumnCode}().getTime())).append("'");  //${columncode}
+    }
+#else
+    if (null==${table}.get${ColumnCode}()){
+      //not todo
+    }else if (I2SqlString.SET_NULL_VALUE_STRING==${table}.get${ColumnCode}()){
+      sb.append(" and ${columncode} is null ");
+    }else{
+      sb.append(" and ${columncode} = '").append(StringEscapeUtils.escapeSql(${table}.get${ColumnCode}())).append("'");  //${columncode}
+    }
+#end
+##end
+#set($i=$i+1)#end
+
+    return sb.toString();
+  }
+  
+    /**
+   * 把数组转换成对象
+   *
+   * 
+   */
+  public static ${Table0} get${Table0}(Object[] objArray) {
+    return (${Table0})new ${Table0}Ext(new ${Table0}()).toPOJO(objArray);
+  }
+  
+  /**
+   * 把数组转换成对象
+   *
+   * 
+   */
+  public Object toPOJO(Object[] objArray) {
+    ${Table0} ${table} = new ${Table0} ();
+    
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))
+
+#if($columntype=="int" )
+      ${table}.set${ColumnCode}(Integer.parseInt(""+objArray[$i]));  //${columncode}
+#elseif($columntype=="long" )
+      ${table}.set${ColumnCode}(Long.parseLong(""+objArray[$i]));  //${columncode}
+#elseif($columntype=="float" )
+      ${table}.set${ColumnCode}(Float.parseFloat(""+objArray[$i]));  //${columncode}
+#elseif($columntype=="double" )
+      ${table}.set${ColumnCode}(Double.parseDouble(""+objArray[$i]));  //${columncode}
+#elseif($columntype=="java.sql.date" )
+      ${table}.set${ColumnCode}((java.sql.Date)objArray[$i]);  //${columncode}
+#elseif( $columntype=="java.sql.timestamp")
+      ${table}.set${ColumnCode}((java.sql.Timestamp)objArray[$i]);  //${columncode}
+#else
+      ${table}.set${ColumnCode}((String)objArray[$i]);  //${columncode}
+#end
+#set($i=$i+1)
+#end
+
+
+    return ${table};
+  }
+
+
+  /**
+   * @param args
+   */
+  public static void main(String[] args) {
+    // TODO Auto-generated method stub
+    ${Table0} ${table} = new ${Table0}();
+    
+    System.out.println("${table}="+${table});
+     System.out.println();
+
+     ${Table0}Ext ${table}Ext = new ${Table0}Ext(${table});
+     System.out.println("${table}Ext="+${table}Ext);
+     System.out.println("${table}Ext.toInsertSql()="+${table}Ext.toInsertSql());
+     System.out.println("${table}Ext.toDeleteSql()="+${table}Ext.toDeleteSql());
+     System.out.println("${table}Ext.toUpdateSql()="+${table}Ext.toUpdateSql());
+     System.out.println("${table}Ext.toQuerySql()="+${table}Ext.toQuerySql());
+     System.out.println("${table}Ext.toSqlWhere()="+${table}Ext.toSqlWhere());
+     System.out.println("${table}Ext.toDeleteSqlFull()="+${table}Ext.toDeleteSqlFull());
+     
+#set($i =0)#foreach($ColumnCode0 in $ColumnCodes)#set($COLUMNCODE = $ColumnCode0.toUpperCase())#set($columncode = $ColumnCode0.toLowerCase())#set($ColumnCode = $strings.capitalizeFirstLetter($ColumnCode0))#set($ColumnType0 = $ColumnTypes.get($i))#set($COLUMNTYPE = $ColumnType0.toUpperCase())#set($columntype = $ColumnType0.toLowerCase())#set($ColumnType = $strings.capitalizeFirstLetter($ColumnType0))
+#set($i=$i+1)
+#if($ColumnType0 == "Integer" || $ColumnType0 == "int" )
+    ${table}.set${ColumnCode}(0);  //${columncode}
+#elseif ( $ColumnType0 == "Long" || $ColumnType0 == "long" )
+    ${table}.set${ColumnCode}(0l);  //${columncode}
+#elseif ( $ColumnType0 == "Float" || $ColumnType0 == "float" )
+    ${table}.set${ColumnCode}(0f);  //${columncode}
+#elseif ( $ColumnType0 == "Double" || $ColumnType0 == "double" )
+    ${table}.set${ColumnCode}(0d);  //${columncode}
+#elseif($columntype=="java.sql.date" || $columntype=="java.sql.timestamp")
+    ${table}.set${ColumnCode}(new java.sql.Timestamp(System.currentTimeMillis()));
+#else
+    ${table}.set${ColumnCode}("0");  //${columncode}
+#end
+#end
+
+     System.out.println("${table}="+${table});
+     System.out.println();
+
+     ${table}Ext = new ${Table0}Ext(${table});
+     System.out.println("${table}Ext="+${table}Ext);
+     System.out.println("${table}Ext.toInsertSql()="+${table}Ext.toInsertSql());
+     System.out.println("${table}Ext.toDeleteSql()="+${table}Ext.toDeleteSql());
+     System.out.println("${table}Ext.toUpdateSql()="+${table}Ext.toUpdateSql());
+     System.out.println("${table}Ext.toQuerySql()="+${table}Ext.toQuerySql());
+     System.out.println("${table}Ext.toSqlWhere()="+${table}Ext.toSqlWhere());
+     System.out.println("${table}Ext.toDeleteSqlFull()="+${table}Ext.toDeleteSqlFull());
+  }
+
+}
+

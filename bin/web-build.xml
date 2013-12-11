@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="antprettybuild.xsl"?>
+<!DOCTYPE project [
+    <!ENTITY build-share SYSTEM "share-build.xml.ent">
+]>
+
+<project name="web" default="deploy" basedir="..">
+
+	&build-share;
+	<property name="web.build.jspc" value="${build.dir}/jspc/WEB-INF"/>
+
+	<property name="web.build.jspc.classes" value="${web.build.jspc}/classes"/>
+
+	<property name="web.war.jardir" value="${java.build.jardir}"/>
+
+	<!--===============================================-->
+	<!-- Web Deploy                                    -->
+	<!--===============================================-->
+	<target name="deploy" depends="compile.javac, xmlvalidate" description="Deploy web application">
+		<copy todir="${web.deploy.dir}/WEB-INF/classes">
+			<fileset dir="${java.build.dir}"/>
+		</copy>
+		<copy todir="${web.deploy.dir}/WEB-INF/lib" flatten="true">
+			<fileset refid="web.libdir.ref"/>
+		</copy>
+		<copy todir="${web.deploy.dir}" includeEmptyDirs="false">
+			<fileset dir="${web.source.dir}">
+				<exclude name="work/**/*.*"/><!--ignore the work dir for eclipse -->
+			</fileset>
+		</copy>
+		<copy todir="${web.deploy.dir}/WEB-INF/classes" flatten="true" includeEmptyDirs="false">
+			<fileset dir="${conf.workflow.dir}">
+				<exclude name="dtd/*.*"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!--===============================================-->
+	<!-- WAR Deploy                                    -->
+	<!--===============================================-->
+	<target name="web.jar">
+		<mkdir dir="${web.war.jardir}"/>
+		<jar jarfile="${web.war.jardir}/${java.jar.file}">
+			<fileset dir="${web.deploy.dir}/WEB-INF/classes"/>
+		</jar>
+	</target>
+
+	<target name="war" depends="deploy, web.jar" description="Deploy web application use WAR File">
+		<mkdir dir="${web.war.dir}"/>
+		<war destfile="${web.war.dir}/${web.war.file}" webxml="${web.deploy.dir}/WEB-INF/web.xml">
+			<fileset dir="${web.deploy.dir}">
+				<exclude name="WEB-INF/web.xml"/>
+				<exclude name="WEB-INF/classes/"/>
+			</fileset>
+			<zipfileset dir="${web.war.jardir}" prefix="WEB-INF/lib"/>
+		</war>
+	</target>
+
+	<target name="compile.javac" >
+		<ant antfile="${current.dir}/compile-build.xml" target="compile" inheritAll="false" inheritRefs="false"/>
+	</target>
+
+	<target name="xmlvalidate" description="Validate XML">
+		<property name="conf.transfer.dtd.location" value="${java.source.dir}/lanyue/transfer/transfer.dtd"/>
+		<xmlvalidate>
+			<fileset dir="${web.source.dir}/WEB-INF">
+				<include name="transfer-config.xml"/>
+			</fileset>
+			<dtd publicId="-//Data Transfer Configuration 1.0//EN"
+       			location="${conf.transfer.dtd.location}"/>
+		</xmlvalidate>
+	</target>
+
+	<!--===============================================-->
+	<!-- Jsp Compile                                   -->
+	<!--===============================================-->
+	<target name="jspc" depends="compile.javac" description="Compile Jsp Code">
+		<mkdir dir="${web.build.jspc}"/>
+
+		<path id="tomcat.classpath.ref">
+			<pathelement location="${web.tomcat.root}/server/classes"/>
+			<fileset dir="${web.tomcat.root}/common/lib">
+			  <include name="*.jar"/>
+			</fileset>
+	        <fileset dir="${web.tomcat.root}/server/lib">
+	          <include name="*.jar"/>
+	        </fileset>
+			<pathelement location="${web.tomcat.root}/shared/classes"/>
+<!--
+			<fileset dir="${web.tomcat.root}/shared/lib">
+			  <include name="*.jar"/>
+			</fileset>
+			-->
+		</path>
+
+		<mkdir dir="${web.build.jspc.classes}"/>
+
+	    <taskdef classname="org.apache.jasper.JspC" name="jasper2" >
+	      <classpath id="web.jspc.classpath">
+	        <pathelement location="${java.home}/../lib/tools.jar"/>
+	        <path refid="tomcat.classpath.ref"/>
+	        <fileset dir="${lib.dir}">
+				<include name="common.*/**/*.jar"/>
+			</fileset>
+	        <pathelement location="${java.build.dir}"/>
+	      </classpath>
+	    </taskdef>
+	    
+	    <property name="web.source.dir.location" location="${web.source.dir}"/>
+	    <property name="web.build.jspc.classes.location" location="${web.build.jspc.classes}"/>
+	    <jasper2 validateXml="false"
+	             uriroot="${web.source.dir.location}"
+	             compile="true"
+	             outputDir="${web.build.jspc.classes.location}" />
+
+	</target>
+
+	<!--===============================================-->
+	<!-- Clean                                         -->
+	<!--===============================================-->
+	<target name="clean" >
+		<delete file="${web.war.dir}/${web.war.file}"/>
+		<delete dir="${web.deploy.dir}"/>
+		<delete dir="${deploy.dir}"/>
+		<delete dir="${web.build.jspc}"/>
+	</target>
+
+</project>
